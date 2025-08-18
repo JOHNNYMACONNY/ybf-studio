@@ -1,0 +1,7 @@
+<svg width="400" height="60" viewBox="0 0 400 60" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="60" fill="#0d0d0d" rx="8"/>
+  <text x="30"  y="38" font-family="Inter, sans-serif" font-size="16" fill="#ffffff" letter-spacing="0.5">Stripe</text>
+  <text x="110" y="38" font-family="Inter, sans-serif" font-size="16" fill="#ffffff" letter-spacing="0.5">Visa</text>
+  <text x="180" y="38" font-family="Inter, sans-serif" font-size="16" fill="#ffffff" letter-spacing="0.5">Mastercard</text>
+  <text x="300" y="38" font-family="Inter, sans-serif" font-size="16" fill="#ffffff" letter-spacing="0.5">Google Pay</text>
+</svg>

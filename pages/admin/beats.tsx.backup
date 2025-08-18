@@ -1,0 +1,407 @@
+import React, { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '../api/auth/[...nextauth]';
+import AdminLayout from '../../components/AdminLayout';
+import BeatCard from '../../components/BeatCard';
+import Button from '../../components/ui/Button';
+import Modal from '../../components/ui/Modal';
+import Input from '../../components/Input';
+import Select from '../../components/ui/Select';
+import Textarea from '../../components/ui/Textarea';
+import { Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
+import type { Beat } from '../../types/beat';
+
+type UserWithAdmin = {
+  isAdmin?: boolean;
+  [key: string]: unknown;
+};
+
+interface AdminBeatsPageProps {
+  initialBeats: Beat[];
+}
+
+const genres = ['All', 'Trap', 'R&B', 'Hip-Hop', 'Lo-fi', 'Drill', 'Synthwave'];
+
+const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
+  const { data: session, status } = useSession();
+  const user = session?.user as UserWithAdmin | undefined;
+  const [beats, setBeats] = useState<Beat[]>(initialBeats);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingBeat, setEditingBeat] = useState<Beat | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [genreFilter, setGenreFilter] = useState('All');
+  const [loading, setLoading] = useState(false);
+
+  // Filter beats based on search and genre
+  const filteredBeats = beats.filter(beat => {
+    const matchesSearch = beat.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         beat.artist.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesGenre = genreFilter === 'All' || beat.genre === genreFilter;
+    return matchesSearch && matchesGenre;
+  });
+
+  const handleAddBeat = async (beatData: Partial<Beat>) => {
+    setLoading(true);
+    try {
+      // TODO: Implement API call to add beat
+      const newBeat: Beat = {
+        id: Date.now().toString(),
+        title: beatData.title || '',
+        artist: beatData.artist || '',
+        genre: beatData.genre || 'Hip-Hop',
+        bpm: beatData.bpm || 140,
+        price: beatData.price || 29.99,
+        coverArt: beatData.coverArt || '/images/default-cover.jpg',
+        audioUrl: beatData.audioUrl || '',
+        previewUrl: beatData.previewUrl || '',
+        fullTrackUrl: beatData.fullTrackUrl || '',
+        duration: beatData.duration || '3:00',
+        previewDuration: beatData.previewDuration || '0:30',
+        licenseTypes: beatData.licenseTypes || { mp3: 29.99, wav: 49.99, exclusive: 299.99 }
+      };
+      
+      setBeats([...beats, newBeat]);
+      setIsAddModalOpen(false);
+    } catch (error) {
+      console.error('Error adding beat:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleEditBeat = async (beatId: string, beatData: Partial<Beat>) => {
+    setLoading(true);
+    try {
+      // TODO: Implement API call to update beat
+      setBeats(beats.map(beat => 
+        beat.id === beatId ? { ...beat, ...beatData } : beat
+      ));
+      setEditingBeat(null);
+    } catch (error) {
+      console.error('Error updating beat:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteBeat = async (beatId: string) => {
+    if (!confirm('Are you sure you want to delete this beat?')) return;
+    
+    setLoading(true);
+    try {
+      // TODO: Implement API call to delete beat
+      setBeats(beats.filter(beat => beat.id !== beatId));
+    } catch (error) {
+      console.error('Error deleting beat:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
+        <div className="text-neutral-400">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!session || !user?.isAdmin) {
+    return (
+      <div className="min-h-screen bg-neutral-900 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-neutral-100 mb-4">Admin Access Required</h1>
+          <p className="text-neutral-400">Please sign in with an admin account.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <AdminLayout>
+      <div className="space-y-8">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-neutral-100">Beat Management</h1>
+            <p className="text-neutral-400 mt-2">Manage your beat catalog</p>
+          </div>
+          <Button 
+            onClick={() => setIsAddModalOpen(true)}
+            className="flex items-center gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            Add New Beat
+          </Button>
+        </div>
+
+        {/* Filters */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="relative">
+            <Input
+              type="text"
+              placeholder="Search beats..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-500" />
+          </div>
+          <Select 
+            value={genreFilter} 
+            onChange={(e) => setGenreFilter(e.target.value)}
+          >
+            {genres.map(genre => (
+              <option key={genre} value={genre}>{genre}</option>
+            ))}
+          </Select>
+          <div className="text-neutral-400 text-sm flex items-center gap-2">
+            <Filter className="h-4 w-4" />
+            {filteredBeats.length} of {beats.length} beats
+          </div>
+        </div>
+
+        {/* Beats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filteredBeats.map((beat) => (
+            <div key={beat.id} className="relative group">
+              <BeatCard beat={beat} />
+              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => setEditingBeat(beat)}
+                    className="h-8 w-8 p-0"
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    onClick={() => handleDeleteBeat(beat.id)}
+                    className="h-8 w-8 p-0 text-red-400 hover:text-red-300"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Add/Edit Beat Modal */}
+        {(isAddModalOpen || editingBeat) && (
+          <BeatFormModal
+            beat={editingBeat}
+            onSave={editingBeat ? 
+              (beatId: string, data: Partial<Beat>) => handleEditBeat(beatId, data) : 
+              (beatId: string, data: Partial<Beat>) => handleAddBeat(data)
+            }
+            onClose={() => {
+              setIsAddModalOpen(false);
+              setEditingBeat(null);
+            }}
+            loading={loading}
+          />
+        )}
+      </div>
+    </AdminLayout>
+  );
+};
+
+// Beat Form Modal Component
+interface BeatFormModalProps {
+  beat?: Beat | null;
+  onSave: (beatId: string, data: Partial<Beat>) => void;
+  onClose: () => void;
+  loading: boolean;
+}
+
+const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, loading }) => {
+  const [formData, setFormData] = useState({
+    title: beat?.title || '',
+    artist: beat?.artist || '',
+    genre: beat?.genre || 'Hip-Hop',
+    bpm: beat?.bpm || 140,
+    price: beat?.price || 29.99,
+    description: '',
+    previewUrl: beat?.previewUrl || '',
+    fullTrackUrl: beat?.fullTrackUrl || '',
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const beatId = beat?.id || Date.now().toString();
+    onSave(beatId, formData);
+  };
+
+  return (
+    <Modal onClose={onClose}>
+      <div className="bg-neutral-900 rounded-xl p-6 w-full max-w-2xl">
+        <h2 className="text-2xl font-bold text-neutral-100 mb-6">
+          {beat ? 'Edit Beat' : 'Add New Beat'}
+        </h2>
+        
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
+                Title
+              </label>
+              <Input
+                type="text"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
+                Artist
+              </label>
+              <Input
+                type="text"
+                value={formData.artist}
+                onChange={(e) => setFormData({ ...formData, artist: e.target.value })}
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
+                Genre
+              </label>
+              <Select
+                value={formData.genre}
+                onChange={(e) => setFormData({ ...formData, genre: e.target.value })}
+              >
+                {genres.slice(1).map(genre => (
+                  <option key={genre} value={genre}>{genre}</option>
+                ))}
+              </Select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
+                BPM
+              </label>
+              <Input
+                type="number"
+                value={formData.bpm}
+                onChange={(e) => setFormData({ ...formData, bpm: parseInt(e.target.value) })}
+                min="60"
+                max="200"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
+                Price ($)
+              </label>
+              <Input
+                type="number"
+                step="0.01"
+                value={formData.price}
+                onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
+                min="0"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-neutral-300 mb-2">
+                Preview URL
+              </label>
+              <Input
+                type="url"
+                value={formData.previewUrl}
+                onChange={(e) => setFormData({ ...formData, previewUrl: e.target.value })}
+                placeholder="SoundCloud URL"
+              />
+            </div>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
+              Full Track URL
+            </label>
+            <Input
+              type="url"
+              value={formData.fullTrackUrl}
+              onChange={(e) => setFormData({ ...formData, fullTrackUrl: e.target.value })}
+              placeholder="Google Drive URL"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-neutral-300 mb-2">
+              Description
+            </label>
+            <Textarea
+              value={formData.description}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              rows={3}
+              placeholder="Describe the beat..."
+            />
+          </div>
+          
+          <div className="flex justify-end gap-3 pt-4">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? 'Saving...' : (beat ? 'Update Beat' : 'Add Beat')}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </Modal>
+  );
+};
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  const user = session?.user as UserWithAdmin | undefined;
+
+  if (!session || !user?.isAdmin) {
+    return {
+      redirect: {
+        destination: '/admin',
+        permanent: false,
+      },
+    };
+  }
+
+  try {
+    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/beats`);
+    const initialBeats = res.ok ? await res.json() : [];
+    
+    return {
+      props: {
+        initialBeats,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching beats:', error);
+    return {
+      props: {
+        initialBeats: [],
+      },
+    };
+  }
+};
+
+export default AdminBeatsPage; 
