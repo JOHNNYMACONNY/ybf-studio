@@ -34,6 +34,8 @@
     "test:supabase": "node scripts/test-supabase.js"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "@latest",
+    "@aws-sdk/s3-request-presigner": "@latest",
     "@headlessui/react": "^2.2.6",
     "@hookform/resolvers": "^3.9.0",
     "@react-email/render": "^1.1.3",
