@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import Image from 'next/image';
-import { LayoutDashboard, Music, ShoppingCart, FileText, Settings, BarChart3, Monitor, LogOut } from 'lucide-react';
+import { LayoutDashboard, Music, ShoppingCart, FileText, Settings, BarChart3, Monitor, LogOut, Users } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 interface AdminLayoutProps {
@@ -17,6 +17,7 @@ const navLinks = [
   { name: 'FAQ', href: '/admin/faq', icon: FileText, implemented: true },
   { name: 'Orders', href: '/admin/orders', icon: ShoppingCart, implemented: true },
   { name: 'Service Requests', href: '/admin/service-requests', icon: FileText, implemented: true },
+  { name: 'Consultations', href: '/admin/consultations', icon: Users, implemented: true },
   { name: 'Analytics', href: '/admin/analytics', icon: BarChart3, implemented: true },
   { name: 'Settings', href: '/admin/settings', icon: Settings, implemented: true },
   { name: 'Testing', href: '/admin/testing', icon: Monitor, implemented: true },

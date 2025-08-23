@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { supabaseAdmin } from '../../lib/supabaseAdmin';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-07-30.basil',
+  apiVersion: '2024-06-20',
 });
 
 type ApiResponse = { success: boolean; sessionId?: string; error?: string };
@@ -74,7 +74,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000'}/services`,
     });
 
-    return res.status(200).json({ success: true, sessionId: session.id });
+    return res.status(200).json({ success: true, sessionId: session.id, url: (session as any).url || null });
   } catch (e) {
     const msg = e instanceof Error ? e.message : 'Internal server error';
     console.error('Service checkout error:', e);

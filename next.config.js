@@ -69,7 +69,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "frame-src 'self' https://my.spline.design https://*.spline.design https://js.stripe.com; script-src 'self' 'unsafe-eval' https://js.stripe.com;"
+            value: "default-src 'self'; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://my.spline.design https://*.spline.design; script-src 'self' 'unsafe-eval' https://js.stripe.com; connect-src 'self' https://api.stripe.com https://js.stripe.com https://m.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; child-src https://js.stripe.com; form-action 'self' https://checkout.stripe.com;"
           }
         ],
       },

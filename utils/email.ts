@@ -1,19 +1,54 @@
-// Email utility for sending download confirmation emails
-// Uses SendGrid for reliable email delivery
+// Email utility for sending download confirmation emails via Brevo (Sendinblue)
+// Uses Brevo SMTP API over HTTP
 
-import sgMail from '@sendgrid/mail';
+const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 
-// Initialize SendGrid with API key
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-}
+const sendBrevoEmail = async (
+  toEmail: string,
+  subject: string,
+  html: string,
+  text: string
+): Promise<{ messageId: string }> => {
+  const apiKey = process.env.BREVO_API_KEY;
+  const fromEmail = process.env.FROM_EMAIL || 'noreply@audioservice.com';
+  const fromName = process.env.BREVO_FROM_NAME || 'AudioService';
+
+  if (!apiKey) throw new Error('Brevo API key not configured (BREVO_API_KEY)');
+
+  const body = {
+    sender: { email: fromEmail, name: fromName },
+    to: [{ email: toEmail }],
+    subject,
+    htmlContent: html,
+    textContent: text,
+  } as any;
+
+  const response = await fetch(BREVO_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': apiKey,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!response.ok) {
+    const errText = await response.text().catch(() => 'unknown error');
+    throw new Error(`Brevo API error: ${response.status} ${errText}`);
+  }
+
+  const data = (await response.json().catch(() => ({}))) as any;
+  // Brevo returns messageId or a list; normalize
+  const messageId: string = data?.messageId || (Array.isArray(data?.messageIds) ? data.messageIds[0] : 'unknown');
+  return { messageId };
+};
 
 interface DownloadEmailData {
   customerName: string;
   customerEmail: string;
   beatTitle: string;
   artist: string;
-  licenseType: 'mp3' | 'wav' | 'exclusive';
+  licenseType: 'mp3' | 'wav' | 'premium' | 'exclusive';
   downloadUrl: string;
   expiresAt: Date;
   price: number;
@@ -30,10 +65,6 @@ interface EmailResponse {
  */
 export const sendDownloadEmail = async (data: DownloadEmailData): Promise<EmailResponse> => {
   try {
-    if (!process.env.SENDGRID_API_KEY) {
-      throw new Error('SendGrid API key not configured');
-    }
-
     const { 
       customerName, 
       customerEmail, 
@@ -66,20 +97,13 @@ export const sendDownloadEmail = async (data: DownloadEmailData): Promise<EmailR
       price
     });
 
-    const msg = {
-      to: customerEmail,
-      from: process.env.FROM_EMAIL || 'noreply@audioservice.com',
-      subject: `Your Download: ${beatTitle} - ${licenseType.toUpperCase()} License`,
-      text: emailText,
-      html: emailHtml,
-    };
-
-    const response = await sgMail.send(msg);
-    
-    return {
-      success: true,
-      messageId: response[0]?.headers['x-message-id'] || 'unknown'
-    };
+    const result = await sendBrevoEmail(
+      customerEmail,
+      `Your Download: ${beatTitle} - ${licenseType.toUpperCase()} License`,
+      emailHtml,
+      emailText
+    );
+    return { success: true, messageId: result.messageId };
 
   } catch (error) {
     console.error('Error sending download email:', error);
@@ -99,18 +123,16 @@ interface BookingConfirmData {
 
 export const sendBookingConfirmationEmail = async (data: BookingConfirmData): Promise<EmailResponse> => {
   try {
-    if (!process.env.SENDGRID_API_KEY) throw new Error('SendGrid API key not configured');
     const { customerName, customerEmail, serviceName, price } = data;
     const html = `<h2>Thanks for your request!</h2><p>Hi ${customerName},</p><p>We received your booking request for <strong>${serviceName}</strong>.</p><p>Estimated price: <strong>$${price.toFixed(2)}</strong></p><p>We will follow up shortly with next steps.</p>`;
-    const msg = {
-      to: customerEmail,
-      from: process.env.FROM_EMAIL || 'noreply@audioservice.com',
-      subject: `We received your request: ${serviceName}`,
-      text: `Hi ${customerName}, we received your booking request for ${serviceName}. Estimated price: $${price.toFixed(2)}. We'll follow up shortly.`,
+    const text = `Hi ${customerName}, we received your booking request for ${serviceName}. Estimated price: $${price.toFixed(2)}. We'll follow up shortly.`;
+    const resp = await sendBrevoEmail(
+      customerEmail,
+      `We received your request: ${serviceName}`,
       html,
-    } as any;
-    const resp = await sgMail.send(msg);
-    return { success: true, messageId: resp[0]?.headers['x-message-id'] || 'unknown' };
+      text
+    );
+    return { success: true, messageId: resp.messageId };
   } catch (e) {
     return { success: false, error: e instanceof Error ? e.message : 'Unknown error' };
   }
@@ -118,19 +140,12 @@ export const sendBookingConfirmationEmail = async (data: BookingConfirmData): Pr
 
 export const sendBookingInternalEmail = async (data: BookingConfirmData & { projectName?: string; customerNote?: string }) => {
   try {
-    if (!process.env.SENDGRID_API_KEY) throw new Error('SendGrid API key not configured');
     const to = process.env.ADMIN_NOTIFICATIONS_EMAIL || process.env.FROM_EMAIL;
     if (!to) throw new Error('No admin notification email configured');
     const { customerName, customerEmail, serviceName, price, projectName, customerNote } = data;
     const html = `<h2>New Booking Request</h2><ul><li><strong>Customer:</strong> ${customerName} (${customerEmail})</li><li><strong>Service:</strong> ${serviceName}</li><li><strong>Price:</strong> $${price.toFixed(2)}</li>${projectName ? `<li><strong>Project:</strong> ${projectName}</li>` : ''}${customerNote ? `<li><strong>Note:</strong> ${customerNote}</li>` : ''}</ul>`;
-    const msg = {
-      to,
-      from: process.env.FROM_EMAIL || 'noreply@audioservice.com',
-      subject: `New booking request: ${serviceName}`,
-      text: `New booking request from ${customerName} (${customerEmail}) for ${serviceName}. Price: $${price.toFixed(2)}${projectName ? `, Project: ${projectName}` : ''}${customerNote ? `, Note: ${customerNote}` : ''}`,
-      html,
-    } as any;
-    await sgMail.send(msg);
+    const text = `New booking request from ${customerName} (${customerEmail}) for ${serviceName}. Price: $${price.toFixed(2)}${projectName ? `, Project: ${projectName}` : ''}${customerNote ? `, Note: ${customerNote}` : ''}`;
+    await sendBrevoEmail(to!, `New booking request: ${serviceName}`, html, text);
     return { success: true };
   } catch (e) {
     return { success: false, error: e instanceof Error ? e.message : 'Unknown error' };
@@ -387,7 +402,7 @@ If you have any questions or need support, please don't hesitate to contact us.
 /**
  * Get license features based on license type
  */
-const getLicenseFeatures = (licenseType: 'mp3' | 'wav' | 'exclusive'): string[] => {
+const getLicenseFeatures = (licenseType: 'mp3' | 'wav' | 'premium' | 'exclusive'): string[] => {
   switch (licenseType) {
     case 'mp3':
       return [
@@ -402,6 +417,13 @@ const getLicenseFeatures = (licenseType: 'mp3' | 'wav' | 'exclusive'): string[] 
         'Commercial use allowed',
         'Up to 50,000 streams/sales',
         'Credit required'
+      ];
+    case 'premium':
+      return [
+        'High-quality format(s) included',
+        'Commercial use allowed',
+        'Up to 250,000 streams/sales',
+        'Priority support'
       ];
     case 'exclusive':
       return [
@@ -421,24 +443,13 @@ const getLicenseFeatures = (licenseType: 'mp3' | 'wav' | 'exclusive'): string[] 
  */
 export const sendTestEmail = async (toEmail: string): Promise<EmailResponse> => {
   try {
-    if (!process.env.SENDGRID_API_KEY) {
-      throw new Error('SendGrid API key not configured');
-    }
-
-    const msg = {
-      to: toEmail,
-      from: process.env.FROM_EMAIL || 'noreply@audioservice.com',
-      subject: 'AudioService - Email System Test',
-      text: 'This is a test email to verify the email system is working correctly.',
-      html: '<h1>Email System Test</h1><p>This is a test email to verify the email system is working correctly.</p>',
-    };
-
-    const response = await sgMail.send(msg);
-    
-    return {
-      success: true,
-      messageId: response[0]?.headers['x-message-id'] || 'unknown'
-    };
+    const resp = await sendBrevoEmail(
+      toEmail,
+      'AudioService - Email System Test',
+      '<h1>Email System Test</h1><p>This is a test email to verify the email system is working correctly.</p>',
+      'This is a test email to verify the email system is working correctly.'
+    );
+    return { success: true, messageId: resp.messageId };
 
   } catch (error) {
     console.error('Error sending test email:', error);

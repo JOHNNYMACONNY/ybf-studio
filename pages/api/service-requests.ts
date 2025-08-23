@@ -24,6 +24,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session = await getServerSession(req, res, authOptions);
 
     const body = req.body || {};
+    console.log('Service requests API received body:', body);
+    
     const toStr = (v: unknown) => (typeof v === 'string' ? v : typeof v === 'number' ? String(v) : '');
     const toTrimmed = (v: unknown, max: number) => toStr(v).trim().slice(0, max);
     const service_id = toStr(body.service_id);
@@ -33,6 +35,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const project_description = toTrimmed(body.project_description, 5000);
     const special_instructions = toTrimmed(body.special_instructions, 2000);
     const price_paid = typeof body.price_paid === 'number' ? body.price_paid : Number(body.price_paid);
+    
+    console.log('Parsed values:', { service_id, customer_name, customer_email, price_paid });
 
     // Basic validation + length caps already enforced above
     const errors: string[] = [];
@@ -44,6 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!customer_email || !isEmail(customer_email)) errors.push('customer_email is required and must be a valid email');
     if (typeof price_paid !== 'number' || Number.isNaN(price_paid) || price_paid < 0) errors.push('price_paid must be a non-negative number');
 
+    console.log('Validation errors:', errors);
     if (errors.length > 0) {
       return res.status(400).json({ error: errors.join('; ') });
     }

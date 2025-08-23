@@ -45,7 +45,7 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
       {/* Hero Section */}
       <div className="card-3d-spline rounded-2xl p-8 mb-12 hero-background-enhanced hero-card-enhanced">
         {/* Background Image with configurable opacity */}
-        <div className="hero-background-image" style={{ opacity: (heroImage.opacity || 60) / 100 }}>
+        <div className="hero-background-image relative" style={{ opacity: (heroImage.opacity || 60) / 100 }}>
           <Image 
             src={heroImage.path} 
             alt={heroImage.alt}
@@ -197,6 +197,14 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
                   size="lg"
                 >
                   Get Started
+                </Button>
+              </Link>
+              <Link href="/consultation">
+                <Button 
+                  variant="premium"
+                  size="lg"
+                >
+                  Book Consultation
                 </Button>
               </Link>
               <Link href="/portfolio">

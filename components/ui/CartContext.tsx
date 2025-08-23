@@ -75,7 +75,8 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const cartTotal = useMemo(() => {
     return cartItems.reduce((total, item) => {
-      return total + item.beat.price;
+      const licensePrice = item.beat.licenseTypes[item.license];
+      return total + licensePrice;
     }, 0);
   }, [cartItems]);
 

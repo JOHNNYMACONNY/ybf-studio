@@ -29,28 +29,23 @@ const BeatCard: React.FC<BeatCardProps> = ({ beat, onPlayPreview, onAddToCart })
 
   const handlePurchase = async (licenseType: 'mp3' | 'wav' | 'premium' | 'exclusive') => {
     try {
-      // For demo purposes, we'll show an alert
-      // In production, this would redirect to Stripe checkout
-      const license = BEAT_LICENSES.find(l => l.id === licenseType);
-      const price = beat.licenseTypes[licenseType as keyof typeof beat.licenseTypes];
-      alert(`Redirecting to checkout for ${beat.title} - ${license?.name} ($${price})`);
-      
-      // TODO: Implement actual purchase flow
-      // const response = await fetch('/api/purchase', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     beatId: beat.id,
-      //     licenseType,
-      //     customerEmail: 'customer@example.com', // Get from user input
-      //     customerName: 'Customer Name' // Get from user input
-      //   })
-      // });
-      // const data = await response.json();
-      // if (data.success && data.sessionId) {
-      //   // Redirect to Stripe checkout
-      //   window.location.href = `https://checkout.stripe.com/pay/${data.sessionId}`;
-      // }
+      const response = await fetch('/api/checkout_sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: [
+            {
+              beat,
+              license: licenseType,
+            },
+          ],
+        }),
+      });
+      if (!response.ok) throw new Error('Failed to create checkout session');
+      const { sessionId } = await response.json();
+      const { getStripe } = await import('../lib/stripe');
+      const stripe = await getStripe();
+      await stripe?.redirectToCheckout({ sessionId });
     } catch (error) {
       console.error('Purchase error:', error);
       alert('Purchase failed. Please try again.');

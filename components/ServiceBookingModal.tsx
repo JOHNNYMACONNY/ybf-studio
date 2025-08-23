@@ -64,15 +64,26 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
     setToast(null);
 
     try {
+      // Client-side validation to avoid server 400s
+      const trimmedName = formData.customer_name.trim();
+      if (trimmedName.length < 2) {
+        setToast({ message: 'Full name must be at least 2 characters.', type: 'error' });
+        return;
+      }
+
+      // Debug: Log what we're sending
+      const requestData = {
+        ...formData,
+        service_id: service.id,
+        price_paid: service.price,
+      };
+      console.log('Sending service request data:', requestData);
+      
       // First create the service request
       const response = await fetch('/api/service-requests', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          service_id: service.id,
-          price_paid: service.price,
-        }),
+        body: JSON.stringify(requestData),
       });
 
       const result = await response.json();
@@ -82,15 +93,19 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
       }
 
       // If service request created successfully, redirect to Stripe checkout
-      if (result.id) {
+      const createdRequestId = (result && (result.id || result.request?.id)) as string | undefined;
+      if (createdRequestId) {
+        console.log('Service request created with id:', createdRequestId);
         const stripe = await getStripe();
+        console.log('Stripe loaded?', Boolean(stripe));
         if (stripe) {
           // Create Stripe checkout session
+          console.log('Creating checkout session...');
           const checkoutResponse = await fetch('/api/service-checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              service_request_id: result.id,
+              service_request_id: createdRequestId,
               service_name: service.name,
               amount: service.price,
               customer_email: formData.customer_email,
@@ -99,11 +114,21 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
 
           const checkoutResult = await checkoutResponse.json();
 
+          console.log('Checkout session response status:', checkoutResponse.status, 'body:', checkoutResult);
+
           if (checkoutResponse.ok && checkoutResult.sessionId) {
             // Redirect to Stripe checkout
-            await stripe.redirectToCheckout({
+            const redirectResult = await stripe.redirectToCheckout({
               sessionId: checkoutResult.sessionId,
             });
+            if (redirectResult?.error) {
+              console.error('Stripe redirect error:', redirectResult.error.message);
+              setToast({ message: redirectResult.error.message, type: 'error' });
+            }
+            // Fallback: open session URL if provided
+            if (checkoutResult.url) {
+              window.location.href = checkoutResult.url;
+            }
           } else {
             throw new Error(checkoutResult.error || 'Failed to create checkout session.');
           }
@@ -111,10 +136,11 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
           throw new Error('Stripe failed to load.');
         }
       } else {
-        throw new Error('Failed to create service request.');
+        throw new Error('Failed to create service request (no id returned).');
       }
 
     } catch (error) {
+      console.error('Booking flow error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to submit booking.';
       setToast({ message: errorMessage, type: 'error' });
     } finally {

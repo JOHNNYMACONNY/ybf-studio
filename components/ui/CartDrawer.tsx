@@ -88,7 +88,7 @@ const CartDrawer: React.FC = () => {
                                     <div>
                                       <div className="flex justify-between text-base font-medium text-white">
                                         <h3>{item.beat.title}</h3>
-                                        <p className="ml-4">${item.beat.price.toFixed(2)}</p>
+                                        <p className="ml-4">${item.beat.licenseTypes[item.license].toFixed(2)}</p>
                                       </div>
                                       <p className="mt-1 text-sm text-neutral-400 uppercase">{item.license} License</p>
                                     </div>
