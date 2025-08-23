@@ -56,3 +56,4 @@ coverage/
 # Cache directories
 .cache/
 .parcel-cache/ sendgrid.env
+sendgrid.env
