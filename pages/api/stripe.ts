@@ -4,6 +4,7 @@ import Stripe from 'stripe';
 import { supabaseAdmin } from '../../lib/supabaseAdmin';
 import { generateTemporaryDownloadLink } from '../../utils/download-links';
 import { sendDownloadEmail } from '../../utils/email';
+import { isR2Configured, createR2SignedDownloadUrl } from '../../lib/r2';
 
 export const config = {
   api: {
@@ -51,20 +52,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const beatIds = Array.from(new Set(cartItems.map((i) => i.beatId).filter(Boolean)));
       const { data: beats, error: beatsError } = await supabaseAdmin
         .from('beats')
-        .select('id, title, artist, licenseTypes')
+        .select('id, title, artist, licenseTypes, external_downloads, download_provider')
         .in('id', beatIds);
 
       if (beatsError) {
         console.error('Failed to fetch beats for order:', beatsError);
       }
-      const idToBeat = new Map<string, { id: string; title: string; artist: string; licenseTypes?: Record<string, number> }>();
+      const idToBeat = new Map<string, { id: string; title: string; artist: string; licenseTypes?: Record<string, number>; external_downloads?: Record<string, string>; download_provider?: string }>();
       (beats || []).forEach((b) => idToBeat.set(b.id, b));
 
-      // Generate download links and persist order
+      // Generate download links (prefer R2 if configured and beat has r2 key)
       const enrichedItems: Array<{ beatId: string; license: string; downloadUrl: string; expiresAt: string }> = [];
       for (const item of cartItems) {
         try {
-          const { url, expiresAt } = await generateTemporaryDownloadLink(item.beatId, item.license === 'premium' ? 'premium' : item.license);
+          const beat = idToBeat.get(item.beatId);
+          let url: string | null = null;
+          let expiresAt: Date = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+          // If using R2, expect external_downloads to store the R2 object key for each license
+          if (isR2Configured() && beat?.external_downloads && beat.external_downloads[item.license]) {
+            const key = beat.external_downloads[item.license];
+            url = await createR2SignedDownloadUrl(key, 24 * 60 * 60);
+          }
+
+          // Fallback to legacy generator (e.g., Google Drive) if not configured for R2
+          if (!url) {
+            const legacy = await generateTemporaryDownloadLink(item.beatId, item.license === 'premium' ? 'premium' : item.license);
+            url = legacy.url;
+            expiresAt = legacy.expiresAt;
+          }
+
           enrichedItems.push({ beatId: item.beatId, license: item.license, downloadUrl: url, expiresAt: expiresAt.toISOString() });
         } catch (e) {
           console.error('Error generating link for item', item, e);

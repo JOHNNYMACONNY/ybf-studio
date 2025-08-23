@@ -20,5 +20,5 @@ Required env vars:
 
 Notes:
 - Prices are taken from `beat.licenseTypes[license]` server-side (do not trust client data).
-- Webhook handler at `pages/api/stripe.ts` verifies signatures, saves orders, generates download links, and emails users.
+- Webhook handler at `pages/api/stripe.ts` verifies signatures, saves orders, generates download links, and emails users (via Brevo API).
 

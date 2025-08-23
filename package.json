@@ -30,7 +30,8 @@
     "test:email": "echo 'Email testing placeholder'",
     "test:auth": "echo 'Authentication testing placeholder'",
     "test:features": "echo 'Feature detection testing placeholder'",
-    "test:webhook": "node scripts/test-webhook.js http://localhost:3000/api/stripe"
+    "test:webhook": "node scripts/test-webhook.js http://localhost:3000/api/stripe",
+    "test:supabase": "node scripts/test-supabase.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.6",
