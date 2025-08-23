@@ -1,6 +1,5 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": ".next",
   "installCommand": "npm install",
   "framework": "nextjs",
   "functions": {
@@ -47,7 +46,7 @@
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://yourdomain.com"
+          "value": "https://www.ybfstudio.com"
         },
         {
           "key": "Access-Control-Allow-Methods",
