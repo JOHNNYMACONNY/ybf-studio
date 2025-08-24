@@ -188,6 +188,7 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
             <p className="text-neutral-400 mt-2">Manage your beat catalog</p>
           </div>
           <Button 
+            type="button"
             onClick={() => setIsAddModalOpen(true)}
             className="flex items-center gap-2"
           >
@@ -252,7 +253,7 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
         </div>
 
         {/* Add/Edit Beat Modal */}
-        {(isAddModalOpen || editingBeat) && (
+        {(isAddModalOpen === true || !!editingBeat) && (
           <BeatFormModal
             beat={editingBeat}
             onSave={editingBeat ? 

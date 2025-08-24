@@ -234,7 +234,8 @@ export class ConsultationService {
     // Get package details if package_id exists
     let packageDetails: ConsultationPackage | undefined;
     if (consultationData.package_id) {
-      packageDetails = await this.getPackageById(consultationData.package_id);
+      const pkg = await this.getPackageById(consultationData.package_id);
+      packageDetails = pkg ?? undefined;
     }
 
     return {

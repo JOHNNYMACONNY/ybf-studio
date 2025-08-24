@@ -123,7 +123,7 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
             });
             if (redirectResult?.error) {
               console.error('Stripe redirect error:', redirectResult.error.message);
-              setToast({ message: redirectResult.error.message, type: 'error' });
+              setToast({ message: redirectResult.error.message ?? 'Stripe redirect failed.', type: 'error' });
             }
             // Fallback: open session URL if provided
             if (checkoutResult.url) {

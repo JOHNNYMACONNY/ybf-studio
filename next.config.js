@@ -5,10 +5,8 @@ const nextConfig = {
     // Allow production builds to succeed even if ESLint errors are present
     ignoreDuringBuilds: true,
   },
-  typescript: {
-    // Allow production builds to succeed even if type errors are present
-    ignoreBuildErrors: true,
-  },
+  // Re-enable TypeScript type checking on build
+  // (Remove this override now that production is stable)
   
   // Production optimizations
   compress: true,
@@ -21,7 +19,7 @@ const nextConfig = {
   
   // Image optimization
   images: {
-    domains: ['localhost', 'yourdomain.com'],
+    domains: ['localhost', 'yourdomain.com', 'lh3.googleusercontent.com'],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
@@ -77,7 +75,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://my.spline.design https://*.spline.design; script-src 'self' 'unsafe-eval' https://js.stripe.com; connect-src 'self' https://api.stripe.com https://js.stripe.com https://m.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; child-src https://js.stripe.com; form-action 'self' https://checkout.stripe.com;"
+            value: "default-src 'self'; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://my.spline.design https://*.spline.design; script-src 'self' 'unsafe-eval' https://js.stripe.com; connect-src 'self' https://api.stripe.com https://js.stripe.com https://m.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://lh3.googleusercontent.com; child-src https://js.stripe.com; form-action 'self' https://checkout.stripe.com;"
           }
         ],
       },

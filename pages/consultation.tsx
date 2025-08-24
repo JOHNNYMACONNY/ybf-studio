@@ -137,7 +137,7 @@ const ConsultationPage: NextPage = () => {
                     <Button
                       onClick={() => setIsBookingFormOpen(true)}
                       className="w-full"
-                      variant={pkg.price_cents === 0 ? 'secondary' : 'spline-primary'}
+                      variant={pkg.price_cents === 0 ? 'secondary' : 'premium'}
                     >
                       Book {pkg.name}
                     </Button>

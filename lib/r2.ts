@@ -34,4 +34,11 @@ export const putR2Object = async (key: string, body: Buffer | Uint8Array | strin
   await client.send(cmd);
 };
 
+export const createR2SignedPutUrl = async (key: string, contentType?: string, expiresInSeconds = 60 * 10) => {
+  if (!isR2Configured()) throw new Error('R2 not configured');
+  const client = r2Client as S3Client;
+  const cmd = new PutObjectCommand({ Bucket: r2Bucket, Key: key, ContentType: contentType });
+  return await getSignedUrl(client, cmd, { expiresIn: expiresInSeconds });
+};
+
 

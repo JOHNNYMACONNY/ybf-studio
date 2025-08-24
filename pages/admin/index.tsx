@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth/next';
@@ -129,9 +130,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ stats: initialStats, sa
           <div className="bg-black rounded-xl ring-1 ring-neutral-700/60 p-6">
             <h3 className="text-card-title font-semibold mb-4">Quick Actions</h3>
             <div className="space-y-3">
-              <button className="w-full bg-amber-500 hover:bg-amber-600 text-black px-4 py-2 rounded-lg font-medium transition-colors">
+              <Link href="/admin/beats" className="w-full block text-center bg-amber-500 hover:bg-amber-600 text-black px-4 py-2 rounded-lg font-medium transition-colors">
                 Add New Beat
-              </button>
+              </Link>
               <button className="w-full bg-neutral-800 hover:bg-neutral-700 text-neutral-300 px-4 py-2 rounded-lg transition-colors">
                 Create Blog Post
               </button>
