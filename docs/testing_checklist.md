@@ -29,6 +29,9 @@
 - [ ] Preview duration badge shows (0:30, 0:45, 0:60)
 - [ ] Beat info displays (title, artist, genre, BPM, duration)
 - [ ] License prices display (MP3, WAV, Exclusive)
+- [ ] Cover art displays (custom or randomized fallback)
+- [ ] Cover art images load without errors
+- [ ] Different beats show different random cover art
 - [ ] "Buy License" opens modal
 - [ ] "Add to Cart" adds item
 
@@ -53,14 +56,19 @@
 - [ ] Player appears when audio plays
 - [ ] Play/pause controls work
 - [ ] Track info displays (title, artist, cover)
+- [ ] Cover art displays correctly in player
 - [ ] Volume control works
 - [ ] Player persists across navigation
+- [ ] Seek bar updates and allows seeking
+- [ ] Duration/time display is accurate
 
 #### **Audio Context**
 - [ ] Clicking play updates audio context
 - [ ] Switching beats works
 - [ ] Audio stops when navigating away
 - [ ] Error handling works for invalid URLs
+- [ ] Volume/mute reflect in UI and actual playback
+- [ ] SoundCloud previews controlled via global player
 
 #### **Advanced Audio Components**
 - [ ] BeatPreviewPlayer works correctly
@@ -98,6 +106,7 @@
 #### **Special Pages**
 - [ ] QA Dashboard (/qa) works
 - [ ] Admin Dashboard (/admin) works
+- [ ] Admin Beats e2e (CRUD)
 - [ ] SalesChart component renders correctly
 - [ ] StatCard component renders correctly
 - [ ] Order Management (/orders) works

@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Sparkles, ArrowLeft, ArrowRight, Zap, RefreshCw, Target, Palette, Rocket } from 'lucide-react';
+import { Icon } from '../components/ui/Icon';
 import { PremiumCard } from '../components/ui/PremiumCard';
 import { PremiumTypography, PremiumHeading, PremiumDisplay, PremiumBody, PremiumCaption } from '../components/ui/PremiumTypography';
 import { PremiumHeroBackground, PremiumCardBackground, PremiumAccentBackground, PremiumPatternBackground } from '../components/ui/PremiumBackground';
@@ -77,7 +79,7 @@ export default function Phase9Demo() {
                   >
                     <div className="text-center space-y-4">
                       <div className="w-16 h-16 bg-teal-400/20 rounded-full flex items-center justify-center mx-auto">
-                        <span className="text-2xl">✨</span>
+                        <Icon as={Sparkles} className="h-6 w-6 text-teal-300" />
                       </div>
                       <PremiumHeading level={3} className="text-white">
                         {card.name}
@@ -217,7 +219,7 @@ export default function Phase9Demo() {
               <FadeInBlur trigger={animationTrigger} delay={2400}>
                 <PremiumCard variant="glass" className="text-center p-6">
                   <div className="w-12 h-12 bg-blue-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl">✨</span>
+                    <Icon as={Sparkles} className="h-5 w-5 text-blue-300" />
                   </div>
                   <PremiumHeading level={4}>Fade In Blur</PremiumHeading>
                 </PremiumCard>
@@ -226,7 +228,7 @@ export default function Phase9Demo() {
               <SlideInLeft trigger={animationTrigger} delay={2500}>
                 <PremiumCard variant="glass" className="text-center p-6">
                   <div className="w-12 h-12 bg-teal-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl">←</span>
+                    <Icon as={ArrowLeft} className="h-5 w-5 text-teal-300" />
                   </div>
                   <PremiumHeading level={4}>Slide In Left</PremiumHeading>
                 </PremiumCard>
@@ -235,7 +237,7 @@ export default function Phase9Demo() {
               <SlideInRight trigger={animationTrigger} delay={2600}>
                 <PremiumCard variant="glass" className="text-center p-6">
                   <div className="w-12 h-12 bg-amber-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl">→</span>
+                    <Icon as={ArrowRight} className="h-5 w-5 text-amber-300" />
                   </div>
                   <PremiumHeading level={4}>Slide In Right</PremiumHeading>
                 </PremiumCard>
@@ -244,7 +246,7 @@ export default function Phase9Demo() {
               <ScaleIn trigger={animationTrigger} delay={2700}>
                 <PremiumCard variant="glass" className="text-center p-6">
                   <div className="w-12 h-12 bg-purple-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl">⚡</span>
+                    <Icon as={Zap} className="h-5 w-5 text-purple-300" />
                   </div>
                   <PremiumHeading level={4}>Scale In</PremiumHeading>
                 </PremiumCard>
@@ -253,7 +255,7 @@ export default function Phase9Demo() {
               <RotateIn trigger={animationTrigger} delay={2800}>
                 <PremiumCard variant="glass" className="text-center p-6">
                   <div className="w-12 h-12 bg-green-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl">🔄</span>
+                    <Icon as={RefreshCw} className="h-5 w-5 text-green-300" />
                   </div>
                   <PremiumHeading level={4}>Rotate In</PremiumHeading>
                 </PremiumCard>
@@ -262,7 +264,7 @@ export default function Phase9Demo() {
               <BounceIn trigger={animationTrigger} delay={2900}>
                 <PremiumCard variant="glass" className="text-center p-6">
                   <div className="w-12 h-12 bg-red-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <span className="text-xl">🎯</span>
+                    <Icon as={Target} className="h-5 w-5 text-red-300" />
                   </div>
                   <PremiumHeading level={4}>Bounce In</PremiumHeading>
                 </PremiumCard>
@@ -277,15 +279,15 @@ export default function Phase9Demo() {
                 </PremiumHeading>
                 <StaggeredContainer stagger={200} className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <PremiumCard variant="minimal" className="p-4 text-center">
-                    <span className="text-2xl">🎨</span>
+                    <Icon as={Palette} className="h-5 w-5 mx-auto" />
                     <PremiumBody className="mt-2">Design</PremiumBody>
                   </PremiumCard>
                   <PremiumCard variant="minimal" className="p-4 text-center">
-                    <span className="text-2xl">✨</span>
+                    <Icon as={Sparkles} className="h-5 w-5 mx-auto" />
                     <PremiumBody className="mt-2">Premium</PremiumBody>
                   </PremiumCard>
                   <PremiumCard variant="minimal" className="p-4 text-center">
-                    <span className="text-2xl">🚀</span>
+                    <Icon as={Rocket} className="h-5 w-5 mx-auto" />
                     <PremiumBody className="mt-2">Enhanced</PremiumBody>
                   </PremiumCard>
                 </StaggeredContainer>

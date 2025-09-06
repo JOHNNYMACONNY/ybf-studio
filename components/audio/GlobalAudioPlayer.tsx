@@ -1,69 +1,41 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Play, Pause, Volume2, VolumeX } from 'lucide-react';
 import { useUnifiedAudio } from './UnifiedAudioContext';
 import Image from 'next/image';
+import Script from 'next/script';
 
 const GlobalAudioPlayer: React.FC = () => {
   const { 
-    currentTrack, 
+    currentTrack,
     currentBeat,
-    isPlaying, 
-    togglePlayPause
+    isPlaying,
+    togglePlayPause,
+    currentTime,
+    duration,
+    volume,
+    isMuted,
+    seekTo,
+    setVolume,
+    toggleMute,
+    registerSoundCloudIframe
   } = useUnifiedAudio();
   
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.7);
-  const [isMuted, setIsMuted] = useState(false);
-  const [showVolumeSlider, setShowVolumeSlider] = useState(false);
-  
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const previousVolume = useRef(volume);
+  const scIframeRef = useRef<HTMLIFrameElement | null>(null);
 
   // Get current audio item (track or beat)
   const currentAudio = currentTrack || currentBeat;
+  const isSoundCloud = !!currentBeat?.previewUrl && currentBeat.previewUrl.includes('soundcloud.com');
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = isMuted ? 0 : volume;
+    if (scIframeRef.current) {
+      registerSoundCloudIframe(scIframeRef.current);
     }
-  }, [volume, isMuted]);
+  }, [scIframeRef.current]);
 
-  const togglePlay = () => {
-    togglePlayPause();
-  };
+  const togglePlay = () => togglePlayPause();
 
-  const handleTimeUpdate = () => {
-    if (audioRef.current) {
-      setCurrentTime(audioRef.current.currentTime);
-      setDuration(audioRef.current.duration);
-    }
-  };
-
-  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = parseFloat(e.target.value);
-    if (audioRef.current) {
-      audioRef.current.currentTime = newTime;
-      setCurrentTime(newTime);
-    }
-  };
-
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    setIsMuted(newVolume === 0);
-  };
-
-  const toggleMute = () => {
-    if (isMuted) {
-      setIsMuted(false);
-      setVolume(previousVolume.current);
-    } else {
-      previousVolume.current = volume;
-      setIsMuted(true);
-      setVolume(0);
-    }
-  };
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => seekTo(parseFloat(e.target.value));
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => setVolume(parseFloat(e.target.value));
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -176,6 +148,26 @@ const GlobalAudioPlayer: React.FC = () => {
             />
           </div>
         </div>
+
+        {isSoundCloud && currentBeat?.previewUrl && (
+          <div className="mt-3 bg-black rounded-lg overflow-hidden">
+            <Script src="https://w.soundcloud.com/player/api.js" strategy="afterInteractive" onLoad={() => {
+              if (scIframeRef.current) {
+                registerSoundCloudIframe(scIframeRef.current);
+              }
+            }} />
+            <iframe
+              ref={scIframeRef}
+              width="100%"
+              height="20"
+              scrolling="no"
+              frameBorder="no"
+              allow="autoplay"
+              className="bg-black"
+              src={`https://w.soundcloud.com/player/?url=${encodeURIComponent(currentBeat.previewUrl)}&auto_play=false&hide_related=true&show_comments=false&show_user=false&show_reposts=false&visual=false&color=f59e0b&show_artwork=false&show_playcount=false&buying=false&sharing=false&liking=false`}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

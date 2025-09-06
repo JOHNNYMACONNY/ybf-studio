@@ -4,10 +4,11 @@ import { authOptions } from '../../auth/[...nextauth]';
 import { ConsultationService } from '../../../../lib/consultation';
 import { ConsultationEmailService } from '../../../../lib/consultationEmails';
 
-function isAdminSession(session: any): boolean {
+type MaybeSession = { user?: { email?: string | null; isAdmin?: boolean } } | null;
+function isAdminSession(session: MaybeSession): boolean {
 	const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
-	const userEmail = session?.user?.email as string | undefined;
-	const userIsAdminFlag = (session?.user as any)?.isAdmin === true;
+	const userEmail = session?.user?.email;
+	const userIsAdminFlag = session?.user?.isAdmin === true;
 	return Boolean(userIsAdminFlag || (userEmail && adminEmails.includes(userEmail)));
 }
 

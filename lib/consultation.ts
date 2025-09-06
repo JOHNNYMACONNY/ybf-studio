@@ -279,8 +279,8 @@ export class ConsultationService {
 
   // Update consultation status
   static async updateConsultationStatus(id: string, status: Consultation['status'], adminNotes?: string): Promise<Consultation> {
-    const updateData: any = { status };
-    if (adminNotes) updateData.admin_notes = adminNotes;
+    const updateData: Partial<Consultation> & { status: Consultation['status'] } = { status } as const;
+    if (adminNotes) (updateData as { admin_notes?: string }).admin_notes = adminNotes;
 
     const { data, error } = await supabaseAdmin
       .from('consultations')
@@ -367,7 +367,15 @@ export class ConsultationService {
 
     if (error) throw new Error(`Failed to fetch upcoming consultations: ${error.message}`);
 
-    const mapped: UpcomingConsultation[] = (data || []).map((row: any) => ({
+    const mapped: UpcomingConsultation[] = (data || []).map((row: {
+      id: string;
+      client_email: string;
+      client_first_name?: string;
+      client_last_name?: string;
+      start_at: string;
+      package_name?: string | null;
+      meeting_link?: string | null;
+    }) => ({
       id: row.id,
       client_email: row.client_email,
       client_name: [row.client_first_name, row.client_last_name].filter(Boolean).join(' '),

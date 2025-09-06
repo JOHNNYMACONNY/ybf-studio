@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { PremiumTypography } from '../ui/PremiumTypography';
+import { DollarSign, RefreshCw, BarChart3, Package, Target, Banknote, TrendingUp, Users, Gem, TrendingDown, ArrowRight } from 'lucide-react';
+import { Icon } from '../ui/Icon';
 
 interface RevenueMetric {
   id: string;
@@ -52,7 +54,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'revenue',
         period,
         description: 'Total revenue generated',
-        icon: '💰'
+        icon: 'dollar'
       },
       {
         id: 'recurring-revenue',
@@ -65,7 +67,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'revenue',
         period,
         description: 'Monthly recurring revenue',
-        icon: '🔄'
+        icon: 'refresh'
       },
       {
         id: 'average-order-value',
@@ -78,7 +80,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'revenue',
         period,
         description: 'Average value per order',
-        icon: '📊'
+        icon: 'barchart'
       },
 
       // Sales Metrics
@@ -93,7 +95,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'sales',
         period,
         description: 'Total number of orders',
-        icon: '📦'
+        icon: 'package'
       },
       {
         id: 'conversion-rate',
@@ -106,7 +108,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'sales',
         period,
         description: 'Visitor to customer conversion rate',
-        icon: '🎯'
+        icon: 'target'
       },
       {
         id: 'customer-acquisition-cost',
@@ -119,7 +121,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'sales',
         period,
         description: 'Cost to acquire a new customer',
-        icon: '💸'
+        icon: 'banknote'
       },
 
       // Profit Metrics
@@ -134,7 +136,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'profit',
         period,
         description: 'Gross profit margin',
-        icon: '📈'
+        icon: 'trendup'
       },
       {
         id: 'profit-margin',
@@ -147,7 +149,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'profit',
         period,
         description: 'Net profit margin percentage',
-        icon: '📊'
+        icon: 'barchart'
       },
       {
         id: 'operating-expenses',
@@ -160,7 +162,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'profit',
         period,
         description: 'Total operating expenses',
-        icon: '💼'
+        icon: 'users'
       },
 
       // Growth Metrics
@@ -175,7 +177,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'growth',
         period,
         description: 'Month-over-month revenue growth',
-        icon: '🚀'
+        icon: 'trendup'
       },
       {
         id: 'customer-growth',
@@ -188,7 +190,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'growth',
         period,
         description: 'New customer acquisition rate',
-        icon: '👥'
+        icon: 'users'
       },
       {
         id: 'lifetime-value',
@@ -201,7 +203,7 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
         category: 'growth',
         period,
         description: 'Average customer lifetime value',
-        icon: '💎'
+        icon: 'gem'
       }
     ];
 
@@ -251,9 +253,9 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
   };
 
   const getTrendIcon = (trend: string) => {
-    if (trend === 'up') return '↗️';
-    if (trend === 'down') return '↘️';
-    return '→';
+    if (trend === 'up') return 'up';
+    if (trend === 'down') return 'down';
+    return 'right';
   };
 
   const getCategoryColor = (category: string) => {
@@ -347,7 +349,17 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
             variant="elevated"
             className="p-6 text-center"
           >
-            <div className="text-3xl mb-2">{metric.icon}</div>
+            <div className="text-3xl mb-2">
+              {metric.icon === 'dollar' && <Icon as={DollarSign} className="h-8 w-8" />}
+              {metric.icon === 'refresh' && <Icon as={RefreshCw} className="h-8 w-8" />}
+              {metric.icon === 'barchart' && <Icon as={BarChart3} className="h-8 w-8" />}
+              {metric.icon === 'package' && <Icon as={Package} className="h-8 w-8" />}
+              {metric.icon === 'target' && <Icon as={Target} className="h-8 w-8" />}
+              {metric.icon === 'banknote' && <Icon as={Banknote} className="h-8 w-8" />}
+              {metric.icon === 'trendup' && <Icon as={TrendingUp} className="h-8 w-8" />}
+              {metric.icon === 'users' && <Icon as={Users} className="h-8 w-8" />}
+              {metric.icon === 'gem' && <Icon as={Gem} className="h-8 w-8" />}
+            </div>
             <h3 className="text-gray-300 text-sm font-medium mb-2">
               {metric.name}
             </h3>
@@ -384,7 +396,9 @@ export const RevenueAnalytics: React.FC<RevenueAnalyticsProps> = ({
               </div>
               {showTrends && (
                 <div className={`text-lg ${getTrendColor(metric.trend)}`}>
-                  {getTrendIcon(metric.trend)}
+                  {getTrendIcon(metric.trend) === 'up' && <Icon as={TrendingUp} className="h-5 w-5" />}
+                  {getTrendIcon(metric.trend) === 'down' && <Icon as={TrendingDown} className="h-5 w-5" />}
+                  {getTrendIcon(metric.trend) === 'right' && <Icon as={ArrowRight} className="h-5 w-5" />}
                 </div>
               )}
             </div>

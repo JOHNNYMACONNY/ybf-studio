@@ -113,7 +113,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             downloadUrl: item.downloadUrl,
             expiresAt: new Date(item.expiresAt),
             price: Number(licensePrice || 0),
-          } as any);
+          });
         } catch (e) {
           console.error('Error sending download email:', e);
         }

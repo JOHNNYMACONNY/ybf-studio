@@ -775,3 +775,26 @@ This environment configuration guide provides comprehensive setup and security b
 **Last Updated**: [Current Date]  
 **Next Review**: [After Implementation]  
 **Implementation Status**: [Ready for Development]
+
+### Next/Image Remote Hosts
+
+If you see next/image errors like "hostname is not configured under images":
+
+1) Add the host to `images.domains` or `remotePatterns` in `next.config.js`.
+2) Ensure your CSP `img-src` allows that host.
+
+Example snippet:
+
+```javascript
+// next.config.js
+images: {
+  domains: ['www.ybfstudio.com', 'ybfstudio.com', 'lh3.googleusercontent.com', 'yourcdn'],
+  remotePatterns: [{ protocol: 'https', hostname: 'yourcdn', pathname: '/**' }],
+},
+```
+
+And in CSP header:
+
+```text
+img-src 'self' data: blob: https://lh3.googleusercontent.com https://www.ybfstudio.com https://ybfstudio.com https://yourcdn;
+```

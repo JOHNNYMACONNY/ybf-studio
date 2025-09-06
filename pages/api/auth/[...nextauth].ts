@@ -1,5 +1,6 @@
 
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { NextAuthOptions, type Session, type User, type Account, type Profile } from 'next-auth';
+import type { JWT } from 'next-auth/jwt';
 import GoogleProvider from 'next-auth/providers/google';
 
 const adminEmails = process.env.ADMIN_EMAILS?.split(',') || [];
@@ -18,7 +19,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account, profile }: { user: User; account: Account | null; profile?: Profile | undefined }) {
       // Log sign-in attempts for debugging
       console.log('Sign-in attempt:', {
         email: user.email,
@@ -28,7 +29,12 @@ export const authOptions: NextAuthOptions = {
       
       return true;
     },
-    async session({ session, token }) {
+    async session({ session, token }: { session: Session; token: JWT }) {
+      // Add user ID from token to session
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
+
       // Add isAdmin property to session
       const user = session?.user as UserWithAdmin | undefined;
       if (user?.email && adminEmails.includes(user.email)) {
@@ -40,7 +46,7 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account }: { token: JWT; user?: User | undefined; account?: Account | null | undefined }) {
       // Add admin status to JWT token
       if (user?.email && adminEmails.includes(user.email)) {
         token.isAdmin = true;

@@ -73,11 +73,11 @@ export default async function handler(
     }
 
     // Get price for the selected license type
-    const price = beat.licenseTypes[licenseType];
+    const price = beat.licenseTypes?.[licenseType];
     if (!price) {
       return res.status(400).json({
         success: false,
-        error: 'Invalid license type for this beat'
+        error: 'Invalid license type or pricing not available'
       });
     }
 

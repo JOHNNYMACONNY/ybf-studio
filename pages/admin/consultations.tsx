@@ -36,7 +36,8 @@ export default function AdminConsultations() {
 
   useEffect(() => {
     if (status === 'loading') return;
-    const isAdmin = (session?.user as any)?.role === 'admin' || (session?.user as any)?.isAdmin === true;
+    const user = session?.user as { isAdmin?: boolean; role?: string } | undefined;
+    const isAdmin = Boolean(user?.isAdmin || user?.role === 'admin');
     if (!session || !isAdmin) {
       router.push('/admin');
       return;

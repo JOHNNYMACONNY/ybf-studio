@@ -10,11 +10,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const session = await getServerSession(req, res, authOptions);
-  const isAdmin = (session?.user as any)?.isAdmin === true;
+  const isAdmin = Boolean((session?.user as { isAdmin?: boolean })?.isAdmin === true);
   if (!isAdmin) return res.status(403).json({ error: 'Forbidden' });
 
   try {
-    const beat = req.body;
+    const beat = req.body as {
+      id: string;
+      title: string;
+      artist: string;
+      external_downloads?: Record<string, string>;
+      [key: string]: unknown;
+    };
     if (!beat?.id || !beat?.title || !beat?.artist) {
       return res.status(400).json({ error: 'Missing required fields (id, title, artist)' });
     }
@@ -26,8 +32,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .eq('id', beat.id)
         .limit(1);
       if (fetchErr) return res.status(500).json({ error: fetchErr.message });
-      const existing = existingRows && existingRows[0]?.external_downloads ? existingRows[0].external_downloads : {};
-      beat.external_downloads = { ...(existing || {}), ...(beat.external_downloads || {}) };
+      const existing: Record<string, string> =
+        existingRows && (existingRows[0] as { external_downloads?: Record<string, string> })?.external_downloads
+          ? ((existingRows[0] as { external_downloads?: Record<string, string> }).external_downloads as Record<string, string>)
+          : {};
+      beat.external_downloads = { ...(existing || {}), ...((beat.external_downloads as Record<string, string>) || {}) };
     }
 
     const { error } = await supabaseAdmin.from('beats').upsert(beat, { onConflict: 'id' });

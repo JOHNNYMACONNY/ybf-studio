@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Re-enable ESLint checks during build
   eslint: {
-    // Allow production builds to succeed even if ESLint errors are present
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   // Re-enable TypeScript type checking on build
   // (Remove this override now that production is stable)
@@ -19,7 +19,10 @@ const nextConfig = {
   
   // Image optimization
   images: {
-    domains: ['localhost', 'yourdomain.com', 'lh3.googleusercontent.com'],
+    domains: ['localhost', 'yourdomain.com', 'lh3.googleusercontent.com', 'www.ybfstudio.com', 'ybfstudio.com', 'yourcdn'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'yourcdn', pathname: '/**' },
+    ],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
@@ -71,11 +74,11 @@ const nextConfig = {
         ],
       },
       {
-        source: '/(index|services|beats|blog|contact|portfolio)',
+        source: '/(index|services|beats|blog|contact|portfolio|admin|admin/beats)',
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://my.spline.design https://*.spline.design; script-src 'self' 'unsafe-eval' https://js.stripe.com; connect-src 'self' https://api.stripe.com https://js.stripe.com https://m.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://lh3.googleusercontent.com; child-src https://js.stripe.com; form-action 'self' https://checkout.stripe.com;"
+            value: "default-src 'self'; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://my.spline.design https://*.spline.design https://w.soundcloud.com https://soundcloud.com; script-src 'self' 'unsafe-eval' https://js.stripe.com https://w.soundcloud.com; connect-src 'self' https://api.stripe.com https://js.stripe.com https://m.stripe.com https://api.soundcloud.com https://soundcloud.com https://api-widget.soundcloud.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://lh3.googleusercontent.com https://www.ybfstudio.com https://ybfstudio.com https://yourcdn https://i1.sndcdn.com; child-src https://js.stripe.com; form-action 'self' https://checkout.stripe.com;"
           }
         ],
       },
@@ -94,10 +97,12 @@ const nextConfig = {
   // Bundle analyzer (optional)
   ...(process.env.ANALYZE === 'true' && {
     webpack: (config) => {
+      const { BundleAnalyzerPlugin } = require('@next/bundle-analyzer');
       config.plugins.push(
-        new (require('@next/bundle-analyzer')({
+        new BundleAnalyzerPlugin({
           enabled: true,
-        }))()
+          openAnalyzer: true,
+        })
       );
       return config;
     },

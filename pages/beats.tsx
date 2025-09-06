@@ -17,9 +17,45 @@ import LicenseComparison from '../components/beats/LicenseComparison';
 import { getHeroImage } from '../lib/hero-config';
 import { supabase } from '../lib/supabase';
 
+// Available beat cover art images
+const BEAT_COVER_IMAGES = [
+  '/assets/beatCovers/beat_cover_1.png',
+  '/assets/beatCovers/beat_cover_2.png',
+  '/assets/beatCovers/beat_cover_3.png',
+  '/assets/beatCovers/beat_cover_4.png'
+];
+
+// Get random cover art image
+const getRandomCoverArt = () => {
+  const randomIndex = Math.floor(Math.random() * BEAT_COVER_IMAGES.length);
+  return BEAT_COVER_IMAGES[randomIndex];
+};
+
 interface BeatsPageProps {
   allBeats: Beat[];
 }
+
+type BeatRow = {
+  id: string;
+  title: string;
+  artist: string;
+  genre: string;
+  bpm: number;
+  price: number;
+  cover_art: string;
+  audio_url?: string | null;
+  preview_url?: string | null;
+  full_track_url?: string | null;
+  duration?: string | null;
+  preview_duration?: string | null;
+  description?: string | null;
+  license_types?: {
+    mp3: number;
+    wav: number;
+    premium: number;
+    exclusive: number;
+  } | null;
+};
 
 const Beats: React.FC<BeatsPageProps> = ({ allBeats }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -237,7 +273,7 @@ const Beats: React.FC<BeatsPageProps> = ({ allBeats }) => {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // Fetch all published beats from the 'beats' table
-  const { data: allBeats, error } = await supabase
+  const { data: rows, error } = await supabase
     .from('beats')
     .select('*')
     .eq('status', 'published')
@@ -247,9 +283,42 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.error('Error fetching beats:', error);
   }
 
+  // Normalize DB rows (snake_case) to Beat interface (camelCase)
+  const sanitizeUrl = (val: unknown): string => {
+    if (typeof val !== 'string') return getRandomCoverArt();
+    const trimmed = val.trim();
+    if (!trimmed || trimmed.toLowerCase() === 'undefined' || trimmed.toLowerCase() === 'null') return getRandomCoverArt();
+    return trimmed;
+  };
+
+  const sanitizeString = (val: unknown): string => {
+    if (typeof val !== 'string') return '';
+    const trimmed = val.trim();
+    if (!trimmed || trimmed.toLowerCase() === 'undefined' || trimmed.toLowerCase() === 'null') return '';
+    return trimmed;
+  };
+
+  const allBeats: Beat[] = (rows || []).map((beat: BeatRow) => ({
+    id: beat.id,
+    title: beat.title,
+    artist: beat.artist,
+    genre: beat.genre,
+    bpm: typeof beat.bpm === 'number' ? beat.bpm : 0,
+    price: typeof beat.price === 'number' ? beat.price : 0,
+    coverArt: sanitizeUrl(beat.cover_art),
+    // Legacy field left empty unless backend provides it
+    audioUrl: sanitizeString(beat.audio_url),
+    previewUrl: sanitizeString(beat.preview_url),
+    fullTrackUrl: sanitizeString(beat.full_track_url),
+    duration: sanitizeString(beat.duration),
+    previewDuration: sanitizeString(beat.preview_duration),
+    description: sanitizeString(beat.description),
+    licenseTypes: beat.license_types || { mp3: (typeof beat.price === 'number' ? beat.price : 19), wav: (typeof beat.price === 'number' ? beat.price : 29), premium: (typeof beat.price === 'number' ? beat.price : 49), exclusive: 199 },
+  }));
+
   return {
     props: {
-      allBeats: allBeats || [],
+      allBeats,
       use3DSplineBackground: true,
     },
   };

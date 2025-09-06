@@ -1,4 +1,6 @@
 import React from 'react';
+import { Music2, Check } from 'lucide-react';
+import { Icon } from '../components/ui/Icon';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GetServerSideProps } from 'next';
@@ -17,40 +19,15 @@ import { GradientText } from '../components/ui/GradientText';
 import { PremiumContainer } from '../components/ui/PremiumContainer';
 import Card from '../components/ui/Card';
 import { getHeroImage } from '../lib/hero-config';
+import { supabase } from '../lib/supabase';
+import { Service } from '../types/service';
+import { Beat } from '../types/beat';
 
 // Sample data
 const stats = [
   { value: '500+', title: 'Beats Produced', subtitle: 'Professional quality tracks' },
   { value: '200+', title: 'Happy Clients', subtitle: 'Artists worldwide' },
   { value: '50+', title: 'Genres Covered', subtitle: 'From hip-hop to EDM' },
-];
-
-const sampleBeats = [
-  { id: 1, title: 'Midnight Vibes', artist: 'Producer X', genre: 'Hip-Hop', duration: '3:45', price: '$29', isNew: true },
-  { id: 2, title: 'Electric Dreams', artist: 'Producer Y', genre: 'EDM', duration: '4:12', price: '$35', isNew: false },
-  { id: 3, title: 'Soulful Nights', artist: 'Producer Z', genre: 'R&B', duration: '3:58', price: '$27', isNew: true },
-  { id: 4, title: 'Urban Flow', artist: 'Producer A', genre: 'Trap', duration: '3:30', price: '$32', isNew: false },
-];
-
-const services = [
-  {
-    title: 'Beat Production',
-    description: 'Custom beats tailored to your style',
-    price: '$150',
-    features: ['Unlimited revisions', 'High-quality stems', 'Commercial license']
-  },
-  {
-    title: 'Mixing & Mastering',
-    description: 'Professional audio engineering',
-    price: '$200',
-    features: ['Industry-standard tools', 'Multiple formats', 'Quality guarantee']
-  },
-  {
-    title: 'Full Package',
-    description: 'Complete production service',
-    price: '$300',
-    features: ['Beat production', 'Mixing & mastering', 'Unlimited support']
-  }
 ];
 
 const testimonials = [
@@ -92,7 +69,11 @@ const blogPosts = [
   }
 ];
 
-const Home: React.FC = () => {
+interface HomeProps {
+  beats: Beat[];
+  services: Service[];
+}
+const Home: React.FC<HomeProps> = ({ beats, services }) => {
   const heroImage = getHeroImage('home');
   
   return (
@@ -115,7 +96,7 @@ const Home: React.FC = () => {
           <div className="text-center space-y-8">
             <div className="space-y-6">
               <h1 className="text-6xl font-bold text-3d-spline-text-primary text-balance">
-                Level Up Your <span className="text-3d-spline-accent">Sound</span>
+                What Your <span className="text-3d-spline-accent">Sound</span> Deserves
               </h1>
               <p className="text-xl leading-relaxed font-sans max-w-3xl mx-auto text-3d-spline-text-secondary">
                 Industry-level beats, mixing, and mastering services designed for artists who want to stand out.
@@ -127,7 +108,6 @@ const Home: React.FC = () => {
                 <Button 
                   variant="primary" 
                   size="lg"
-                  className="btn-3d-spline text-white font-semibold px-8 py-4 rounded-lg"
                 >
                   Browse Beats
                 </Button>
@@ -136,7 +116,6 @@ const Home: React.FC = () => {
                 <Button 
                   variant="secondary" 
                   size="lg"
-                  className="btn-3d-spline-accent text-white font-semibold px-8 py-4 rounded-lg"
                 >
                   View Services
                 </Button>
@@ -177,17 +156,18 @@ const Home: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {sampleBeats.map((beat) => (
+          {beats.map((beat) => (
             <div key={beat.id} className="card-3d-spline rounded-xl p-4 hover:scale-105 transition-transform">
               <div className="aspect-square bg-gradient-to-br from-3d-spline-primary to-3d-spline-accent rounded-lg mb-4 flex items-center justify-center">
-                <div className="text-white text-2xl">🎵</div>
+                <Icon as={Music2} className="h-6 w-6 text-white" />
               </div>
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold text-3d-spline-text-primary">
                     {beat.title}
                   </h3>
-                  {beat.isNew && (
+                  {/* You can add a condition for new beats, e.g., based on created_at */}
+                  {beat.created_at && new Date(beat.created_at).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000 && (
                     <Badge variant="success" className="text-xs">
                       NEW
                     </Badge>
@@ -201,7 +181,7 @@ const Home: React.FC = () => {
                     {beat.duration}
                   </span>
                   <span className="text-3d-spline-accent font-semibold">
-                    {beat.price}
+                    ${beat.price}
                   </span>
                 </div>
               </div>
@@ -211,10 +191,7 @@ const Home: React.FC = () => {
         
         <div className="text-center mt-8">
           <Link href="/beats">
-            <Button 
-              variant="primary"
-              className="btn-3d-spline text-white font-semibold px-8 py-4 rounded-lg"
-            >
+            <Button variant="primary" size="lg">
               View All Beats
             </Button>
           </Link>
@@ -233,34 +210,36 @@ const Home: React.FC = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {services.map((service, index) => (
-            <div key={index} className="card-3d-spline rounded-xl p-6">
+          {services.map((service) => (
+            <div key={service.id} className="card-3d-spline rounded-xl p-6">
               <div className="text-center mb-4">
                 <h3 className="text-2xl font-bold text-3d-spline-text-primary mb-2">
-                  {service.title}
+                  {service.name}
                 </h3>
-                <p className="text-3d-spline-text-secondary mb-4">
-                  {service.description}
+                <p className="text-3d-spline-text-secondary mb-4 h-12">
+                  {service.short_description || service.description}
                 </p>
                 <div className="text-3d-spline-accent text-3xl font-bold mb-4">
-                  {service.price}
+                  ${service.price}
                 </div>
               </div>
               <ul className="space-y-2">
                 {service.features.map((feature, featureIndex) => (
                   <li key={featureIndex} className="flex items-center text-3d-spline-text-secondary">
-                    <span className="text-3d-spline-accent mr-2">✓</span>
+                    <Icon as={Check} className="h-4 w-4 text-3d-spline-accent mr-2" />
                     {feature}
                   </li>
                 ))}
               </ul>
               <div className="mt-6">
-                <Button 
-                  variant="primary"
-                  className="btn-3d-spline w-full text-white font-semibold py-3 rounded-lg"
-                >
-                  Get Started
-                </Button>
+                <Link href={`/services#${service.slug}`} passHref>
+                  <Button 
+                    variant="primary"
+                    className="w-full"
+                  >
+                    Get Started
+                  </Button>
+                </Link>
               </div>
             </div>
           ))}
@@ -337,10 +316,7 @@ const Home: React.FC = () => {
         
         <div className="text-center mt-8">
           <Link href="/blog">
-            <Button 
-              variant="primary"
-              className="btn-3d-spline text-white font-semibold px-8 py-4 rounded-lg"
-            >
+            <Button variant="primary" size="lg">
               View All Posts
             </Button>
           </Link>
@@ -360,7 +336,7 @@ const Home: React.FC = () => {
             <Link href="/contact">
               <Button 
                 variant="primary"
-                className="btn-3d-spline text-white font-semibold px-8 py-4 rounded-lg"
+                size="lg"
               >
                 Get Started Today
               </Button>
@@ -368,7 +344,7 @@ const Home: React.FC = () => {
             <Link href="/portfolio">
               <Button 
                 variant="secondary"
-                className="btn-3d-spline-accent text-white font-semibold px-8 py-4 rounded-lg"
+                size="lg"
               >
                 View Our Work
               </Button>
@@ -380,9 +356,30 @@ const Home: React.FC = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // Fetch featured beats (e.g., the 4 most recent)
+  const { data: beats, error: beatsError } = await supabase
+    .from('beats')
+    .select('*')
+    .eq('status', 'published')
+    .order('created_at', { ascending: false })
+    .limit(4);
+
+  // Fetch featured services (e.g., the 3 with the lowest sort_order)
+  const { data: services, error: servicesError } = await supabase
+    .from('active_services')
+    .select('*')
+    .order('sort_order', { ascending: true })
+    .limit(3);
+
+  if (beatsError || servicesError) {
+    console.error('Error fetching home page data:', beatsError || servicesError);
+  }
+
   return {
     props: {
+      beats: beats || [],
+      services: services || [],
       use3DSplineBackground: true,
     },
   };

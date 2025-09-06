@@ -1,4 +1,6 @@
 import React from 'react';
+import { Zap, Accessibility, Globe, Smartphone } from 'lucide-react';
+import { Icon } from '../components/ui/Icon';
 import { Phase8TestingSuite } from '../components/testing/Phase8TestingSuite';
 import { GlassCard } from '../components/ui/GlassCard';
 import { GradientText } from '../components/ui/GradientText';
@@ -30,7 +32,7 @@ export default function Phase8Demo() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
               <div className="w-16 h-16 bg-teal-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">⚡</span>
+                <Icon as={Zap} className="h-6 w-6 text-teal-400" />
               </div>
               <h4 className="text-white font-semibold mb-2">Performance Optimization</h4>
               <p className="text-gray-300 text-sm">
@@ -40,7 +42,7 @@ export default function Phase8Demo() {
             
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">♿</span>
+                <Icon as={Accessibility} className="h-6 w-6 text-blue-400" />
               </div>
               <h4 className="text-white font-semibold mb-2">Accessibility Improvements</h4>
               <p className="text-gray-300 text-sm">
@@ -50,7 +52,7 @@ export default function Phase8Demo() {
             
             <div className="text-center">
               <div className="w-16 h-16 bg-amber-400/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🌐</span>
+                <Icon as={Globe} className="h-6 w-6 text-amber-400" />
               </div>
               <h4 className="text-white font-semibold mb-2">Cross-Browser Testing</h4>
               <p className="text-gray-300 text-sm">
@@ -123,7 +125,7 @@ export default function Phase8Demo() {
           <h3 className="text-lg font-semibold text-white mb-4">Browser Compatibility Testing</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             <div className="text-center p-4 bg-slate-800/50 rounded-lg">
-              <div className="text-2xl mb-2">🌐</div>
+              <Icon as={Globe} className="h-6 w-6 mx-auto mb-2" />
               <div className="text-sm text-gray-300">Chrome</div>
             </div>
             <div className="text-center p-4 bg-slate-800/50 rounded-lg">
@@ -139,7 +141,7 @@ export default function Phase8Demo() {
               <div className="text-sm text-gray-300">Edge</div>
             </div>
             <div className="text-center p-4 bg-slate-800/50 rounded-lg">
-              <div className="text-2xl mb-2">📱</div>
+              <Icon as={Smartphone} className="h-6 w-6 mx-auto mb-2" />
               <div className="text-sm text-gray-300">Mobile</div>
             </div>
           </div>

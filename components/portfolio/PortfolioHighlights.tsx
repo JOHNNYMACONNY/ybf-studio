@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Button from '../ui/Button';
+import { Pause, Play } from 'lucide-react';
+import { Icon } from '../ui/Icon';
 import Card from '../ui/Card';
 import AnimatedSection from '../ui/AnimatedSection';
 import Image from 'next/image';
@@ -124,7 +126,14 @@ const PortfolioHighlights: React.FC = () => {
                     onClick={() => handlePlay(project.id)}
                     className="w-full"
                   >
-                    {playingId === project.id ? '⏸️ Pause' : '▶️ Play'}
+                    <span className="inline-flex items-center gap-2">
+                      {playingId === project.id ? (
+                        <Icon as={Pause} className="h-4 w-4" />
+                      ) : (
+                        <Icon as={Play} className="h-4 w-4" />
+                      )}
+                      {playingId === project.id ? 'Pause' : 'Play'}
+                    </span>
                   </Button>
                 </div>
                 

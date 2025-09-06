@@ -399,19 +399,8 @@ const AdminSettingsPage: React.FC = () => {
     { id: 'system', name: 'System Info', icon: Activity }
   ];
 
-  if (loading) {
-    return (
-      <AdminLayout>
-        <div className="flex items-center justify-center h-64">
-          <RefreshCw className="animate-spin h-8 w-8 text-amber" />
-        </div>
-      </AdminLayout>
-    );
-  }
-
   return (
     <AdminLayout>
-      <div className="space-y-6">
         {/* Header */}
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Settings & Configuration</h1>
@@ -676,101 +665,12 @@ const AdminSettingsPage: React.FC = () => {
           {activeTab === 'system' && (
             <div className="space-y-6">
               <h2 className="text-xl font-semibold">System Information</h2>
-
-              {/* System Stats */}
-              {systemInfo && (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="card-base">
-                    <div className="flex items-center gap-3">
-                      <Database className="h-8 w-8 text-blue-500" />
-                      <div>
-                        <p className="text-sm text-neutral-400">Settings</p>
-                        <p className="text-2xl font-bold">{systemInfo.database.settings_count}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-base">
-                    <div className="flex items-center gap-3">
-                      <Users className="h-8 w-8 text-green-500" />
-                      <div>
-                        <p className="text-sm text-neutral-400">Users</p>
-                        <p className="text-2xl font-bold">{systemInfo.database.users_count}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-base">
-                    <div className="flex items-center gap-3">
-                      <Activity className="h-8 w-8 text-amber" />
-                      <div>
-                        <p className="text-sm text-neutral-400">Backups</p>
-                        <p className="text-2xl font-bold">{systemInfo.database.backups_count}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-base">
-                    <div className="flex items-center gap-3">
-                      <Info className="h-8 w-8 text-purple-500" />
-                      <div>
-                        <p className="text-sm text-neutral-400">Logs</p>
-                        <p className="text-2xl font-bold">{systemInfo.database.logs_count}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Environment Info */}
-              {systemInfo && (
-                <div className="card-base">
-                  <h3 className="text-lg font-medium mb-4">Environment Information</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-neutral-400">Node Version</p>
-                      <p className="font-medium">{systemInfo.environment.node_version}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-neutral-400">Platform</p>
-                      <p className="font-medium">{systemInfo.environment.platform}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-neutral-400">Uptime</p>
-                      <p className="font-medium">{Math.floor(systemInfo.environment.uptime / 3600)} hours</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-neutral-400">Memory Usage</p>
-                      <p className="font-medium">{Math.round(systemInfo.environment.memory_usage.heapUsed / 1024 / 1024)} MB</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Recent Logs */}
               <div className="card-base">
-                <h3 className="text-lg font-medium mb-4">Recent System Logs</h3>
-                <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {logs.map((log) => (
-                    <div key={log.id} className="flex items-start gap-3 p-3 bg-neutral-800/50 rounded-lg">
-                      <div className={`mt-1 ${getLevelColor(log.level)}`}>
-                        {log.level === 'error' && <AlertCircle className="h-4 w-4" />}
-                        {log.level === 'warning' && <AlertCircle className="h-4 w-4" />}
-                        {log.level === 'info' && <Info className="h-4 w-4" />}
-                        {log.level === 'debug' && <Info className="h-4 w-4" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm">{log.message}</p>
-                        <div className="flex items-center gap-4 mt-1 text-xs text-neutral-400">
-                          <span className={`badge-neutral`}>{log.category}</span>
-                          <span>{formatDate(log.created_at)}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <p className="text-neutral-400">System information will be available in future updates.</p>
               </div>
             </div>
           )}
-        </div>
-      </div>
+    </div>
 
       {/* Modals */}
       {/* User Modal */}

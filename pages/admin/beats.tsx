@@ -5,15 +5,35 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../api/auth/[...nextauth]';
 import AdminLayout from '../../components/AdminLayout';
 import BeatCard from '../../components/BeatCard';
+import BeatAdminCard from '../../components/admin/BeatAdminCard';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 import Input from '../../components/Input';
 import Select from '../../components/ui/Select';
 import Textarea from '../../components/ui/Textarea';
-import { Plus, Edit, Trash2, Search, Filter } from 'lucide-react';
+import { Plus, Search, Filter } from 'lucide-react';
 import type { Beat } from '../../types/beat';
+import { useUnifiedAudio } from '../../components/audio/UnifiedAudioContext';
 import SimpleFileUpload from '../../components/admin/SimpleFileUpload';
 import { validateSoundCloudUrl, validateGoogleDriveUrl } from '../../utils/fileValidation';
+import { useToast } from '../../components/ui/ToastContext';
+import { useForm } from 'react-hook-form';
+
+// Available beat cover art images
+const BEAT_COVER_IMAGES = [
+  '/assets/beatCovers/beat_cover_1.png',
+  '/assets/beatCovers/beat_cover_2.png',
+  '/assets/beatCovers/beat_cover_3.png',
+  '/assets/beatCovers/beat_cover_4.png'
+];
+
+// Get random cover art image
+const getRandomCoverArt = () => {
+  const randomIndex = Math.floor(Math.random() * BEAT_COVER_IMAGES.length);
+  return BEAT_COVER_IMAGES[randomIndex];
+};
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 type UserWithAdmin = {
   isAdmin?: boolean;
@@ -35,6 +55,8 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [genreFilter, setGenreFilter] = useState('All');
   const [loading, setLoading] = useState(false);
+  const { playBeat } = useUnifiedAudio();
+  const { addToast } = useToast();
 
   // Filter beats based on search and genre
   const filteredBeats = beats.filter(beat => {
@@ -70,7 +92,7 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
         genre: beat.genre,
         bpm: beat.bpm,
         price: beat.price,
-        coverArt: beat.cover_art,
+        coverArt: beat.cover_art || getRandomCoverArt(),
         audioUrl: beat.audio_url || '',
         previewUrl: beat.preview_url || '',
         fullTrackUrl: beat.full_track_url || '',
@@ -82,9 +104,10 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
       
       setBeats([...beats, newBeat]);
       setIsAddModalOpen(false);
+      addToast({ type: 'success', message: 'Beat added successfully!' });
     } catch (error) {
       console.error('Error adding beat:', error);
-      alert(`Error adding beat: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      addToast({ type: 'error', message: `Error adding beat: ${error instanceof Error ? error.message : 'Unknown error'}` });
     } finally {
       setLoading(false);
     }
@@ -116,7 +139,7 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
         genre: beat.genre,
         bpm: beat.bpm,
         price: beat.price,
-        coverArt: beat.cover_art,
+        coverArt: beat.cover_art || getRandomCoverArt(),
         audioUrl: beat.audio_url || '',
         previewUrl: beat.preview_url || '',
         fullTrackUrl: beat.full_track_url || '',
@@ -128,9 +151,10 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
 
       setBeats(beats.map(b => b.id === beatId ? updatedBeat : b));
       setEditingBeat(null);
+      addToast({ type: 'success', message: 'Beat updated successfully!' });
     } catch (error) {
       console.error('Error updating beat:', error);
-      alert(`Error updating beat: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      addToast({ type: 'error', message: `Error updating beat: ${error instanceof Error ? error.message : 'Unknown error'}` });
     } finally {
       setLoading(false);
     }
@@ -151,9 +175,10 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
       }
 
       setBeats(beats.filter(beat => beat.id !== beatId));
+      addToast({ type: 'success', message: 'Beat deleted.' });
     } catch (error) {
       console.error('Error deleting beat:', error);
-      alert(`Error deleting beat: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      addToast({ type: 'error', message: `Error deleting beat: ${error instanceof Error ? error.message : 'Unknown error'}` });
     } finally {
       setLoading(false);
     }
@@ -198,7 +223,7 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
         </div>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           <div className="relative">
             <Input
               type="text"
@@ -224,31 +249,14 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
         </div>
 
         {/* Beats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
           {filteredBeats.map((beat) => (
-            <div key={beat.id} className="relative group">
-              <BeatCard beat={beat} />
-              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => setEditingBeat(beat)}
-                    className="h-8 w-8 p-0"
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="secondary"
-                    onClick={() => handleDeleteBeat(beat.id)}
-                    className="h-8 w-8 p-0 text-red-400 hover:text-red-300"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <BeatAdminCard
+              key={beat.id}
+              beat={beat}
+              onEdit={(b) => setEditingBeat(b)}
+              onDelete={handleDeleteBeat}
+            />
           ))}
         </div>
 
@@ -280,52 +288,81 @@ interface BeatFormModalProps {
   loading: boolean;
 }
 
+const formSchema = z.object({
+  title: z.string().min(1, 'Title is required'),
+  artist: z.string().min(1, 'Artist is required'),
+  genre: z.string().min(1),
+  bpm: z.coerce.number().int().min(60, 'Min 60').max(200, 'Max 200'),
+  description: z.string().optional().default(''),
+  previewUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
+  fullTrackUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
+  status: z.enum(['draft', 'published']).default('published'),
+  mp3Price: z.coerce.number().min(0, 'Must be >= 0').default(19),
+  wavPrice: z.coerce.number().min(0, 'Must be >= 0').default(29),
+  premiumPrice: z.coerce.number().min(0, 'Must be >= 0').default(49),
+  exclusivePrice: z.coerce.number().min(0, 'Must be >= 0').default(199),
+});
+
+type FormValues = z.infer<typeof formSchema>;
+
 const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, loading }) => {
-  const [formData, setFormData] = useState({
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+
+  const defaultValues: FormValues = {
     title: beat?.title || '',
     artist: beat?.artist || '',
     genre: beat?.genre || 'Hip-Hop',
     bpm: beat?.bpm || 140,
-    price: beat?.price || 29.99,
     description: beat?.description || '',
     previewUrl: beat?.previewUrl || '',
     fullTrackUrl: beat?.fullTrackUrl || '',
-  });
-
-  const [audioFile, setAudioFile] = useState<File | null>(null);
-  const [coverFile, setCoverFile] = useState<File | null>(null);
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const validateForm = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    // Validate required fields
-    if (!formData.title.trim()) newErrors.title = 'Title is required';
-    if (!formData.artist.trim()) newErrors.artist = 'Artist is required';
-    if (formData.bpm < 60 || formData.bpm > 200) newErrors.bpm = 'BPM must be between 60-200';
-    if (formData.price <= 0) newErrors.price = 'Price must be greater than 0';
-
-    // Validate URLs if provided
-    if (formData.previewUrl && !validateSoundCloudUrl(formData.previewUrl).isValid) {
-      newErrors.previewUrl = 'Please enter a valid SoundCloud URL';
-    }
-    if (formData.fullTrackUrl && !validateGoogleDriveUrl(formData.fullTrackUrl).isValid) {
-      newErrors.fullTrackUrl = 'Please enter a valid Google Drive URL';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    status: (beat as { status?: 'draft' | 'published' } | null | undefined)?.status || 'published',
+    mp3Price: beat?.licenseTypes?.mp3 ?? beat?.price ?? 19,
+    wavPrice: beat?.licenseTypes?.wav ?? beat?.price ?? 29,
+    premiumPrice: beat?.licenseTypes?.premium ?? beat?.price ?? 49,
+    exclusivePrice: beat?.licenseTypes?.exclusive ?? 199,
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateForm()) {
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues,
+    mode: 'onBlur',
+  });
+
+  const onSubmit = (values: FormValues) => {
+    // Additional URL validation aligned with utils
+    if (values.previewUrl && !validateSoundCloudUrl(values.previewUrl).isValid) {
+      return;
+    }
+    if (values.fullTrackUrl && !validateGoogleDriveUrl(values.fullTrackUrl).isValid) {
       return;
     }
 
     const beatId = beat?.id || Date.now().toString();
-    onSave(beatId, formData);
+    const payload: Partial<Beat> & {
+      status?: 'draft' | 'published';
+      licenseTypes?: Beat['licenseTypes'];
+    } = {
+      title: values.title,
+      artist: values.artist,
+      genre: values.genre,
+      bpm: values.bpm,
+      description: values.description || '',
+      previewUrl: values.previewUrl || '',
+      fullTrackUrl: values.fullTrackUrl || '',
+      // Per-license pricing replaces single price
+      licenseTypes: {
+        mp3: values.mp3Price,
+        wav: values.wavPrice,
+        premium: values.premiumPrice,
+        exclusive: values.exclusivePrice,
+      },
+      // Surfaced for API (mapped to DB status)
+      status: values.status,
+    } as Partial<Beat> & { status?: 'draft' | 'published'; licenseTypes?: Beat['licenseTypes'] };
+
+    onSave(beatId, payload);
   };
 
   return (
@@ -335,7 +372,7 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
           {beat ? 'Edit Beat' : 'Add New Beat'}
         </h2>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* File Upload Section */}
           <div className="bg-neutral-800 rounded-lg p-4">
             <h3 className="text-lg font-semibold text-neutral-200 mb-4">File Upload</h3>
@@ -354,7 +391,7 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
               />
             </div>
             <div className="mt-4 p-3 bg-neutral-700 rounded-lg">
-              <h4 className="text-sm font-medium text-neutral-200 mb-2">📝 Upload Instructions:</h4>
+              <h4 className="text-sm font-medium text-neutral-200 mb-2">Upload Instructions:</h4>
               <ul className="text-xs text-neutral-400 space-y-1">
                 <li>• Upload audio file to SoundCloud for preview (30-60 seconds)</li>
                 <li>• Upload full track to Google Drive for customer downloads</li>
@@ -374,12 +411,11 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
                 </label>
                 <Input
                   type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                  {...register('title')}
                   className={errors.title ? 'border-red-500' : ''}
                   required
                 />
-                {errors.title && <p className="text-red-400 text-xs mt-1">{errors.title}</p>}
+                {errors.title && <p className="text-red-400 text-xs mt-1">{errors.title.message as string}</p>}
               </div>
               
               <div>
@@ -388,12 +424,11 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
                 </label>
                 <Input
                   type="text"
-                  value={formData.artist}
-                  onChange={(e) => setFormData({ ...formData, artist: e.target.value })}
+                  {...register('artist')}
                   className={errors.artist ? 'border-red-500' : ''}
                   required
                 />
-                {errors.artist && <p className="text-red-400 text-xs mt-1">{errors.artist}</p>}
+                {errors.artist && <p className="text-red-400 text-xs mt-1">{errors.artist.message as string}</p>}
               </div>
               
               <div>
@@ -401,8 +436,8 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
                   Genre
                 </label>
                 <Select
-                  value={formData.genre}
-                  onChange={(e) => setFormData({ ...formData, genre: e.target.value })}
+                  {...register('genre')}
+                  defaultValue={defaultValues.genre}
                 >
                   {genres.slice(1).map(genre => (
                     <option key={genre} value={genre}>{genre}</option>
@@ -416,30 +451,51 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
                 </label>
                 <Input
                   type="number"
-                  value={formData.bpm}
-                  onChange={(e) => setFormData({ ...formData, bpm: parseInt(e.target.value) })}
+                  {...register('bpm', { valueAsNumber: true })}
                   min="60"
                   max="200"
                   className={errors.bpm ? 'border-red-500' : ''}
                   required
                 />
-                {errors.bpm && <p className="text-red-400 text-xs mt-1">{errors.bpm}</p>}
+                {errors.bpm && <p className="text-red-400 text-xs mt-1">{errors.bpm.message as string}</p>}
               </div>
-              
+
+              {/* Per-license pricing */}
               <div>
                 <label className="block text-sm font-medium text-neutral-300 mb-2">
-                  Price ($) *
+                  Pricing (per license)
                 </label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={formData.price}
-                  onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) })}
-                  min="0"
-                  className={errors.price ? 'border-red-500' : ''}
-                  required
-                />
-                {errors.price && <p className="text-red-400 text-xs mt-1">{errors.price}</p>}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs text-neutral-400 mb-1">MP3 ($)</label>
+                    <Input type="number" step="0.01" min="0" {...register('mp3Price', { valueAsNumber: true })} className={errors.mp3Price ? 'border-red-500' : ''} />
+                    {errors.mp3Price && <p className="text-red-400 text-xs mt-1">{errors.mp3Price.message as string}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs text-neutral-400 mb-1">WAV ($)</label>
+                    <Input type="number" step="0.01" min="0" {...register('wavPrice', { valueAsNumber: true })} className={errors.wavPrice ? 'border-red-500' : ''} />
+                    {errors.wavPrice && <p className="text-red-400 text-xs mt-1">{errors.wavPrice.message as string}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs text-neutral-400 mb-1">Premium ($)</label>
+                    <Input type="number" step="0.01" min="0" {...register('premiumPrice', { valueAsNumber: true })} className={errors.premiumPrice ? 'border-red-500' : ''} />
+                    {errors.premiumPrice && <p className="text-red-400 text-xs mt-1">{errors.premiumPrice.message as string}</p>}
+                  </div>
+                  <div>
+                    <label className="block text-xs text-neutral-400 mb-1">Exclusive ($)</label>
+                    <Input type="number" step="0.01" min="0" {...register('exclusivePrice', { valueAsNumber: true })} className={errors.exclusivePrice ? 'border-red-500' : ''} />
+                    {errors.exclusivePrice && <p className="text-red-400 text-xs mt-1">{errors.exclusivePrice.message as string}</p>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Status toggle */}
+              <div>
+                <label className="block text-sm font-medium text-neutral-300 mb-2">Status</label>
+                <Select {...register('status')} defaultValue={defaultValues.status}>
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </Select>
               </div>
             </div>
           </div>
@@ -454,12 +510,11 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
                 </label>
                 <Input
                   type="url"
-                  value={formData.previewUrl}
-                  onChange={(e) => setFormData({ ...formData, previewUrl: e.target.value })}
                   placeholder="https://soundcloud.com/..."
+                  {...register('previewUrl')}
                   className={errors.previewUrl ? 'border-red-500' : ''}
                 />
-                {errors.previewUrl && <p className="text-red-400 text-xs mt-1">{errors.previewUrl}</p>}
+                {errors.previewUrl && <p className="text-red-400 text-xs mt-1">{errors.previewUrl.message as string}</p>}
                 <p className="text-xs text-neutral-400 mt-1">30-60 second preview snippet</p>
               </div>
               
@@ -469,12 +524,11 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
                 </label>
                 <Input
                   type="url"
-                  value={formData.fullTrackUrl}
-                  onChange={(e) => setFormData({ ...formData, fullTrackUrl: e.target.value })}
                   placeholder="https://drive.google.com/..."
+                  {...register('fullTrackUrl')}
                   className={errors.fullTrackUrl ? 'border-red-500' : ''}
                 />
-                {errors.fullTrackUrl && <p className="text-red-400 text-xs mt-1">{errors.fullTrackUrl}</p>}
+                {errors.fullTrackUrl && <p className="text-red-400 text-xs mt-1">{errors.fullTrackUrl.message as string}</p>}
                 <p className="text-xs text-neutral-400 mt-1">Full track for customer downloads</p>
               </div>
             </div>
@@ -488,8 +542,8 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
                 Description
               </label>
               <Textarea
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                {...register('description')}
+                defaultValue={defaultValues.description}
                 rows={4}
                 placeholder="Describe the beat, mood, style, etc..."
               />
@@ -531,7 +585,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/beats`);
+    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    const res = await fetch(`${baseUrl}/api/beats`);
     const initialBeats = res.ok ? await res.json() : [];
     
     return {

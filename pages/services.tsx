@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
+import { SlidersHorizontal } from 'lucide-react';
+import { Icon } from '../components/ui/Icon';
 import Image from 'next/image';
-import { GetServerSideProps } from 'next';
 import FaqAccordion from '../components/shared/FaqAccordion';
 import Button from '../components/ui/Button';
 import Link from 'next/link';
 import ServiceBookingModal from '../components/ServiceBookingModal';
 import AnimatedSection from '../components/ui/AnimatedSection';
 import { getDiscountPercentage } from '../lib/pricing-utils';
-import ServiceComparison from '../components/services/ServiceComparison';
 import { getHeroImage } from '../lib/hero-config';
-import { supabase } from '../lib/supabase';
+import { getActiveServices, getActiveFaqs } from '../lib/services';
 import { Service } from '../types/service';
+import ServiceComparison from '../components/services/ServiceComparison';
 
 const processSteps = [
   { title: '1. Place Your Order', description: 'Choose your service and upload your files through our secure portal.' },
@@ -69,38 +70,46 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
       </div>
 
       {/* Services Section */}
-      <div className="mb-12">
+      <div className="panel-3d-surface rounded-2xl p-6 md:p-8 mb-12">
         <AnimatedSection animation="fadeIn" delay={100}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
             {services.length > 0 ? (
               services.map((service, index) => (
                 <AnimatedSection key={service.id} animation="slideUp" delay={200 + index * 150}>
-                  <div className="card-3d-spline rounded-xl p-6">
-                    <div className="space-y-4">
-                      <div className="w-16 h-16 bg-gradient-to-br from-3d-spline-primary to-3d-spline-accent rounded-full flex items-center justify-center mx-auto">
-                        <span className="text-2xl">🎚️</span>
-                      </div>
-                      <div className="text-center space-y-3">
-                        <h3 className="text-xl font-semibold text-3d-spline-text-primary">{service.name}</h3>
-                        <p className="text-3d-spline-text-muted text-sm">{service.short_description}</p>
-                        <div className="text-2xl font-bold text-3d-spline-primary">${service.price}</div>
+                  <div className="card-3d-spline rounded-xl p-6 h-full flex flex-col">
+                    {/* Icon */}
+                    <div className="w-16 h-16 bg-gradient-to-br from-3d-spline-primary to-3d-spline-accent rounded-full flex items-center justify-center mx-auto">
+                      <Icon as={SlidersHorizontal} className="h-6 w-6 text-white" />
+                    </div>
+
+                    {/* Content */}
+                    <div className="mt-4 text-center space-y-3 flex-1 flex flex-col items-center">
+                      <h3 className="text-xl font-semibold text-3d-spline-text-primary">{service.name}</h3>
+                      <p className="text-3d-spline-text-muted text-sm">{service.short_description}</p>
+                      <div className="text-2xl font-bold text-3d-spline-primary">${service.price}</div>
+                      <div className="text-sm text-3d-spline-text-muted min-h-[24px]">
                         {service.original_price && (
-                          <div className="text-sm text-3d-spline-text-muted">
+                          <>
                             <span className="line-through">${service.original_price}</span>
                             <span className="ml-2 text-3d-spline-accent">
                               Save {getDiscountPercentage(service.original_price, service.price)}%
                             </span>
-                          </div>
+                          </>
                         )}
-                        <p className="text-xs text-3d-spline-text-muted">Turnaround: {service.turnaround_time}</p>
-                        <Button 
-                          variant="primary" 
-                          size="sm" 
-                          onClick={() => handleBookClick(service)}
-                        >
-                          Book Now
-                        </Button>
                       </div>
+                      <p className="text-xs text-3d-spline-text-muted">Turnaround: {service.turnaround_time}</p>
+                    </div>
+
+                    {/* CTA */}
+                    <div className="pt-4">
+                      <Button 
+                        variant="primary" 
+                        size="sm" 
+                        onClick={() => handleBookClick(service)}
+                        className="w-full"
+                      >
+                        Book Now
+                      </Button>
                     </div>
                   </div>
                 </AnimatedSection>
@@ -201,7 +210,7 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
               </Link>
               <Link href="/consultation">
                 <Button 
-                  variant="premium"
+                  variant="primary"
                   size="lg"
                 >
                   Book Consultation
@@ -230,29 +239,20 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  // Fetch active services from the 'active_services' view you created
-  const { data: services, error: servicesError } = await supabase
-    .from('active_services')
-    .select('*');
-
-  // Fetch active FAQs from the 'active_faqs' view
-  const { data: faqs, error: faqsError } = await supabase
-    .from('active_faqs')
-    .select('question, answer');
-
-  if (servicesError || faqsError) {
-    console.error('Error fetching data:', servicesError || faqsError);
-    // You might want to handle this error more gracefully
-  }
+export async function getStaticProps() {
+  const [services, faqs] = await Promise.all([
+    getActiveServices(),
+    getActiveFaqs(),
+  ]);
 
   return {
     props: {
-      services: services || [],
-      faqs: faqs || [],
+      services,
+      faqs,
       use3DSplineBackground: true,
     },
+    revalidate: 300,
   };
-};
+}
 
 export default Services;

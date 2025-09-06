@@ -45,6 +45,11 @@ The AudioService Snippet System is a modern, scalable web application built with
 - **Tailwind CSS**: Utility-first CSS framework
 - **Lucide React**: Icon library
 
+### **Asset Management**
+- **Cover Art System**: Randomized fallback images for beats
+- **Image Optimization**: Next.js Image component with lazy loading
+- **Static Assets**: Organized cover art in `/public/assets/beatCovers/`
+
 ### **Backend Technologies**
 - **Next.js API Routes**: Serverless API endpoints
 - **Node.js**: JavaScript runtime
@@ -172,8 +177,46 @@ interface UnifiedAudioContextType {
 
 ### **Audio Flow**
 ```
-Beat Card Click → playBeat() → HTMLAudioElement → Global Player UI
+Beat Card Click → playBeat() → UnifiedAudioContext (HTML5 Audio or SoundCloud Widget) → Global Player UI
+
+Audio playback architecture updates:
+- Global UI now binds to context state: currentTime, duration, volume, mute
+- Seek/volume are routed through context to HTML5 Audio or SoundCloud Widget
+- SoundCloud previews use `SC.Widget` via the embedded iframe; play/pause/seek/volume are controlled programmatically
 ```
+
+## 🎨 **Cover Art System Architecture**
+
+### **Randomized Fallback System**
+```typescript
+// Available cover art images
+const BEAT_COVER_IMAGES = [
+  '/assets/beatCovers/beat_cover_1.png',
+  '/assets/beatCovers/beat_cover_2.png',
+  '/assets/beatCovers/beat_cover_3.png',
+  '/assets/beatCovers/beat_cover_4.png'
+];
+
+// Random selection function
+const getRandomCoverArt = () => {
+  const randomIndex = Math.floor(Math.random() * BEAT_COVER_IMAGES.length);
+  return BEAT_COVER_IMAGES[randomIndex];
+};
+```
+
+### **Cover Art Flow**
+```
+Database Check → Custom Cover Exists? → Display Custom
+                                       ↓
+                                No Custom Cover → Random Fallback
+```
+
+**Key Features:**
+- **Fallback System**: Automatic fallback to random cover when no custom cover exists
+- **Visual Variety**: 4 different cover art images provide visual diversity
+- **Performance**: Images are optimized and cached by Next.js Image component
+- **Error Prevention**: Eliminates "missing src property" errors and JSON serialization issues
+- **Consistent Experience**: Works across all pages (public, admin, API responses)
 
 **Key Features:**
 - **Single Audio Instance**: One HTMLAudioElement for all audio
@@ -181,6 +224,12 @@ Beat Card Click → playBeat() → HTMLAudioElement → Global Player UI
 - **Queue System**: Support for audio playlists (future)
 - **Volume Control**: Global volume management
 - **Error Handling**: Graceful fallback for audio errors
+
+### **Beat Display System**
+- **Cover Art**: Randomized fallback system with 4 professional cover images
+- **Responsive Design**: Optimized for all device sizes
+- **Performance**: Lazy loading and image optimization
+- **Accessibility**: Proper alt text and keyboard navigation
 
 ## 💳 **Payment System Architecture**
 

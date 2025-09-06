@@ -1,3 +1,25 @@
+## Beats licensetypes backfill
+
+Purpose: ensure all rows in `beats` have `licensetypes` pricing so the admin UI can manage per-license prices.
+
+Script: `npm run beats:backfill-licenses`
+
+Requirements:
+- Environment variables: `SUPABASE_URL` (or `NEXT_PUBLIC_SUPABASE_URL`) and `SUPABASE_SERVICE_ROLE_KEY`.
+
+What it does:
+- Reads `id, price, licensetypes` from `beats`.
+- If `licensetypes` is empty, derives values from `price` or defaults.
+  - Default mapping: mp3=19, wav=29, premium=49, exclusive=199.
+
+How to run:
+1. Export env vars in your shell.
+2. Run: `npm run beats:backfill-licenses`
+3. Verify changes in Supabase.
+
+Rollback:
+- No destructive changes. To revert, manually edit `licensetypes` for affected rows.
+
 # Database Migration Guide
 
 > **Migration Note:** This guide provides complete database migration procedures for the consultation system, including schema creation, data validation, and integration with existing database systems. Follow these steps exactly to ensure proper database setup.

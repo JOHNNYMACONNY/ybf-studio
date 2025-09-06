@@ -41,8 +41,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
 
       // Build a map for quick lookup
-      const idToBeat = new Map<string, any>();
-      (beatsFromDb || []).forEach((b) => idToBeat.set(b.id, b));
+      const idToBeat = new Map<string, {
+        id: string;
+        title: string;
+        genre: string;
+        bpm: number;
+        coverArt?: string;
+        licenseTypes?: Record<string, number>;
+        status?: string;
+      }>();
+      (beatsFromDb || []).forEach((b) => idToBeat.set(b.id, b as {
+        id: string;
+        title: string;
+        genre: string;
+        bpm: number;
+        coverArt?: string;
+        licenseTypes?: Record<string, number>;
+        status?: string;
+      }));
 
       const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 

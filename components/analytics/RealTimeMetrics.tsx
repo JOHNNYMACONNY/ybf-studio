@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { GradientText } from '../ui/GradientText';
 import { PremiumTypography } from '../ui/PremiumTypography';
+import { Users, DollarSign, Package, TrendingUp, Eye, CornerUpLeft, TrendingDown, ArrowRight } from 'lucide-react';
+import { Icon } from '../ui/Icon';
 
 interface Metric {
   id: string;
@@ -48,7 +50,7 @@ export const RealTimeMetrics: React.FC<RealTimeMetricsProps> = ({
         change: Math.floor(Math.random() * 50) + 10,
         changePercentage: Math.floor(Math.random() * 20) + 5,
         color: 'teal',
-        icon: '👥'
+        icon: 'users'
       },
       {
         id: 'revenue',
@@ -60,7 +62,7 @@ export const RealTimeMetrics: React.FC<RealTimeMetricsProps> = ({
         change: Math.floor(Math.random() * 500) + 100,
         changePercentage: Math.floor(Math.random() * 15) + 3,
         color: 'green',
-        icon: '💰'
+        icon: 'dollar'
       },
       {
         id: 'orders',
@@ -72,7 +74,7 @@ export const RealTimeMetrics: React.FC<RealTimeMetricsProps> = ({
         change: Math.floor(Math.random() * 10) + 2,
         changePercentage: Math.floor(Math.random() * 25) + 8,
         color: 'blue',
-        icon: '📦'
+        icon: 'package'
       },
       {
         id: 'conversion-rate',
@@ -84,7 +86,7 @@ export const RealTimeMetrics: React.FC<RealTimeMetricsProps> = ({
         change: Math.floor(Math.random() * 2) + 0.5,
         changePercentage: Math.floor(Math.random() * 30) + 10,
         color: 'purple',
-        icon: '📈'
+        icon: 'trending-up'
       },
       {
         id: 'page-views',
@@ -96,7 +98,7 @@ export const RealTimeMetrics: React.FC<RealTimeMetricsProps> = ({
         change: Math.floor(Math.random() * 200) + 50,
         changePercentage: Math.floor(Math.random() * 20) + 5,
         color: 'amber',
-        icon: '👁️'
+        icon: 'eye'
       },
       {
         id: 'bounce-rate',
@@ -108,7 +110,7 @@ export const RealTimeMetrics: React.FC<RealTimeMetricsProps> = ({
         change: Math.floor(Math.random() * 5) + 1,
         changePercentage: Math.floor(Math.random() * 15) + 5,
         color: 'red',
-        icon: '↩️'
+        icon: 'back'
       }
     ];
 
@@ -143,9 +145,9 @@ export const RealTimeMetrics: React.FC<RealTimeMetricsProps> = ({
   };
 
   const getTrendIcon = (trend: string) => {
-    if (trend === 'up') return '↗️';
-    if (trend === 'down') return '↘️';
-    return '→';
+    if (trend === 'up') return 'up';
+    if (trend === 'down') return 'down';
+    return 'right';
   };
 
   const formatValue = (value: number, unit: string) => {
@@ -193,7 +195,14 @@ export const RealTimeMetrics: React.FC<RealTimeMetricsProps> = ({
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">{metric.icon}</div>
+                <div className="text-2xl">
+                  {metric.icon === 'users' && <Icon as={Users} className="h-6 w-6" />}
+                  {metric.icon === 'dollar' && <Icon as={DollarSign} className="h-6 w-6" />}
+                  {metric.icon === 'package' && <Icon as={Package} className="h-6 w-6" />}
+                  {metric.icon === 'trending-up' && <Icon as={TrendingUp} className="h-6 w-6" />}
+                  {metric.icon === 'eye' && <Icon as={Eye} className="h-6 w-6" />}
+                  {metric.icon === 'back' && <Icon as={CornerUpLeft} className="h-6 w-6" />}
+                </div>
                 <div>
                   <h3 className="text-gray-300 text-sm font-medium">
                     {metric.name}
@@ -205,7 +214,9 @@ export const RealTimeMetrics: React.FC<RealTimeMetricsProps> = ({
               </div>
               {showTrends && (
                 <div className={`text-lg ${getTrendColor(metric.trend, metric.color)}`}>
-                  {getTrendIcon(metric.trend)}
+                  {getTrendIcon(metric.trend) === 'up' && <Icon as={TrendingUp} className="h-5 w-5" />}
+                  {getTrendIcon(metric.trend) === 'down' && <Icon as={TrendingDown} className="h-5 w-5" />}
+                  {getTrendIcon(metric.trend) === 'right' && <Icon as={ArrowRight} className="h-5 w-5" />}
                 </div>
               )}
             </div>

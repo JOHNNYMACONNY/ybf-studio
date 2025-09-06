@@ -1,4 +1,6 @@
 import React from 'react';
+import { CheckCircle2 } from 'lucide-react';
+import { Icon } from '../components/ui/Icon';
 import Head from 'next/head';
 
 const TestMobileNav: React.FC = () => {
@@ -53,10 +55,10 @@ const TestMobileNav: React.FC = () => {
               Current Status:
             </h2>
             <div className="space-y-2">
-              <p className="text-neutral-300">✅ Portal overlay with semantic z-index (modal tier)</p>
-              <p className="text-neutral-300">✅ Backdrop and glassmorphic drawer styling in place</p>
-              <p className="text-neutral-300">✅ Focus trap, Escape to close, and route-change auto-close</p>
-              <p className="text-neutral-300">✅ Consistent trigger button in the header</p>
+              <p className="text-neutral-300 flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Portal overlay with semantic z-index (modal tier)</p>
+              <p className="text-neutral-300 flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Backdrop and glassmorphic drawer styling in place</p>
+              <p className="text-neutral-300 flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Focus trap, Escape to close, and route-change auto-close</p>
+              <p className="text-neutral-300 flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Consistent trigger button in the header</p>
             </div>
           </div>
         </div>

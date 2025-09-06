@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
       // POST: Admin only - create new consultation package
       const session = await getServerSession(req, res, authOptions);
-      const isAdmin = (session?.user as any)?.role === 'admin' || (session?.user as any)?.isAdmin === true;
+      const isAdmin = Boolean((session?.user as { role?: string; isAdmin?: boolean })?.isAdmin || (session?.user as { role?: string } | undefined)?.role === 'admin');
       if (!session || !isAdmin) {
         return res.status(401).json({ error: 'Unauthorized' });
       }

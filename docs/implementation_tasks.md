@@ -802,3 +802,8 @@ const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 - 🔄 **Micro-interactions**: Enhanced hover and click feedback
 - 🔄 **Scroll Animations**: Intersection observer implementations
 - 🔄 **Page Transitions**: Smooth navigation between pages 
+
+### **Hydration Mismatch Fix - Services Page** ✅
+- Replaced dynamic import of `components/services/ServiceComparison` in `pages/services.tsx` with a static import.
+- Rationale: Ensures SSR and client render identical markup (avoids suspense/dynamic loading differences) and resolves hydration mismatch observed around the comparison table wrapper (`overflow-x-auto`).
+- Verified: No linter errors on `pages/services.tsx`; hydration warning no longer reproduces. 

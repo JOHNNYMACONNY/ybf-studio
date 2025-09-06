@@ -66,7 +66,7 @@ const LicenseSelectModal: React.FC<LicenseSelectModalProps> = ({
           {licenses.map((license) => {
             const Icon = getLicenseIcon(license.id);
             const isSelected = selectedLicense === license.id;
-            const price = beat.licenseTypes[license.id as keyof typeof beat.licenseTypes];
+            const price = beat.licenseTypes?.[license.id as keyof typeof beat.licenseTypes] || license.price;
             
             return (
               <div
@@ -126,7 +126,7 @@ const LicenseSelectModal: React.FC<LicenseSelectModalProps> = ({
             onClick={handlePurchase}
             className="btn-primary px-8 py-3"
           >
-            Purchase ${beat.licenseTypes[selectedLicense]} License
+            Purchase ${beat.licenseTypes?.[selectedLicense] || 0} License
           </button>
         </div>
       </div>

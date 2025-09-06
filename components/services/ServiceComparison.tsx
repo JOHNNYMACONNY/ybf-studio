@@ -1,12 +1,24 @@
 import React from 'react';
-import { SERVICE_PACKAGES } from '../../lib/pricing-config';
+import { Check, X } from 'lucide-react';
+import { Icon } from '../ui/Icon';
+import { SERVICE_PACKAGES, ServicePackage } from '../../lib/pricing-config';
 import Card from '../ui/Card';
-import { getDiscountPercentage } from '../../lib/pricing-utils';
+import Tooltip from '../ui/Tooltip';
+
+const featureIncludes = (pkg: ServicePackage, needles: string[]): boolean => {
+  const lower = pkg.features.map(f => f.toLowerCase());
+  return lower.some(f => needles.some(n => f.includes(n)));
+};
+
+const getStemsSupported = (pkg: ServicePackage): string => {
+  const match = pkg.features.find(f => /stems?/i.test(f));
+  return match || '—';
+};
 
 const ServiceComparison: React.FC = () => {
   return (
     <div className="overflow-x-auto">
-      <Card className="p-6">
+      <Card className="p-6 hover:shadow-lg hover:translate-y-0" hover={false} scale={false}>
         <h3 className="text-xl font-bold text-white mb-6 bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent">Service Comparison</h3>
         <table className="w-full text-sm">
           <thead>
@@ -21,7 +33,11 @@ const ServiceComparison: React.FC = () => {
           </thead>
           <tbody>
             <tr className="border-b border-neutral-800">
-              <td className="py-3 text-neutral-300">Price</td>
+              <td className="py-3 text-neutral-300">
+                <Tooltip content="Current package price (before discounts if shown)" side="top">
+                  <span>Price</span>
+                </Tooltip>
+              </td>
               {SERVICE_PACKAGES.map((pkg) => (
                 <td key={pkg.id} className="text-center py-3">
                   <div className="font-bold text-white">${pkg.price}</div>
@@ -34,7 +50,23 @@ const ServiceComparison: React.FC = () => {
               ))}
             </tr>
             <tr className="border-b border-neutral-800">
-              <td className="py-3 text-neutral-300">Turnaround</td>
+              <td className="py-3 text-neutral-300">
+                <Tooltip content={"Maximum number of individual tracks (stems) included in the mix"} side="top">
+                  <span>Stems Supported</span>
+                </Tooltip>
+              </td>
+              {SERVICE_PACKAGES.map((pkg) => (
+                <td key={pkg.id} className="text-center py-3 text-neutral-300">
+                  {getStemsSupported(pkg)}
+                </td>
+              ))}
+            </tr>
+            <tr className="border-b border-neutral-800">
+              <td className="py-3 text-neutral-300">
+                <Tooltip content="Estimated delivery window for first version" side="top">
+                  <span>Turnaround</span>
+                </Tooltip>
+              </td>
               {SERVICE_PACKAGES.map((pkg) => (
                 <td key={pkg.id} className="text-center py-3 text-neutral-300">
                   {pkg.turnaround}
@@ -42,63 +74,87 @@ const ServiceComparison: React.FC = () => {
               ))}
             </tr>
             <tr className="border-b border-neutral-800">
-              <td className="py-3 text-neutral-300">Revisions</td>
+              <td className="py-3 text-neutral-300">
+                <Tooltip content="Number of included revision rounds (mix changes after first delivery)" side="top">
+                  <span>Revisions</span>
+                </Tooltip>
+              </td>
               {SERVICE_PACKAGES.map((pkg) => (
                 <td key={pkg.id} className="text-center py-3 text-neutral-300">
-                  {pkg.features.find(f => f.includes('revision')) || 'N/A'}
+                  {pkg.features.find(f => f.toLowerCase().includes('revision')) || 'N/A'}
                 </td>
               ))}
             </tr>
             <tr className="border-b border-neutral-800">
-              <td className="py-3 text-neutral-300">Vocal Tuning</td>
+              <td className="py-3 text-neutral-300">
+                <Tooltip content="Pitch correction/comping for vocal tracks where applicable" side="top">
+                  <span>Vocal Tuning</span>
+                </Tooltip>
+              </td>
               {SERVICE_PACKAGES.map((pkg) => (
                 <td key={pkg.id} className="text-center py-3">
-                  {pkg.features.find(f => f.includes('vocal tuning')) ? (
-                    <span className="text-emerald-500">✓</span>
+                  {featureIncludes(pkg, ['vocal tuning']) ? (
+                    <Icon as={Check} className="h-4 w-4 text-emerald-500 inline" />
                   ) : (
-                    <span className="text-neutral-500">✗</span>
+                    <Icon as={X} className="h-4 w-4 text-neutral-500 inline" />
                   )}
                 </td>
               ))}
             </tr>
             <tr className="border-b border-neutral-800">
-              <td className="py-3 text-neutral-300">Stem Delivery</td>
+              <td className="py-3 text-neutral-300">
+                <Tooltip content="Delivery format included: individual stems and/or mastered stereo file" side="top">
+                  <span>Stem Delivery</span>
+                </Tooltip>
+              </td>
               {SERVICE_PACKAGES.map((pkg) => (
                 <td key={pkg.id} className="text-center py-3">
-                  {pkg.features.find(f => f.includes('stem')) ? (
-                    <span className="text-emerald-500">✓</span>
+                  {featureIncludes(pkg, ['stem delivery', 'stem + mastered', 'stems']) ? (
+                    <Icon as={Check} className="h-4 w-4 text-emerald-500 inline" />
                   ) : (
-                    <span className="text-neutral-500">✗</span>
+                    <Icon as={X} className="h-4 w-4 text-neutral-500 inline" />
                   )}
                 </td>
               ))}
             </tr>
             <tr className="border-b border-neutral-800">
-              <td className="py-3 text-neutral-300">Reference Analysis</td>
+              <td className="py-3 text-neutral-300">
+                <Tooltip content="We compare against your reference tracks to match tone and balance" side="top">
+                  <span>Reference Analysis</span>
+                </Tooltip>
+              </td>
               {SERVICE_PACKAGES.map((pkg) => (
                 <td key={pkg.id} className="text-center py-3">
-                  {pkg.features.find(f => f.includes('reference')) ? (
-                    <span className="text-emerald-500">✓</span>
+                  {featureIncludes(pkg, ['reference']) ? (
+                    <Icon as={Check} className="h-4 w-4 text-emerald-500 inline" />
                   ) : (
-                    <span className="text-neutral-500">✗</span>
+                    <Icon as={X} className="h-4 w-4 text-neutral-500 inline" />
                   )}
                 </td>
               ))}
             </tr>
             <tr className="border-b border-neutral-800">
-              <td className="py-3 text-neutral-300">Mastering Included</td>
+              <td className="py-3 text-neutral-300">
+                <Tooltip content="Professional mastering service included with this package" side="top">
+                  <span>Mastering Included</span>
+                </Tooltip>
+              </td>
               {SERVICE_PACKAGES.map((pkg) => (
                 <td key={pkg.id} className="text-center py-3">
-                  {pkg.features.find(f => f.includes('mastering')) ? (
-                    <span className="text-emerald-500">✓</span>
+                  {pkg.category === 'mastering' || featureIncludes(pkg, ['mastering']) ? (
+                    <Icon as={Check} className="h-4 w-4 text-emerald-500 inline" />
                   ) : (
-                    <span className="text-neutral-500">✗</span>
+                    <Icon as={X} className="h-4 w-4 text-neutral-500 inline" />
                   )}
                 </td>
               ))}
             </tr>
             <tr>
-              <td className="py-3 text-neutral-300">Best For</td>
+              <td className="py-3 text-neutral-300">
+                <Tooltip content="Quick guidance on which package fits best" side="top">
+                  <span>Best For</span>
+                </Tooltip>
+              </td>
               {SERVICE_PACKAGES.map((pkg) => (
                 <td key={pkg.id} className="text-center py-3 text-neutral-300">
                   {pkg.id === 'basic-mix' && 'Demos & Simple Projects'}

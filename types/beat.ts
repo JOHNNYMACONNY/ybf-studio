@@ -12,6 +12,7 @@ export interface Beat {
   duration: string;           // Full track duration (e.g., "3:45")
   previewDuration: string;    // Preview duration (e.g., "0:30")
   description?: string;        // Optional description of the beat
+  created_at?: string;        // Optional creation timestamp
   licenseTypes: {
     mp3: number;
     wav: number;

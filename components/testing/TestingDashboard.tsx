@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Zap, Accessibility, Globe, Smartphone } from 'lucide-react';
+import { Icon } from '../ui/Icon';
 import { startPerformanceMonitoring, stopPerformanceMonitoring, getPerformanceMetrics, checkPerformance, PerformanceMetrics } from '../../utils/performance';
 import { runAccessibilityTests, AccessibilityReport } from '../../utils/accessibility';
 import { runBrowserTests, getBrowserInfo, BrowserInfo, BrowserTestResult } from '../../utils/browserTesting';
@@ -139,10 +141,10 @@ export const TestingDashboard: React.FC<TestingDashboardProps> = ({ className = 
   };
 
   const tabs = [
-    { id: 'performance', label: 'Performance', icon: '⚡' },
-    { id: 'accessibility', label: 'Accessibility', icon: '♿' },
-    { id: 'browser', label: 'Browser', icon: '🌐' },
-    { id: 'mobile', label: 'Mobile', icon: '📱' }
+    { id: 'performance', label: 'Performance', icon: Zap },
+    { id: 'accessibility', label: 'Accessibility', icon: Accessibility },
+    { id: 'browser', label: 'Browser', icon: Globe },
+    { id: 'mobile', label: 'Mobile', icon: Smartphone }
   ] as const;
 
   return (
@@ -170,7 +172,7 @@ export const TestingDashboard: React.FC<TestingDashboardProps> = ({ className = 
                   onClick={() => setActiveTab(tab.id)}
                   glow={activeTab === tab.id}
                 >
-                  <span className="mr-2">{tab.icon}</span>
+                  <Icon as={tab.icon} className="mr-2 h-4 w-4" />
                   {tab.label}
                 </AdvancedButton>
               ))}
@@ -207,7 +209,7 @@ export const TestingDashboard: React.FC<TestingDashboardProps> = ({ className = 
             <GlassCard>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-white flex items-center">
-                  <span className="mr-2">⚡</span>
+                  <Icon as={Zap} className="mr-2 h-5 w-5" />
                   Performance Testing
                 </h3>
                 <AdvancedButton
@@ -272,7 +274,7 @@ export const TestingDashboard: React.FC<TestingDashboardProps> = ({ className = 
             <GlassCard>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-white flex items-center">
-                  <span className="mr-2">♿</span>
+                  <Icon as={Accessibility} className="mr-2 h-5 w-5" />
                   Accessibility Testing
                 </h3>
                 <AdvancedButton
@@ -346,7 +348,7 @@ export const TestingDashboard: React.FC<TestingDashboardProps> = ({ className = 
             <GlassCard>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-white flex items-center">
-                  <span className="mr-2">🌐</span>
+                  <Icon as={Globe} className="mr-2 h-5 w-5" />
                   Browser Compatibility
                 </h3>
                 <AdvancedButton
@@ -434,7 +436,7 @@ export const TestingDashboard: React.FC<TestingDashboardProps> = ({ className = 
             <GlassCard>
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-white flex items-center">
-                  <span className="mr-2">📱</span>
+                  <Icon as={Smartphone} className="mr-2 h-5 w-5" />
                   Mobile Testing
                 </h3>
                 <AdvancedButton
@@ -526,28 +528,36 @@ export const TestingDashboard: React.FC<TestingDashboardProps> = ({ className = 
           <h3 className="text-xl font-semibold text-white mb-4">Testing Summary</h3>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div className="bg-gray-800/50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-blue-400">⚡</div>
+              <div className="flex justify-center">
+                <Icon as={Zap} className="h-6 w-6 text-blue-400" />
+              </div>
               <div className="text-sm text-gray-300">Performance</div>
               <div className="text-lg font-semibold text-white">
                 {performanceMetrics ? 'Monitoring' : 'Not Started'}
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-green-400">♿</div>
+              <div className="flex justify-center">
+                <Icon as={Accessibility} className="h-6 w-6 text-green-400" />
+              </div>
               <div className="text-sm text-gray-300">Accessibility</div>
               <div className="text-lg font-semibold text-white">
                 {accessibilityReport ? `${accessibilityReport.score}/100` : 'Not Tested'}
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-purple-400">🌐</div>
+              <div className="flex justify-center">
+                <Icon as={Globe} className="h-6 w-6 text-purple-400" />
+              </div>
               <div className="text-sm text-gray-300">Browser</div>
               <div className="text-lg font-semibold text-white">
                 {browserResults ? `${browserResults.score}/100` : 'Not Tested'}
               </div>
             </div>
             <div className="bg-gray-800/50 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-orange-400">📱</div>
+              <div className="flex justify-center">
+                <Icon as={Smartphone} className="h-6 w-6 text-orange-400" />
+              </div>
               <div className="text-sm text-gray-300">Mobile</div>
               <div className="text-lg font-semibold text-white">
                 {mobileResults ? `${mobileResults.score}/100` : 'Not Tested'}

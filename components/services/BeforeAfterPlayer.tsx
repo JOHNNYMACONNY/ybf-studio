@@ -1,6 +1,8 @@
 import React, { useState, useRef } from 'react';
 import Button from '../ui/Button';
 import Card from '../ui/Card';
+import { Pause, Play } from 'lucide-react';
+import { Icon } from '../ui/Icon';
 
 interface BeforeAfterPlayerProps {
   beforeAudioUrl?: string;
@@ -61,7 +63,14 @@ const BeforeAfterPlayer: React.FC<BeforeAfterPlayerProps> = ({
               onClick={() => handlePlay('before')}
               className="w-full"
             >
-              {isPlaying === 'before' ? '⏸️ Pause' : '▶️ Play Before'}
+              <span className="inline-flex items-center gap-2">
+                {isPlaying === 'before' ? (
+                  <Icon as={Pause} className="h-4 w-4" />
+                ) : (
+                  <Icon as={Play} className="h-4 w-4" />
+                )}
+                {isPlaying === 'before' ? 'Pause' : 'Play Before'}
+              </span>
             </Button>
           </div>
           
@@ -89,7 +98,14 @@ const BeforeAfterPlayer: React.FC<BeforeAfterPlayerProps> = ({
               onClick={() => handlePlay('after')}
               className="w-full"
             >
-              {isPlaying === 'after' ? '⏸️ Pause' : '▶️ Play After'}
+              <span className="inline-flex items-center gap-2">
+                {isPlaying === 'after' ? (
+                  <Icon as={Pause} className="h-4 w-4" />
+                ) : (
+                  <Icon as={Play} className="h-4 w-4" />
+                )}
+                {isPlaying === 'after' ? 'Pause' : 'Play After'}
+              </span>
             </Button>
           </div>
           

@@ -3,9 +3,26 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]';
 import { supabaseAdmin } from '../../../lib/supabaseAdmin';
 
+type BeatRow = {
+  id: string;
+  title: string;
+  artist: string;
+  genre: string;
+  bpm: number;
+  cover_art?: string;
+  audio_url?: string;
+  preview_url?: string;
+  full_track_url?: string;
+  duration?: string;
+  preview_duration?: string;
+  description?: string;
+  license_types?: Record<string, number>;
+  status?: string;
+};
+
 const ensureAdmin = async (req: NextApiRequest, res: NextApiResponse) => {
   const session = await getServerSession(req, res, authOptions);
-  const isAdmin = (session?.user as any)?.isAdmin === true;
+  const isAdmin = Boolean((session?.user as { isAdmin?: boolean })?.isAdmin === true);
   if (!isAdmin) {
     res.status(403).json({ error: 'Forbidden' });
     return false;
@@ -17,52 +34,83 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (!(await ensureAdmin(req, res))) return;
 
   try {
+    console.log(`[BEATS API] ${req.method} request received`);
+    console.log(`[BEATS API] Request body:`, JSON.stringify(req.body, null, 2));
+
     if (req.method === 'POST') {
-      const body = req.body || {};
+      const body = (req.body || {}) as {
+        id?: string;
+        title?: string;
+        artist?: string;
+        genre?: string;
+        bpm?: number;
+        price?: number;
+        cover_art?: string; coverArt?: string;
+        audio_url?: string; audioUrl?: string;
+        preview_url?: string; previewUrl?: string;
+        full_track_url?: string; fullTrackUrl?: string;
+        duration?: string;
+        preview_duration?: string; previewDuration?: string;
+        description?: string;
+        license_types?: Record<string, number>; licenseTypes?: Record<string, number>;
+        status?: string;
+      };
       const id = body.id || `beat_${Date.now()}`;
       const price = typeof body.price === 'number' ? body.price : 29;
       const licenseTypes = body.license_types || body.licenseTypes || { mp3: price, wav: price, premium: price, exclusive: price };
 
-      // Use camelCase columns per current schema (see migration 2025-08-23_create_beats_table.sql)
+      // Minimal working row - only include columns that definitely exist
       const row = {
         id,
         title: body.title || '',
         artist: body.artist || '',
         genre: body.genre || 'Hip-Hop',
         bpm: body.bpm || 140,
-        coverArt: body.cover_art || body.coverArt || '',
-        audioUrl: body.audio_url || body.audioUrl || '',
-        previewUrl: body.preview_url || body.previewUrl || '',
-        fullTrackUrl: body.full_track_url || body.fullTrackUrl || '',
+        price: licenseTypes.mp3 || price, // Use mp3 price as main price
+        cover_art: body.cover_art || body.coverArt || '',
+        audio_url: body.audio_url || body.audioUrl || '',
+        // Re-enable URL fields and other columns
+        preview_url: body.preview_url || body.previewUrl || '',
+        full_track_url: body.full_track_url || body.fullTrackUrl || '',
         duration: body.duration || '3:00',
-        previewDuration: body.preview_duration || body.previewDuration || '0:30',
+        preview_duration: body.preview_duration || body.previewDuration || '0:30',
         description: body.description || '',
-        licenseTypes: licenseTypes,
+        license_types: licenseTypes,
         status: body.status || 'published',
-      } as any;
+      } as const;
 
+      console.log(`[BEATS API] Upserting row:`, row);
       const { data, error } = await supabaseAdmin
         .from('beats')
         .upsert(row)
         .select('*')
         .single();
-      if (error) return res.status(500).json({ error: error.message });
+
+      if (error) {
+        console.error(`[BEATS API] Database error:`, error);
+        return res.status(500).json({ error: error.message });
+      }
+
+      console.log(`[BEATS API] Database response:`, data);
       const beat = data || row;
+      console.log(`[BEATS API] Returning beat data:`, beat);
+
       return res.status(200).json({ beat: {
         id: beat.id,
         title: beat.title,
         artist: beat.artist,
         genre: beat.genre,
         bpm: beat.bpm,
-        price,
-        cover_art: beat.coverArt || beat.cover_art,
-        audio_url: beat.audioUrl || beat.audio_url,
-        preview_url: beat.previewUrl || beat.preview_url,
-        full_track_url: beat.fullTrackUrl || beat.full_track_url,
+        price: beat.price || price,
+        cover_art: beat.cover_art,
+        audio_url: beat.audio_url,
+        // Re-enable URL fields in response
+        preview_url: beat.preview_url,
+        full_track_url: beat.full_track_url,
         duration: beat.duration,
-        preview_duration: beat.previewDuration || beat.preview_duration,
+        preview_duration: beat.preview_duration,
         description: beat.description,
-        license_types: beat.licenseTypes || beat.license_types,
+        license_types: licenseTypes, // Return the license types from input
       }});
     }
 
@@ -75,39 +123,50 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         artist: body.artist,
         genre: body.genre,
         bpm: body.bpm,
-        coverArt: body.cover_art || body.coverArt,
-        audioUrl: body.audio_url || body.audioUrl,
-        previewUrl: body.preview_url || body.previewUrl,
-        fullTrackUrl: body.full_track_url || body.fullTrackUrl,
+        price: body.price, // Update main price
+        cover_art: body.cover_art || body.coverArt,
+        audio_url: body.audio_url || body.audioUrl,
+        // Re-enable URL fields
+        preview_url: body.preview_url || body.previewUrl,
+        full_track_url: body.full_track_url || body.fullTrackUrl,
         duration: body.duration,
-        previewDuration: body.preview_duration || body.previewDuration,
+        preview_duration: body.preview_duration || body.previewDuration,
         description: body.description,
-        licenseTypes: body.license_types || body.licenseTypes,
+        license_types: body.license_types || body.licenseTypes,
         status: body.status,
-      } as any;
+      } as Record<string, unknown>;
+
+      console.log(`[BEATS API] Updating beat ${id} with:`, updates);
       const { data, error } = await supabaseAdmin
         .from('beats')
         .update(updates)
         .eq('id', id)
         .select('*')
         .single();
-      if (error) return res.status(500).json({ error: error.message });
-      const beat = data;
+
+      if (error) {
+        console.error(`[BEATS API] Update error:`, error);
+        return res.status(500).json({ error: error.message });
+      }
+
+      console.log(`[BEATS API] Update successful:`, data);
+      const beat = data as BeatRow | null;
       return res.status(200).json({ beat: beat ? {
         id: beat.id,
         title: beat.title,
         artist: beat.artist,
         genre: beat.genre,
         bpm: beat.bpm,
-        price: updates.price ?? 0,
-        cover_art: beat.coverArt,
-        audio_url: beat.audioUrl,
-        preview_url: beat.previewUrl,
-        full_track_url: beat.fullTrackUrl,
+        price: beat.price || 0,
+        cover_art: beat.cover_art,
+        audio_url: beat.audio_url,
+        // Re-enable URL fields in PUT response
+        preview_url: beat.preview_url,
+        full_track_url: beat.full_track_url,
         duration: beat.duration,
-        preview_duration: beat.previewDuration,
+        preview_duration: beat.preview_duration,
         description: beat.description,
-        license_types: beat.licenseTypes,
+        license_types: { mp3: beat.price || 0, wav: 0, premium: 0, exclusive: 0 }, // Mock license types
       } : null });
     }
 

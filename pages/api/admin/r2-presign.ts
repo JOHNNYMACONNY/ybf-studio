@@ -10,7 +10,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const session = await getServerSession(req, res, authOptions);
-  const isAdmin = (session?.user as any)?.isAdmin === true;
+  const isAdmin = Boolean((session?.user as { isAdmin?: boolean })?.isAdmin === true);
   if (!isAdmin) return res.status(403).json({ error: 'Forbidden' });
 
   if (!isR2Configured()) return res.status(400).json({ error: 'R2 not configured' });

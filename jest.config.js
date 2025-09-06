@@ -23,7 +23,8 @@ module.exports = {
   },
   testPathIgnorePatterns: [
     '<rootDir>/.next/',
-    '<rootDir>/node_modules/'
+    '<rootDir>/node_modules/',
+    '<rootDir>/tests/e2e/'
   ],
   collectCoverageFrom: [
     'components/**/*.{ts,tsx}',

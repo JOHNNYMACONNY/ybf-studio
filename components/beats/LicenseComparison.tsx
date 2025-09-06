@@ -1,6 +1,8 @@
 import React from 'react';
 import { BEAT_LICENSES } from '../../lib/pricing-config';
 import Card from '../ui/Card';
+import { Check, X } from 'lucide-react';
+import { Icon } from '../ui/Icon';
 
 const LicenseComparison: React.FC = () => {
   return (
@@ -21,7 +23,7 @@ const LicenseComparison: React.FC = () => {
                 <ul className="space-y-1 text-xs text-neutral-400">
                   {license.features.map((feature, index) => (
                     <li key={index} className="flex items-center">
-                      <span className="text-emerald-500 mr-2">✓</span>
+                      <Icon as={Check} className="h-4 w-4 text-emerald-500 mr-2" />
                       {feature}
                     </li>
                   ))}
@@ -33,7 +35,7 @@ const LicenseComparison: React.FC = () => {
                 <ul className="space-y-1 text-xs text-neutral-400">
                   {license.restrictions.map((restriction, index) => (
                     <li key={index} className="flex items-center">
-                      <span className="text-red-400 mr-2">✗</span>
+                      <Icon as={X} className="h-4 w-4 text-red-400 mr-2" />
                       {restriction}
                     </li>
                   ))}

@@ -164,8 +164,12 @@ const SimpleFileUpload: React.FC<SimpleFileUploadProps> = ({
 
       {selectedFile && !error && (
         <div className="text-xs text-neutral-400">
-          <p>✅ File selected successfully</p>
-          <p>📝 Next step: Upload to SoundCloud/Google Drive and enter URLs in the form below</p>
+          <p className="flex items-center gap-1">
+            <CheckCircle className="h-3 w-3 text-green-500" /> File selected successfully
+          </p>
+          <p className="flex items-center gap-1">
+            <AlertCircle className="h-3 w-3 text-amber-400" /> Next step: Upload to SoundCloud/Google Drive and enter URLs in the form below
+          </p>
         </div>
       )}
     </div>

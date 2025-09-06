@@ -27,6 +27,9 @@ const BeatCard: React.FC<BeatCardProps> = ({ beat, onPlayPreview, onAddToCart })
     }
   };
 
+  // Fallback cover art
+  const coverArtUrl = beat.coverArt || '/assets/beatCovers/beat_cover_1.png';
+
   const handlePurchase = async (licenseType: 'mp3' | 'wav' | 'premium' | 'exclusive') => {
     try {
       const response = await fetch('/api/checkout_sessions', {
@@ -57,7 +60,7 @@ const BeatCard: React.FC<BeatCardProps> = ({ beat, onPlayPreview, onAddToCart })
       <div className="card-interactive group overflow-hidden p-0 animate-fade-up-stagger">
         <div className="relative">
           <Image
-            src={beat.coverArt}
+            src={coverArtUrl}
             alt={beat.title}
             width={400}
             height={400}
@@ -93,7 +96,7 @@ const BeatCard: React.FC<BeatCardProps> = ({ beat, onPlayPreview, onAddToCart })
               {BEAT_LICENSES.map((license) => (
                 <div key={license.id} className="bg-neutral-800 px-2 py-1 rounded text-center">
                   <div className="font-medium">{license.name}</div>
-                  <div className="text-teal-400">${beat.licenseTypes[license.id as keyof typeof beat.licenseTypes]}</div>
+                  <div className="text-teal-400">${beat.licenseTypes?.[license.id as keyof typeof beat.licenseTypes] || license.price}</div>
                 </div>
               ))}
             </div>

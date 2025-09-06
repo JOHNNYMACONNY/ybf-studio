@@ -21,10 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       html: html || '<p>If you see this, Brevo SMTP is working.</p>',
     });
 
-    return res.status(200).json({ success: true, messageId: (info as any)?.messageId });
-  } catch (error: any) {
-    const message = error?.message || 'Unknown error';
-    const resp = error?.response || undefined;
+    return res.status(200).json({ success: true, messageId: (info as { messageId?: string })?.messageId });
+  } catch (error: unknown) {
+    const err = error as { message?: string; response?: unknown } | undefined;
+    const message = err?.message || 'Unknown error';
+    const resp = err?.response;
     return res.status(500).json({ success: false, error: message, response: resp });
   }
 }

@@ -148,6 +148,9 @@ module.exports = {
 .btn-secondary      /* Secondary - glass effect */
 .btn-ghost          /* Ghost button - minimal styling */
 .btn-success        /* Success button - emerald background */
+/* Brand 3D Spline buttons */
+.btn-3d-spline      /* Emerald gradient primary CTA */
+.btn-3d-spline-accent /* Amber gradient secondary CTA */
 ```
 
 ### Text Styles

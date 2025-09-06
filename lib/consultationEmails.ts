@@ -966,9 +966,10 @@ This is an automated admin notification
         fromName: this.FROM_NAME,
       });
 
+      const maybe = info as { messageId?: string } | undefined;
       return {
         success: true,
-        messageId: (info as any)?.messageId || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        messageId: maybe?.messageId || `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
       };
     } catch (error) {
       console.error('Failed to send email:', error);
@@ -990,8 +991,8 @@ This is an automated admin notification
   ): Promise<void> {
     try {
       // Import Supabase client dynamically to avoid SSR issues
-      const { supabaseAdmin } = require('./supabaseAdmin');
-      
+      const { supabaseAdmin } = await import('./supabaseAdmin');
+
       const { error } = await supabaseAdmin
         .from('consultation_emails')
         .insert({

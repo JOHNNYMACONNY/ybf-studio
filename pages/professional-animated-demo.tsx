@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { Wrench } from 'lucide-react';
+import { Icon } from '../components/ui/Icon';
 import { 
   ProfessionalAnimatedBackground, 
   ProfessionalHeroBackground,
@@ -97,7 +99,7 @@ export default function ProfessionalAnimatedDemo() {
   const renderContent = () => (
     <>
       <h1 className="text-6xl font-bold text-white mb-8 text-center">
-        🎨 Professional Animated Background Demo
+        Professional Animated Background Demo
       </h1>
       <p className="text-xl text-neutral-200 text-center mb-12 max-w-4xl mx-auto">
         Hotel Explorer-inspired animated background with mathematically harmonious colors, 
@@ -147,8 +149,8 @@ export default function ProfessionalAnimatedDemo() {
             </label>
           </div>
           {debugMode && (
-            <p className="text-emerald-400 text-center mt-2 text-sm">
-              🔧 Debug mode enabled - All effects at full opacity for maximum visibility
+            <p className="text-emerald-400 text-center mt-2 text-sm flex items-center gap-2 justify-center">
+              <Icon as={Wrench} className="h-4 w-4" /> Debug mode enabled - All effects at full opacity for maximum visibility
             </p>
           )}
         </div>

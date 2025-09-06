@@ -1,4 +1,6 @@
 import React from 'react';
+import { Rocket, CheckCircle2, Zap, BookOpenText, Lock, Users, Wrench, BarChart3, Shield, Target, Book, PartyPopper } from 'lucide-react';
+import { Icon } from '../components/ui/Icon';
 import { PremiumContainer } from '../components/ui/PremiumContainer';
 import { GlassCard } from '../components/ui/GlassCard';
 import { GradientText } from '../components/ui/GradientText';
@@ -22,27 +24,27 @@ export default function Phase5Demo() {
         {/* Production Deployment Overview */}
         <GlassCard className="mb-12">
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-white mb-6">
-              🚀 Production Deployment Complete
+            <h2 className="text-3xl font-bold text-white mb-6 flex items-center gap-2 justify-center">
+              <Icon as={Rocket} className="h-6 w-6 text-emerald-400" /> Production Deployment Complete
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="text-center">
-                <div className="text-4xl mb-2">✅</div>
+                <div className="mb-2 flex justify-center"><Icon as={CheckCircle2} className="h-6 w-6 text-emerald-400" /></div>
                 <h3 className="text-lg font-semibold text-white mb-2">Final Testing</h3>
                 <p className="text-gray-300 text-sm">Comprehensive testing suite with performance, accessibility, and security validation</p>
               </div>
               <div className="text-center">
-                <div className="text-4xl mb-2">⚡</div>
+                <div className="mb-2 flex justify-center"><Icon as={Zap} className="h-6 w-6 text-amber-400" /></div>
                 <h3 className="text-lg font-semibold text-white mb-2">Performance Optimization</h3>
                 <p className="text-gray-300 text-sm">Bundle optimization, image compression, and Web Vitals compliance</p>
               </div>
               <div className="text-center">
-                <div className="text-4xl mb-2">📚</div>
+                <div className="mb-2 flex justify-center"><Icon as={BookOpenText} className="h-6 w-6 text-blue-400" /></div>
                 <h3 className="text-lg font-semibold text-white mb-2">Documentation</h3>
                 <p className="text-gray-300 text-sm">Complete user and developer documentation with deployment guides</p>
               </div>
               <div className="text-center">
-                <div className="text-4xl mb-2">🔒</div>
+                <div className="mb-2 flex justify-center"><Icon as={Lock} className="h-6 w-6 text-purple-400" /></div>
                 <h3 className="text-lg font-semibold text-white mb-2">Security & Monitoring</h3>
                 <p className="text-gray-300 text-sm">Security audit, monitoring setup, and production deployment</p>
               </div>
@@ -52,28 +54,28 @@ export default function Phase5Demo() {
 
         {/* Testing Suite */}
         <GlassCard className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-6 text-center">
-            🧪 Comprehensive Testing Suite
+          <h2 className="text-3xl font-bold text-white mb-6 text-center flex items-center gap-2 justify-center">
+            <Icon as={Wrench} className="h-6 w-6 text-amber-400" /> Comprehensive Testing Suite
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-xl font-semibold text-white mb-4">Performance Testing</h3>
               <ul className="space-y-2 text-gray-300">
-                <li>✅ Lighthouse audit with Web Vitals</li>
-                <li>✅ Bundle size analysis and optimization</li>
-                <li>✅ Core Web Vitals compliance</li>
-                <li>✅ Load time optimization</li>
-                <li>✅ Animation performance monitoring</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Lighthouse audit with Web Vitals</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Bundle size analysis and optimization</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Core Web Vitals compliance</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Load time optimization</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Animation performance monitoring</li>
               </ul>
             </div>
             <div>
               <h3 className="text-xl font-semibold text-white mb-4">Quality Assurance</h3>
               <ul className="space-y-2 text-gray-300">
-                <li>✅ TypeScript compilation validation</li>
-                <li>✅ ESLint code quality checks</li>
-                <li>✅ Cross-browser compatibility</li>
-                <li>✅ Mobile responsiveness testing</li>
-                <li>✅ Security vulnerability scanning</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> TypeScript compilation validation</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> ESLint code quality checks</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Cross-browser compatibility</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Mobile responsiveness testing</li>
+                <li className="flex items-center gap-2"><Icon as={CheckCircle2} className="h-4 w-4 text-emerald-400" /> Security vulnerability scanning</li>
               </ul>
             </div>
           </div>
@@ -81,12 +83,12 @@ export default function Phase5Demo() {
 
         {/* Documentation */}
         <GlassCard className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-6 text-center">
-            📚 Complete Documentation
+          <h2 className="text-3xl font-bold text-white mb-6 text-center flex items-center gap-2 justify-center">
+            <Icon as={Book} className="h-6 w-6 text-blue-400" /> Complete Documentation
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="text-3xl mb-4">👥</div>
+              <div className="mb-4 flex justify-center"><Icon as={Users} className="h-6 w-6 text-white/80" /></div>
               <h3 className="text-lg font-semibold text-white mb-2">User Guide</h3>
               <p className="text-gray-300 text-sm mb-4">
                 Comprehensive user documentation with feature walkthroughs, troubleshooting, and support information
@@ -96,7 +98,7 @@ export default function Phase5Demo() {
               </AdvancedButton>
             </div>
             <div className="text-center">
-              <div className="text-3xl mb-4">🛠️</div>
+              <div className="mb-4 flex justify-center"><Icon as={Wrench} className="h-6 w-6 text-white/80" /></div>
               <h3 className="text-lg font-semibold text-white mb-2">Developer Guide</h3>
               <p className="text-gray-300 text-sm mb-4">
                 Technical documentation covering architecture, setup, development workflow, and deployment
@@ -106,7 +108,7 @@ export default function Phase5Demo() {
               </AdvancedButton>
             </div>
             <div className="text-center">
-              <div className="text-3xl mb-4">🚀</div>
+              <div className="mb-4 flex justify-center"><Icon as={Rocket} className="h-6 w-6 text-white/80" /></div>
               <h3 className="text-lg font-semibold text-white mb-2">Deployment Guide</h3>
               <p className="text-gray-300 text-sm mb-4">
                 Production deployment checklist with environment configuration and monitoring setup
@@ -120,8 +122,8 @@ export default function Phase5Demo() {
 
         {/* Performance Optimization */}
         <GlassCard className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-6 text-center">
-            ⚡ Performance Optimization
+          <h2 className="text-3xl font-bold text-white mb-6 text-center flex items-center gap-2 justify-center">
+            <Icon as={Zap} className="h-6 w-6 text-amber-400" /> Performance Optimization
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div>
@@ -149,8 +151,8 @@ export default function Phase5Demo() {
 
         {/* Security & Monitoring */}
         <GlassCard className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-6 text-center">
-            🔒 Security & Monitoring
+          <h2 className="text-3xl font-bold text-white mb-6 text-center flex items-center gap-2 justify-center">
+            <Icon as={Shield} className="h-6 w-6 text-purple-400" /> Security & Monitoring
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div>
@@ -178,8 +180,8 @@ export default function Phase5Demo() {
 
         {/* Production Standards */}
         <GlassCard className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-6 text-center">
-            🎯 Production Standards
+          <h2 className="text-3xl font-bold text-white mb-6 text-center flex items-center gap-2 justify-center">
+            <Icon as={Target} className="h-6 w-6 text-amber-400" /> Production Standards
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
@@ -220,8 +222,8 @@ export default function Phase5Demo() {
 
         {/* Deployment Checklist */}
         <GlassCard className="mb-12">
-          <h2 className="text-3xl font-bold text-white mb-6 text-center">
-            ✅ Deployment Checklist
+          <h2 className="text-3xl font-bold text-white mb-6 text-center flex items-center gap-2 justify-center">
+            <Icon as={CheckCircle2} className="h-6 w-6 text-emerald-400" /> Deployment Checklist
           </h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div>
@@ -249,8 +251,8 @@ export default function Phase5Demo() {
 
         {/* Call to Action */}
         <div className="text-center">
-          <GradientText className="text-4xl font-bold mb-6">
-            Ready for Production Launch! 🎉
+          <GradientText className="text-4xl font-bold mb-6 flex items-center gap-2 justify-center">
+            <Icon as={PartyPopper} className="h-6 w-6" /> Ready for Production Launch!
           </GradientText>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
             AudioServiceApp is now production-ready with comprehensive testing, optimization, documentation, and monitoring.

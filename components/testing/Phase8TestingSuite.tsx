@@ -431,19 +431,19 @@ export const Phase8TestingSuite: React.FC = () => {
                 <div className="flex justify-between">
                   <span className="text-gray-300">Focus Management:</span>
                   <span className={results.accessibility.focusManagement ? 'text-green-400' : 'text-red-400'}>
-                    {results.accessibility.focusManagement ? '✅' : '❌'}
+                    {results.accessibility.focusManagement ? 'Pass' : 'Fail'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Keyboard Navigation:</span>
                   <span className={results.accessibility.keyboardNavigation ? 'text-green-400' : 'text-red-400'}>
-                    {results.accessibility.keyboardNavigation ? '✅' : '❌'}
+                    {results.accessibility.keyboardNavigation ? 'Pass' : 'Fail'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Touch Targets:</span>
                   <span className={results.accessibility.touchTargets ? 'text-green-400' : 'text-red-400'}>
-                    {results.accessibility.touchTargets ? '✅' : '❌'}
+                    {results.accessibility.touchTargets ? 'Pass' : 'Fail'}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -474,25 +474,25 @@ export const Phase8TestingSuite: React.FC = () => {
                 <div className="flex justify-between">
                   <span className="text-gray-300">Chrome:</span>
                   <span className={results.browserCompatibility.chrome ? 'text-green-400' : 'text-red-400'}>
-                    {results.browserCompatibility.chrome ? '✅' : '❌'}
+                    {results.browserCompatibility.chrome ? 'Pass' : 'Fail'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Firefox:</span>
                   <span className={results.browserCompatibility.firefox ? 'text-green-400' : 'text-red-400'}>
-                    {results.browserCompatibility.firefox ? '✅' : '❌'}
+                    {results.browserCompatibility.firefox ? 'Pass' : 'Fail'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Safari:</span>
                   <span className={results.browserCompatibility.safari ? 'text-green-400' : 'text-red-400'}>
-                    {results.browserCompatibility.safari ? '✅' : '❌'}
+                    {results.browserCompatibility.safari ? 'Pass' : 'Fail'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">Edge:</span>
                   <span className={results.browserCompatibility.edge ? 'text-green-400' : 'text-red-400'}>
-                    {results.browserCompatibility.edge ? '✅' : '❌'}
+                    {results.browserCompatibility.edge ? 'Pass' : 'Fail'}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -504,19 +504,19 @@ export const Phase8TestingSuite: React.FC = () => {
                 <div className="flex justify-between">
                   <span className="text-gray-300">WebGL:</span>
                   <span className={results.browserCompatibility.webgl ? 'text-green-400' : 'text-red-400'}>
-                    {results.browserCompatibility.webgl ? '✅' : '❌'}
+                    {results.browserCompatibility.webgl ? 'Pass' : 'Fail'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">CSS Grid:</span>
                   <span className={results.browserCompatibility.cssGrid ? 'text-green-400' : 'text-red-400'}>
-                    {results.browserCompatibility.cssGrid ? '✅' : '❌'}
+                    {results.browserCompatibility.cssGrid ? 'Pass' : 'Fail'}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-300">CSS Variables:</span>
                   <span className={results.browserCompatibility.cssVariables ? 'text-green-400' : 'text-red-400'}>
-                    {results.browserCompatibility.cssVariables ? '✅' : '❌'}
+                    {results.browserCompatibility.cssVariables ? 'Pass' : 'Fail'}
                   </span>
                 </div>
               </div>
@@ -531,7 +531,7 @@ export const Phase8TestingSuite: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center">
                 <div className="text-2xl font-bold text-teal-400 mb-2">
-                  {results.performance.fps ? (results.performance.fps >= 30 ? '✅' : '⚠️') : '❓'}
+                  {results.performance.fps ? (results.performance.fps >= 30 ? 'OK' : 'Warn') : 'N/A'}
                 </div>
                 <div className="text-sm text-gray-300">Performance</div>
                 <div className="text-xs text-gray-400">
@@ -540,7 +540,7 @@ export const Phase8TestingSuite: React.FC = () => {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-400 mb-2">
-                  {results.accessibility.focusManagement && results.accessibility.keyboardNavigation ? '✅' : '⚠️'}
+                  {results.accessibility.focusManagement && results.accessibility.keyboardNavigation ? 'OK' : 'Warn'}
                 </div>
                 <div className="text-sm text-gray-300">Accessibility</div>
                 <div className="text-xs text-gray-400">
@@ -549,7 +549,7 @@ export const Phase8TestingSuite: React.FC = () => {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-amber-400 mb-2">
-                  {results.browserCompatibility.chrome && results.browserCompatibility.firefox ? '✅' : '⚠️'}
+                  {results.browserCompatibility.chrome && results.browserCompatibility.firefox ? 'OK' : 'Warn'}
                 </div>
                 <div className="text-sm text-gray-300">Compatibility</div>
                 <div className="text-xs text-gray-400">

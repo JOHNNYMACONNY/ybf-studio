@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { GlassCard } from '../ui/GlassCard';
 import { PremiumTypography } from '../ui/PremiumTypography';
+import { Clock4, FileText, CornerUpLeft, Ruler, Target, ShoppingCart, CheckCircle2, RefreshCw, CalendarDays, TrendingDown, Star, Smile, Ticket, TrendingUp, ArrowRight } from 'lucide-react';
+import { Icon } from '../ui/Icon';
 
 interface UserBehavior {
   id: string;
@@ -48,7 +50,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'up' : 'down',
         category: 'engagement',
         description: 'Average time users spend on the site',
-        icon: '⏱️'
+        icon: 'clock'
       },
       {
         id: 'pages-per-session',
@@ -60,7 +62,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'up' : 'down',
         category: 'engagement',
         description: 'Average number of pages viewed per session',
-        icon: '📄'
+        icon: 'file'
       },
       {
         id: 'bounce-rate',
@@ -72,7 +74,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'down' : 'up', // Lower is better
         category: 'engagement',
         description: 'Percentage of single-page sessions',
-        icon: '↩️'
+        icon: 'back'
       },
       {
         id: 'scroll-depth',
@@ -84,7 +86,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'up' : 'down',
         category: 'engagement',
         description: 'Average scroll depth percentage',
-        icon: '📏'
+        icon: 'ruler'
       },
 
       // Conversion Metrics
@@ -98,7 +100,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'up' : 'down',
         category: 'conversion',
         description: 'Percentage of visitors who convert',
-        icon: '🎯'
+        icon: 'target'
       },
       {
         id: 'cart-abandonment',
@@ -110,7 +112,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'down' : 'up', // Lower is better
         category: 'conversion',
         description: 'Percentage of abandoned shopping carts',
-        icon: '🛒'
+        icon: 'cart'
       },
       {
         id: 'checkout-completion',
@@ -122,7 +124,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'up' : 'down',
         category: 'conversion',
         description: 'Percentage of completed checkouts',
-        icon: '✅'
+        icon: 'check'
       },
 
       // Retention Metrics
@@ -136,7 +138,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'up' : 'down',
         category: 'retention',
         description: 'Percentage of returning visitors',
-        icon: '🔄'
+        icon: 'refresh'
       },
       {
         id: 'user-lifetime',
@@ -148,7 +150,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'up' : 'down',
         category: 'retention',
         description: 'Average days users remain active',
-        icon: '📅'
+        icon: 'calendar'
       },
       {
         id: 'churn-rate',
@@ -160,7 +162,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'down' : 'up', // Lower is better
         category: 'retention',
         description: 'Percentage of users who stop using the service',
-        icon: '📉'
+        icon: 'trending-down'
       },
 
       // Satisfaction Metrics
@@ -174,7 +176,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'up' : 'down',
         category: 'satisfaction',
         description: 'Net Promoter Score (-100 to 100)',
-        icon: '⭐'
+        icon: 'star'
       },
       {
         id: 'satisfaction-score',
@@ -186,7 +188,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'up' : 'down',
         category: 'satisfaction',
         description: 'Average customer satisfaction rating',
-        icon: '😊'
+        icon: 'smile'
       },
       {
         id: 'support-tickets',
@@ -198,7 +200,7 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
         trend: Math.random() > 0.5 ? 'down' : 'up', // Lower is better
         category: 'satisfaction',
         description: 'Average support tickets per user',
-        icon: '🎫'
+        icon: 'ticket'
       }
     ];
 
@@ -236,9 +238,9 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
   };
 
   const getTrendIcon = (trend: string) => {
-    if (trend === 'up') return '↗️';
-    if (trend === 'down') return '↘️';
-    return '→';
+    if (trend === 'up') return 'up';
+    if (trend === 'down') return 'down';
+    return 'right';
   };
 
   const getCategoryColor = (category: string) => {
@@ -320,7 +322,21 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <div className="text-2xl">{behavior.icon}</div>
+                <div className="text-2xl">
+                  {behavior.icon === 'clock' && <Icon as={Clock4} className="h-6 w-6" />}
+                  {behavior.icon === 'file' && <Icon as={FileText} className="h-6 w-6" />}
+                  {behavior.icon === 'back' && <Icon as={CornerUpLeft} className="h-6 w-6" />}
+                  {behavior.icon === 'ruler' && <Icon as={Ruler} className="h-6 w-6" />}
+                  {behavior.icon === 'target' && <Icon as={Target} className="h-6 w-6" />}
+                  {behavior.icon === 'cart' && <Icon as={ShoppingCart} className="h-6 w-6" />}
+                  {behavior.icon === 'check' && <Icon as={CheckCircle2} className="h-6 w-6" />}
+                  {behavior.icon === 'refresh' && <Icon as={RefreshCw} className="h-6 w-6" />}
+                  {behavior.icon === 'calendar' && <Icon as={CalendarDays} className="h-6 w-6" />}
+                  {behavior.icon === 'trending-down' && <Icon as={TrendingDown} className="h-6 w-6" />}
+                  {behavior.icon === 'star' && <Icon as={Star} className="h-6 w-6" />}
+                  {behavior.icon === 'smile' && <Icon as={Smile} className="h-6 w-6" />}
+                  {behavior.icon === 'ticket' && <Icon as={Ticket} className="h-6 w-6" />}
+                </div>
                 <div className="flex-1">
                   <h3 className="text-gray-300 text-sm font-medium mb-1">
                     {behavior.metric}
@@ -332,7 +348,9 @@ export const UserBehaviorAnalytics: React.FC<UserBehaviorAnalyticsProps> = ({
               </div>
               {showTrends && (
                 <div className={`text-lg ${getTrendColor(behavior.trend)}`}>
-                  {getTrendIcon(behavior.trend)}
+                  {getTrendIcon(behavior.trend) === 'up' && <Icon as={TrendingUp} className="h-5 w-5" />}
+                  {getTrendIcon(behavior.trend) === 'down' && <Icon as={TrendingDown} className="h-5 w-5" />}
+                  {getTrendIcon(behavior.trend) === 'right' && <Icon as={ArrowRight} className="h-5 w-5" />}
                 </div>
               )}
             </div>

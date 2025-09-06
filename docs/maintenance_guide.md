@@ -129,7 +129,10 @@ vercel --prod
 1. **Check SoundCloud**: Verify snippet URLs are accessible
 2. **Check Google Drive**: Verify full track URLs are accessible
 3. **Test Audio Player**: Check browser console for errors
-4. **Review Audio Context**: Check UnifiedAudioContext logs
+4. **Review Audio Context**: Check UnifiedAudioContext logs and state
+5. **SoundCloud Widget**: Ensure `https://w.soundcloud.com/player/api.js` loads and the track allows embedding. Verify the iframe is present in the global player. For private tracks, ensure the embed uses `https://api.soundcloud.com/tracks/TRACK_ID?secret_token=s-XXXX` and that embedding is permitted.
+6. **Compact Player**: Compact widget (height 20, `visual=false`) is the default. Change in `components/audio/GlobalAudioPlayer.tsx` if needed.
+6. **Cover Art System**: Verify cover art images exist in `/public/assets/beatCovers/`. Check that beats without custom cover art display randomized fallback images.
 
 ## 🔧 **Troubleshooting Workflows**
 

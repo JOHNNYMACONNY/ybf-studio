@@ -150,9 +150,9 @@ html[data-3d-background="true"] {
 }
 
 .card-3d-spline:hover {
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 25px 50px rgba(16, 185, 129, 0.15), 0 15px 30px rgba(0, 0, 0, 0.3);
-  transform: translateY(-2px);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 16px 32px rgba(16, 185, 129, 0.12), 0 8px 16px rgba(0, 0, 0, 0.25);
+  transform: translateY(-1px);
 }
 
 /* Enhanced Glassmorphic Hero Background Effects - v4 Compliant */
@@ -205,6 +205,15 @@ html[data-3d-background="true"] {
 .card-3d-spline.hero-card-enhanced {
   backdrop-filter: blur(var(--hero-backdrop-blur));
   -webkit-backdrop-filter: blur(var(--hero-backdrop-blur));
+}
+
+/* Subtle surface panel to even out loud background sections */
+.panel-3d-surface {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(16, 185, 129, 0.06) inset;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
 /* 3D Spline Button Styles */
@@ -279,7 +288,12 @@ html[data-3d-background="true"] {
 
 /* 3D Spline Responsive Styles */
 @media (max-width: 768px) {
-  .bg-3d-spline-container {
+  /* Preserve 3D background on mobile when enabled */
+  html[data-3d-background="true"] .bg-3d-spline-container {
+    background: transparent;
+  }
+  /* Fallback gradient only when 3D is not enabled */
+  html:not([data-3d-background="true"]) .bg-3d-spline-container {
     background: linear-gradient(135deg, #0A0A0A 0%, #171717 100%);
   }
   

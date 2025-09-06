@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { TrendingUp, TrendingDown, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Icon } from '../ui/Icon';
 import { GlassCard } from '../ui/GlassCard';
 import { PremiumTypography } from '../ui/PremiumTypography';
 
@@ -147,10 +149,10 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
-      case 'improving': return '↗️';
-      case 'declining': return '↘️';
-      case 'stable': return '→';
-      default: return '→';
+      case 'improving': return 'up';
+      case 'declining': return 'down';
+      case 'stable': return 'right';
+      default: return 'right';
     }
   };
 
@@ -228,7 +230,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       {showAlerts && alerts.length > 0 && (
         <GlassCard variant="default" className="p-4 border-l-4 border-red-400">
           <div className="flex items-center space-x-3">
-            <div className="text-red-400 text-xl">⚠️</div>
+            <Icon as={AlertTriangle} className="h-5 w-5 text-red-400" />
             <div>
               <h4 className="text-red-400 font-semibold">Performance Alerts</h4>
               <ul className="text-sm text-gray-300 mt-1">
@@ -263,7 +265,9 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
               </div>
               {showTrends && (
                 <div className={`text-lg ${getTrendColor(metric.trend)}`}>
-                  {getTrendIcon(metric.trend)}
+                  {getTrendIcon(metric.trend) === 'up' && <Icon as={TrendingUp} className="h-5 w-5" />}
+                  {getTrendIcon(metric.trend) === 'down' && <Icon as={TrendingDown} className="h-5 w-5" />}
+                  {getTrendIcon(metric.trend) === 'right' && <Icon as={ArrowRight} className="h-5 w-5" />}
                 </div>
               )}
             </div>
