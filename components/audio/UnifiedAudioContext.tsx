@@ -13,6 +13,7 @@ type SoundCloudWidget = {
 
 declare global {
   interface Window {
+    webkitAudioContext?: typeof AudioContext;
     SC?: {
       Widget: {
         (iframe: HTMLIFrameElement): SoundCloudWidget;
@@ -442,7 +443,11 @@ export const UnifiedAudioProvider: React.FC<{ children: ReactNode }> = ({ childr
   // Generate a simple beep tone as ultimate fallback
   const generateBeepTone = () => {
     try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const AudioContextConstructor = window.AudioContext ?? window.webkitAudioContext;
+      if (!AudioContextConstructor) {
+        throw new Error('Web Audio API not supported in this environment');
+      }
+      const audioContext = new AudioContextConstructor();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
