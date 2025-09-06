@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { PlayCircle, ShoppingCart, Clock, CreditCard, Info } from 'lucide-react';
 import type { Beat } from '../types/beat';
@@ -9,9 +9,10 @@ interface BeatCardProps {
   beat: Beat;
   onPlayPreview?: (beat: Beat) => void;
   onAddToCart?: (beat: Beat) => void;
+  variant?: 'default' | 'glass';
 }
 
-const BeatCard: React.FC<BeatCardProps> = ({ beat, onPlayPreview, onAddToCart }) => {
+const BeatCard: React.FC<BeatCardProps> = ({ beat, onPlayPreview, onAddToCart, variant = 'default' }) => {
   const [isLicenseModalOpen, setIsLicenseModalOpen] = useState(false);
   const [showLicenseInfo, setShowLicenseInfo] = useState(false);
 
@@ -27,8 +28,54 @@ const BeatCard: React.FC<BeatCardProps> = ({ beat, onPlayPreview, onAddToCart })
     }
   };
 
-  // Fallback cover art
-  const coverArtUrl = beat.coverArt || '/assets/beatCovers/beat_cover_1.png';
+  // Fallback cover art (randomized if blank/invalid)
+  const FALLBACKS = [
+    '/assets/beatCovers/beat_cover_1.png',
+    '/assets/beatCovers/beat_cover_2.png',
+    '/assets/beatCovers/beat_cover_3.png',
+    '/assets/beatCovers/beat_cover_4.png',
+  ];
+  const getRandomFallback = () => FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)];
+  const selectDeterministicFallback = useMemo(() => {
+    try {
+      const id = beat.id || '';
+      let hash = 0;
+      for (let i = 0; i < id.length; i++) {
+        hash = (hash * 31 + id.charCodeAt(i)) >>> 0;
+      }
+      return FALLBACKS[hash % FALLBACKS.length];
+    } catch {
+      return FALLBACKS[0];
+    }
+  }, [beat.id]);
+  const normalizedCover = typeof beat.coverArt === 'string' ? beat.coverArt.trim() : '';
+  const initialCover = normalizedCover && normalizedCover.toLowerCase() !== 'null' && normalizedCover.toLowerCase() !== 'undefined' ? normalizedCover : selectDeterministicFallback;
+
+  // Enforce Next.js allowed domains to prevent invalid remote images from breaking
+  const ALLOWED_DOMAINS = new Set([
+    'localhost',
+    'lh3.googleusercontent.com',
+    'www.ybfstudio.com',
+    'ybfstudio.com',
+    'yourcdn',
+    'i1.sndcdn.com',
+  ]);
+
+  const initialSrc = useMemo(() => {
+    try {
+      if (initialCover.startsWith('http')) {
+        const url = new URL(initialCover);
+        if (!ALLOWED_DOMAINS.has(url.hostname)) {
+          return getRandomFallback();
+        }
+      }
+      return initialCover;
+    } catch {
+      return getRandomFallback();
+    }
+  }, [initialCover]);
+
+  const [imgSrc, setImgSrc] = useState<string>(initialSrc);
 
   const handlePurchase = async (licenseType: 'mp3' | 'wav' | 'premium' | 'exclusive') => {
     try {
@@ -55,16 +102,23 @@ const BeatCard: React.FC<BeatCardProps> = ({ beat, onPlayPreview, onAddToCart })
     }
   };
 
+  const wrapperClass = variant === 'glass'
+    ? 'card-3d-spline rounded-xl p-4 hover:scale-105 transition-transform group overflow-hidden'
+    : 'card-interactive group overflow-hidden p-0 animate-fade-up-stagger';
+
   return (
     <>
-      <div className="card-interactive group overflow-hidden p-0 animate-fade-up-stagger">
+      <div className={wrapperClass}>
         <div className="relative">
           <Image
-            src={coverArtUrl}
+            src={imgSrc}
             alt={beat.title}
             width={400}
             height={400}
             className="w-full aspect-square object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+            onError={() => {
+              if (imgSrc !== selectDeterministicFallback) setImgSrc(selectDeterministicFallback);
+            }}
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onClick={handlePlayPreview}>
             <PlayCircle className="h-16 w-16 text-white hover:scale-110 transition-transform duration-200" />

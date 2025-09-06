@@ -44,6 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       duration?: string;
       preview_duration?: string;
       description?: string;
+      created_at?: string;
     }) => ({
       id: b.id,
       title: b.title,
@@ -60,6 +61,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       previewDuration: b.preview_duration || '',
       description: b.description || '',
       licenseTypes: b.license_types || { mp3: 0, wav: 0, premium: 0, exclusive: 0 },
+      created_at: b.created_at || undefined,
     }));
 
     return res.status(200).json(beats);

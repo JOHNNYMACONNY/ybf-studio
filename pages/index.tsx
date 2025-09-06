@@ -5,6 +5,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { GetServerSideProps } from 'next';
 import BeatPreviewPlayer from '../components/beats/BeatPreviewPlayer';
+import BeatCard from '../components/BeatCard';
+import { useUnifiedAudio } from '../components/audio/UnifiedAudioContext';
+import { useCart } from '../components/ui/CartContext';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
 import AnimatedSection from '../components/ui/AnimatedSection';
@@ -75,6 +78,8 @@ interface HomeProps {
 }
 const Home: React.FC<HomeProps> = ({ beats, services }) => {
   const heroImage = getHeroImage('home');
+  const { playBeat } = useUnifiedAudio();
+  const { addToCart } = useCart();
   
   return (
     <>
@@ -157,35 +162,13 @@ const Home: React.FC<HomeProps> = ({ beats, services }) => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {beats.map((beat) => (
-            <div key={beat.id} className="card-3d-spline rounded-xl p-4 hover:scale-105 transition-transform">
-              <div className="aspect-square bg-gradient-to-br from-3d-spline-primary to-3d-spline-accent rounded-lg mb-4 flex items-center justify-center">
-                <Icon as={Music2} className="h-6 w-6 text-white" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-3d-spline-text-primary">
-                    {beat.title}
-                  </h3>
-                  {/* You can add a condition for new beats, e.g., based on created_at */}
-                  {beat.created_at && new Date(beat.created_at).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000 && (
-                    <Badge variant="success" className="text-xs">
-                      NEW
-                    </Badge>
-                  )}
-                </div>
-                <p className="text-3d-spline-text-muted text-sm">
-                  {beat.artist} • {beat.genre}
-                </p>
-                <div className="flex items-center justify-between">
-                  <span className="text-3d-spline-text-muted text-sm">
-                    {beat.duration}
-                  </span>
-                  <span className="text-3d-spline-accent font-semibold">
-                    ${beat.price}
-                  </span>
-                </div>
-              </div>
-            </div>
+            <BeatCard
+              key={beat.id}
+              beat={beat}
+              variant="glass"
+              onPlayPreview={playBeat}
+              onAddToCart={(b) => addToCart({ beat: b, license: 'mp3' })}
+            />
           ))}
         </div>
         
@@ -357,13 +340,18 @@ const Home: React.FC<HomeProps> = ({ beats, services }) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  // Fetch featured beats (e.g., the 4 most recent)
-  const { data: beats, error: beatsError } = await supabase
-    .from('beats')
-    .select('*')
-    .eq('status', 'published')
-    .order('created_at', { ascending: false })
-    .limit(4);
+  // Fetch featured beats via internal API to reuse normalization and fallbacks
+  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  let beats: Beat[] = [];
+  try {
+    const res = await fetch(`${baseUrl}/api/beats`);
+    if (res.ok) {
+      const data = await res.json();
+      beats = Array.isArray(data) ? (data as Beat[]).slice(0, 4) : [];
+    }
+  } catch (e) {
+    console.error('Error fetching featured beats:', e);
+  }
 
   // Fetch featured services (e.g., the 3 with the lowest sort_order)
   const { data: services, error: servicesError } = await supabase
@@ -372,8 +360,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     .order('sort_order', { ascending: true })
     .limit(3);
 
-  if (beatsError || servicesError) {
-    console.error('Error fetching home page data:', beatsError || servicesError);
+  if (servicesError) {
+    console.error('Error fetching home page services:', servicesError);
   }
 
   return {

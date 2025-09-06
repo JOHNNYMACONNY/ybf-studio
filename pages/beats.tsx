@@ -217,6 +217,7 @@ const Beats: React.FC<BeatsPageProps> = ({ allBeats }) => {
                   beat={beat}
                   onPlayPreview={handlePlayPreview}
                   onAddToCart={handleAddToCart}
+                  variant="glass"
                 />
               ))}
             </div>
@@ -284,37 +285,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   // Normalize DB rows (snake_case) to Beat interface (camelCase)
-  const sanitizeUrl = (val: unknown): string => {
-    if (typeof val !== 'string') return getRandomCoverArt();
-    const trimmed = val.trim();
-    if (!trimmed || trimmed.toLowerCase() === 'undefined' || trimmed.toLowerCase() === 'null') return getRandomCoverArt();
-    return trimmed;
-  };
-
-  const sanitizeString = (val: unknown): string => {
-    if (typeof val !== 'string') return '';
-    const trimmed = val.trim();
-    if (!trimmed || trimmed.toLowerCase() === 'undefined' || trimmed.toLowerCase() === 'null') return '';
-    return trimmed;
-  };
-
-  const allBeats: Beat[] = (rows || []).map((beat: BeatRow) => ({
-    id: beat.id,
-    title: beat.title,
-    artist: beat.artist,
-    genre: beat.genre,
-    bpm: typeof beat.bpm === 'number' ? beat.bpm : 0,
-    price: typeof beat.price === 'number' ? beat.price : 0,
-    coverArt: sanitizeUrl(beat.cover_art),
-    // Legacy field left empty unless backend provides it
-    audioUrl: sanitizeString(beat.audio_url),
-    previewUrl: sanitizeString(beat.preview_url),
-    fullTrackUrl: sanitizeString(beat.full_track_url),
-    duration: sanitizeString(beat.duration),
-    previewDuration: sanitizeString(beat.preview_duration),
-    description: sanitizeString(beat.description),
-    licenseTypes: beat.license_types || { mp3: (typeof beat.price === 'number' ? beat.price : 19), wav: (typeof beat.price === 'number' ? beat.price : 29), premium: (typeof beat.price === 'number' ? beat.price : 49), exclusive: 199 },
-  }));
+  // Prefer normalized beats via internal API to unify fallbacks and shapes
+  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  let allBeats: Beat[] = [];
+  try {
+    const res = await fetch(`${baseUrl}/api/beats`);
+    if (res.ok) {
+      allBeats = await res.json();
+    }
+  } catch (e) {
+    console.error('Error fetching beats from API:', e);
+  }
 
   return {
     props: {

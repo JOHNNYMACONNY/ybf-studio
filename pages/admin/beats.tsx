@@ -296,6 +296,7 @@ const formSchema = z.object({
   description: z.string().optional().default(''),
   previewUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
   fullTrackUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
+  coverArt: z.string().url('Invalid URL').optional().or(z.literal('')),
   status: z.enum(['draft', 'published']).default('published'),
   mp3Price: z.coerce.number().min(0, 'Must be >= 0').default(19),
   wavPrice: z.coerce.number().min(0, 'Must be >= 0').default(29),
@@ -317,6 +318,7 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
     description: beat?.description || '',
     previewUrl: beat?.previewUrl || '',
     fullTrackUrl: beat?.fullTrackUrl || '',
+    coverArt: beat?.coverArt || '',
     status: (beat as { status?: 'draft' | 'published' } | null | undefined)?.status || 'published',
     mp3Price: beat?.licenseTypes?.mp3 ?? beat?.price ?? 19,
     wavPrice: beat?.licenseTypes?.wav ?? beat?.price ?? 29,
@@ -351,6 +353,7 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
       description: values.description || '',
       previewUrl: values.previewUrl || '',
       fullTrackUrl: values.fullTrackUrl || '',
+      coverArt: values.coverArt || '',
       // Per-license pricing replaces single price
       licenseTypes: {
         mp3: values.mp3Price,
@@ -530,6 +533,20 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
                 />
                 {errors.fullTrackUrl && <p className="text-red-400 text-xs mt-1">{errors.fullTrackUrl.message as string}</p>}
                 <p className="text-xs text-neutral-400 mt-1">Full track for customer downloads</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-300 mb-2">
+                  Cover Art URL (optional)
+                </label>
+                <Input
+                  type="url"
+                  placeholder="https://your-cdn.com/path/to/cover.jpg"
+                  {...register('coverArt')}
+                  className={errors.coverArt ? 'border-red-500' : ''}
+                />
+                {errors.coverArt && <p className="text-red-400 text-xs mt-1">{errors.coverArt.message as string}</p>}
+                <p className="text-xs text-neutral-400 mt-1">If left blank, a random fallback cover will be used.</p>
               </div>
             </div>
           </div>

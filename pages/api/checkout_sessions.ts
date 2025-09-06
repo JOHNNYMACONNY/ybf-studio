@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const { data: beatsFromDb, error: beatsError } = await supabaseAdmin
         .from('beats')
-        .select('id, title, genre, bpm, coverArt, licenseTypes, status')
+        .select('id, title, genre, bpm, cover_art, license_types, status')
         .in('id', beatIds);
 
       if (beatsError) {
@@ -46,19 +46,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         title: string;
         genre: string;
         bpm: number;
-        coverArt?: string;
-        licenseTypes?: Record<string, number>;
+        cover_art?: string | null;
+        license_types?: Record<string, number> | null;
         status?: string;
       }>();
-      (beatsFromDb || []).forEach((b) => idToBeat.set(b.id, b as {
+      (beatsFromDb || []).forEach((b) => idToBeat.set(b.id, b as unknown as {
         id: string;
         title: string;
         genre: string;
         bpm: number;
-        coverArt?: string;
-        licenseTypes?: Record<string, number>;
+        cover_art?: string | null;
+        license_types?: Record<string, number> | null;
         status?: string;
       }));
+
+      const FALLBACKS = [
+        '/assets/beatCovers/beat_cover_1.png',
+        '/assets/beatCovers/beat_cover_2.png',
+        '/assets/beatCovers/beat_cover_3.png',
+        '/assets/beatCovers/beat_cover_4.png',
+      ];
+      const getRandomFallback = () => FALLBACKS[Math.floor(Math.random() * FALLBACKS.length)];
 
       const line_items: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
@@ -70,13 +78,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           return res.status(400).json({ error: 'Invalid beat or license in cart' });
         }
 
-        const priceForLicense = dbBeat.licenseTypes?.[license];
+        const priceForLicense = dbBeat.license_types?.[license as keyof typeof dbBeat.license_types];
         if (typeof priceForLicense !== 'number' || priceForLicense <= 0) {
           return res.status(400).json({ error: 'Invalid license price' });
         }
 
-        const rawImage: string | undefined = dbBeat.coverArt;
-        const imageUrl = rawImage?.startsWith('http') ? rawImage : `${siteUrl}${rawImage || ''}`;
+        const rawImage = (dbBeat.cover_art && typeof dbBeat.cover_art === 'string' && dbBeat.cover_art.trim()) ? dbBeat.cover_art.trim() : getRandomFallback();
+        const imageUrl = rawImage.startsWith('http') ? rawImage : `${siteUrl}${rawImage}`;
 
         line_items.push({
           price_data: {
@@ -86,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               images: imageUrl ? [imageUrl] : undefined,
               description: `Genre: ${dbBeat.genre}, BPM: ${dbBeat.bpm}`,
             },
-            unit_amount: Math.round(priceForLicense * 100),
+            unit_amount: Math.round((priceForLicense as number) * 100),
           },
           quantity: 1,
         });
