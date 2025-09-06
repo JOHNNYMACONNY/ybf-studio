@@ -9,6 +9,7 @@ type BeatRow = {
   artist: string;
   genre: string;
   bpm: number;
+  price?: number;
   cover_art?: string;
   audio_url?: string;
   preview_url?: string;

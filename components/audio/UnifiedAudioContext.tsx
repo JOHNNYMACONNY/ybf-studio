@@ -200,11 +200,12 @@ export const UnifiedAudioProvider: React.FC<{ children: ReactNode }> = ({ childr
         .catch(error => {
           console.error('Error playing beat:', error);
           console.error('Failed source URL:', resolved);
-          console.error('Audio element state:', {
-            readyState: audioRef.current.readyState,
-            networkState: audioRef.current.networkState,
-            error: audioRef.current.error
-          });
+          const audioElement = audioRef.current;
+          console.error('Audio element state:', audioElement ? {
+            readyState: audioElement.readyState,
+            networkState: audioElement.networkState,
+            error: audioElement.error
+          } : 'Audio element not initialized');
 
           // If the local file fails, try to generate a simple beep tone
           if (!isScUrl) {
