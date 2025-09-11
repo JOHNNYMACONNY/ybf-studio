@@ -28,7 +28,7 @@ interface BlogPageProps {
 
 // Categories will be fetched from the database in getServerSideProps
 
-const Blog: React.FC<BlogPageProps> = ({ posts }) => {
+const Blog: React.FC<BlogPageProps> = ({ posts, categories = [] }) => {
   const [categoryFilter, setCategoryFilter] = useState('All');
 
   const filteredPosts = useMemo(() => {
@@ -113,7 +113,7 @@ const Blog: React.FC<BlogPageProps> = ({ posts }) => {
                           boxShadow: '0 4px 15px rgba(16, 185, 129, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
                         }}
                       >
-                        {categories.map(c => (
+                        {(categories || []).map(c => (
                           <option key={c} value={c} className="bg-neutral-800 text-white">
                             {c}
                           </option>
