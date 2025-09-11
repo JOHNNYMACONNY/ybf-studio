@@ -3,52 +3,39 @@ import Button from '../ui/Button';
 import Card from '../ui/Card';
 import AnimatedSection from '../ui/AnimatedSection';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface BlogPost {
   id: string;
   title: string;
   excerpt: string;
-  readTime: string;
-  category: string;
-  thumbnail: string;
-  date: string;
   slug: string;
+  featured_image: string;
+  published_at: string;
+  categories: string[];
 }
 
-const recentPosts: BlogPost[] = [
-  {
-    id: '1',
-    title: '5 Essential Mixing Techniques for Better Vocals',
-    excerpt: 'Learn the fundamental mixing techniques that will make your vocals stand out in the mix and sound professional.',
-    readTime: '5 min read',
-    category: 'Mixing Tips',
-    thumbnail: '/assets/blog-vocals.jpg',
-    date: '2024-01-15',
-    slug: 'essential-mixing-techniques-vocals'
-  },
-  {
-    id: '2',
-    title: 'How to Choose the Right Beat for Your Song',
-    excerpt: 'A comprehensive guide to selecting beats that complement your style and enhance your creative vision.',
-    readTime: '7 min read',
-    category: 'Production',
-    thumbnail: '/assets/blog-beat-selection.jpg',
-    date: '2024-01-10',
-    slug: 'choose-right-beat-song'
-  },
-  {
-    id: '3',
-    title: 'Mastering Your Track: What You Need to Know',
-    excerpt: 'Everything you need to know about the mastering process and how it can transform your final mix.',
-    readTime: '8 min read',
-    category: 'Mastering',
-    thumbnail: '/assets/blog-mastering.jpg',
-    date: '2024-01-05',
-    slug: 'mastering-track-guide'
-  }
-];
+interface BlogTeasersProps {
+  posts?: BlogPost[];
+  maxPosts?: number;
+}
 
-const BlogTeasers: React.FC = () => {
+const BlogTeasers: React.FC<BlogTeasersProps> = ({ posts = [], maxPosts = 3 }) => {
+  // Transform database posts to match display format
+  const recentPosts = posts.slice(0, maxPosts).map(post => ({
+    id: post.id,
+    title: post.title,
+    excerpt: post.excerpt,
+    readTime: '5 min read', // This could be calculated from content length
+    category: post.categories?.[0] || 'General',
+    thumbnail: post.featured_image || '/assets/blog-beat-selection.jpg',
+    date: new Date(post.published_at).toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    }),
+    slug: post.slug
+  }));
   return (
     <section className="py-20 bg-black">
       <div className="container mx-auto px-4 max-w-7xl">
@@ -117,9 +104,11 @@ const BlogTeasers: React.FC = () => {
         {/* View All Posts CTA */}
         <AnimatedSection delay={650}>
           <div className="text-center">
-            <Button variant="primary" className="px-8 py-3 text-base">
-              View All Posts
-            </Button>
+            <Link href="/blog">
+              <Button variant="primary" className="px-8 py-3 text-base">
+                View All Posts
+              </Button>
+            </Link>
           </div>
         </AnimatedSection>
       </div>

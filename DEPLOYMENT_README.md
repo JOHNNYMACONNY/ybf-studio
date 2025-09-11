@@ -1,4 +1,4 @@
-# 🚀 AudioServiceApp Production Deployment Guide
+# 🚀 YBF Studio Production Deployment Guide
 
 ## 📊 **DEPLOYMENT STATUS OVERVIEW**
 
@@ -157,8 +157,8 @@ STRIPE_WEBHOOK_SECRET=whsec_your-stripe-webhook-secret
 
 # Email (Brevo/SendGrid)
 BREVO_API_KEY=your-brevo-api-key
-FROM_EMAIL=noreply@yourdomain.com
-ADMIN_NOTIFICATIONS_EMAIL=admin@yourdomain.com
+FROM_EMAIL=jmaconny@ybfstudio.com
+ADMIN_NOTIFICATIONS_EMAIL=jmaconny@ybfstudio.com
 
 # File Storage (Cloudflare R2)
 R2_ACCOUNT_ID=your-account-id
@@ -206,7 +206,7 @@ ALTER TABLE consultations ENABLE ROW LEVEL SECURITY;
 
 -- Create admin user
 INSERT INTO admin_users (email, role, permissions, is_active)
-VALUES ('admin@yourdomain.com', 'super_admin', '{"all": true}', true);
+VALUES ('jmaconny@ybfstudio.com', 'super_admin', '{"all": true}', true);
 ```
 
 ---
@@ -341,7 +341,7 @@ npm run build               # Test production build
 
 ---
 
-**🎉 Your AudioServiceApp is ready for production!**
+**🎉 Your YBF Studio is ready for production!**
 
 **Next Action**: Run `npm run production:full` for automated deployment, or follow the step-by-step guide above.
 

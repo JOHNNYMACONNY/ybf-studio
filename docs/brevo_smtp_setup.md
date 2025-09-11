@@ -1,6 +1,6 @@
 # Brevo SMTP Setup (Production + Development)
 
-> Use this guide to configure Brevo (Sendinblue) SMTP for AudioServiceApp and verify sending via `/api/test-email` and the 24h reminder cron.
+> Use this guide to configure Brevo (Sendinblue) SMTP for YBF Studio and verify sending via `/api/test-email` and the 24h reminder cron.
 
 ---
 
@@ -16,7 +16,7 @@ SMTP_USER=your_brevo_smtp_login
 SMTP_PASS=your_brevo_smtp_key
 
 # Mail From
-FROM_EMAIL=noreply@yourdomain.com
+FROM_EMAIL=jmaconny@ybfstudio.com
 FROM_NAME=Your Name
 
 # Cron
@@ -25,7 +25,7 @@ CRON_SECRET=your-cron-secret
 
 Notes:
 - Use port 587 with secure=false (default in our `lib/mailer.ts`) or port 465 with secure=true.
-- `FROM_EMAIL` should be on your authenticated domain (e.g., `you@yourdomain.com`).
+- `FROM_EMAIL` should be on your authenticated domain (e.g., `jmaconny@ybfstudio.com`).
 
 ---
 
@@ -53,7 +53,7 @@ Restart dev server after adding env vars.
 curl -i "http://localhost:3000/api/test-email"
 
 # specify recipient/subject/body
-curl -i "http://localhost:3000/api/test-email?to=you@yourdomain.com&subject=Brevo%20Test&text=Hello"
+curl -i "http://localhost:3000/api/test-email?to=jmaconny@ybfstudio.com&subject=Brevo%20Test&text=Hello"
 ```
 
 Expected: 200 with a messageId.
@@ -69,7 +69,7 @@ If you see `502 5.7.0 Please authenticate first`:
 1) Add vars in Vercel; redeploy.
 2) Test:
 ```bash
-curl -i "https://your-custom-domain/api/test-email?to=you@yourdomain.com&subject=Brevo%20Prod%20Test&text=Hello"
+curl -i "https://your-custom-domain/api/test-email?to=jmaconny@ybfstudio.com&subject=Brevo%20Prod%20Test&text=Hello"
 ```
 3) Trigger cron (must have upcoming consultations 23–25h away):
 ```bash

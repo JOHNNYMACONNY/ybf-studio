@@ -266,7 +266,7 @@ export default function LandingPage() {
       <ProfessionalHeroBackground>
         <div className="container mx-auto px-4 py-20">
           <h1 className="text-6xl font-bold text-text-primary mb-8">
-            Welcome to AudioServiceApp
+            Welcome to YBF Studio
           </h1>
           <p className="text-xl text-text-secondary mb-8">
             Professional audio services with mathematical harmony
@@ -299,4 +299,4 @@ export default function Dashboard() {
 }
 ```
 
-This professional animated background system provides a sophisticated, mathematically harmonious foundation for creating premium user experiences in the AudioServiceApp. 
+This professional animated background system provides a sophisticated, mathematically harmonious foundation for creating premium user experiences in the YBF Studio. 

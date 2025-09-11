@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * AudioServiceApp Database Setup Script
+ * YBF Studio Database Setup Script
  * Configures production database and runs migrations
  */
 
@@ -16,7 +16,7 @@ const rl = readline.createInterface({
 
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
-console.log('🗄️  AudioServiceApp Database Setup\n');
+console.log('🗄️  YBF Studio Database Setup\n');
 
 async function setupDatabase() {
   try {

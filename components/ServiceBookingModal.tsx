@@ -172,7 +172,7 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
               name="customer_email" 
               value={formData.customer_email} 
               onChange={handleChange} 
-              placeholder="you@example.com" 
+              placeholder="jmaconny@ybfstudio.com" 
               required 
               label="Email Address *" 
             />

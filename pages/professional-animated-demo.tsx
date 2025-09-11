@@ -363,7 +363,7 @@ export default function ProfessionalAnimatedDemo() {
       <div className="text-center mt-12">
         <p className="text-neutral-200 text-lg">
           This 3D animated background combines external Spline animations with CSS fallbacks 
-          to create a premium, hotel explorer-inspired experience for the AudioServiceApp.
+          to create a premium, hotel explorer-inspired experience for YBF Studio.
         </p>
       </div>
     </>

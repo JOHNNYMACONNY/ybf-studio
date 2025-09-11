@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth/next';
@@ -9,8 +10,18 @@ import Modal from '../../components/ui/Modal';
 import Input from '../../components/Input';
 import Select from '../../components/ui/Select';
 import Textarea from '../../components/ui/Textarea';
-import RichTextEditor from '../../components/admin/RichTextEditor';
+// Dynamically import RichTextEditor to avoid SSR conflicts
+const RichTextEditor = dynamic(() => import('../../components/admin/RichTextEditor'), {
+  ssr: false,
+  loading: () => (
+    <div className="animate-pulse bg-neutral-800 rounded-lg h-[300px] flex items-center justify-center">
+      <div className="text-neutral-400">Loading editor...</div>
+    </div>
+  )
+});
+
 import { Plus, Edit, Trash2, Search } from 'lucide-react';
+import ImagePickerModal from '../../components/admin/ImagePickerModal';
 
 type UserWithAdmin = {
   isAdmin?: boolean;
@@ -41,6 +52,9 @@ interface BlogCategory {
   slug: string;
   description: string | null;
   color: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
 }
 
 interface AdminBlogPageProps {
@@ -71,8 +85,8 @@ const AdminBlogPage: React.FC<AdminBlogPageProps> = ({ initialPosts, categories 
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || post.status === statusFilter;
-    const matchesCategory = categoryFilter === 'all' || 
-                           post.categories.some(cat => cat.toLowerCase() === categoryFilter.toLowerCase());
+    const matchesCategory = categoryFilter === 'all' ||
+                           (post.categories || []).some(cat => cat.toLowerCase() === categoryFilter.toLowerCase());
     return matchesSearch && matchesStatus && matchesCategory;
   });
 
@@ -105,6 +119,11 @@ const AdminBlogPage: React.FC<AdminBlogPageProps> = ({ initialPosts, categories 
 
   const handleEditPost = async (postId: string, postData: Partial<BlogPost>) => {
     setLoading(true);
+    console.log('🚀 FRONTEND: Starting blog post update');
+    console.log('🚀 FRONTEND: Post ID:', postId);
+    console.log('🚀 FRONTEND: Post data being sent:', JSON.stringify(postData, null, 2));
+    console.log('🚀 FRONTEND: Status in postData:', postData.status);
+
     try {
       const response = await fetch(`/api/admin/blog?id=${postId}`, {
         method: 'PUT',
@@ -113,6 +132,9 @@ const AdminBlogPage: React.FC<AdminBlogPageProps> = ({ initialPosts, categories 
         },
         body: JSON.stringify(postData),
       });
+
+      console.log('🚀 FRONTEND: Response status:', response.status);
+      console.log('🚀 FRONTEND: Response ok:', response.ok);
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -295,7 +317,7 @@ const AdminBlogPage: React.FC<AdminBlogPageProps> = ({ initialPosts, categories 
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-wrap gap-1">
-                        {post.categories.map((category, index) => (
+                        {(post.categories || []).map((category, index) => (
                           <span
                             key={index}
                             className="inline-flex px-2 py-1 text-xs bg-neutral-600 text-neutral-300 rounded"
@@ -392,6 +414,25 @@ const BlogPostModal: React.FC<BlogPostModalProps> = ({ post, categories, onSave,
     categories: post?.categories || []
   });
 
+  const [showImagePicker, setShowImagePicker] = useState(false);
+
+  // Helper to convert Google Drive URLs to viewable format
+  const convertDriveLinkToViewUrl = (url: string) => {
+    try {
+      // file/d/{id}/view -> uc?export=view&id={id}
+      const match1 = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+      if (match1?.[1]) return `https://drive.google.com/uc?export=view&id=${match1[1]}`;
+      // uc?id={id} -> uc?export=view&id={id}
+      const u = new URL(url);
+      const id = u.searchParams.get('id');
+      if (id) return `https://drive.google.com/uc?export=view&id=${id}`;
+      return url;
+    } catch {
+      return url;
+    }
+  };
+
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (post) {
@@ -451,22 +492,48 @@ const BlogPostModal: React.FC<BlogPostModalProps> = ({ post, categories, onSave,
           {/* Featured Image */}
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-2">
-              Featured Image URL
+              Featured Image <span className="text-neutral-500 text-xs">(URL or pick from library)</span>
             </label>
-            <Input
-              type="url"
-              value={formData.featured_image}
-              onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
-              placeholder="https://example.com/image.jpg"
-            />
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={formData.featured_image}
+                onChange={(e) => setFormData({ ...formData, featured_image: e.target.value })}
+                onBlur={() => {
+                  if (formData.featured_image && formData.featured_image.includes('drive.google.com')) {
+                    const viewUrl = convertDriveLinkToViewUrl(formData.featured_image);
+                    setFormData((fd) => ({ ...fd, featured_image: viewUrl }));
+                  }
+                }}
+                placeholder="https://example.com/image.jpg, /assets/blogImages/image.png, or Google Drive link"
+                className="flex-1 bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-neutral-100"
+              />
+              <button
+                type="button"
+                onClick={() => setShowImagePicker(true)}
+                className="px-3 py-2 rounded bg-neutral-700 hover:bg-neutral-600 text-neutral-100"
+              >
+                Choose…
+              </button>
+            </div>
+            <p className="text-xs text-neutral-500 mt-1">
+              Tip: You can paste a Google Drive link; it will auto-convert to a viewable URL.
+            </p>
+
+            {formData.featured_image ? (
+              <div className="mt-3 rounded border border-neutral-700 overflow-hidden">
+                <img src={formData.featured_image} alt="Featured preview" className="w-full max-h-56 object-cover" />
+              </div>
+            ) : null}
           </div>
 
           {/* Categories */}
           <div>
             <label className="block text-sm font-medium text-neutral-300 mb-2">
-              Categories
+              Categories ({categories.length} available)
             </label>
             <div className="grid grid-cols-2 gap-2">
+              {categories.length === 0 && <p className="text-red-500">No categories available</p>}
               {categories.map((category) => (
                 <label key={category.id} className="flex items-center space-x-2">
                   <input
@@ -553,6 +620,12 @@ const BlogPostModal: React.FC<BlogPostModalProps> = ({ post, categories, onSave,
           </div>
         </form>
       </div>
+
+      <ImagePickerModal
+        isOpen={showImagePicker}
+        onClose={() => setShowImagePicker(false)}
+        onSelect={(url) => setFormData((fd) => ({ ...fd, featured_image: url }))}
+      />
     </Modal>
   );
 };
@@ -571,38 +644,37 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    // Fetch initial blog posts and categories
-    // In a real implementation, you'd fetch from your database
-    const initialPosts: BlogPost[] = [
-      {
-        id: '1',
-        title: 'How to Create Professional Beats: A Complete Guide',
-        slug: 'how-to-create-professional-beats-complete-guide',
-        content: '<h1>How to Create Professional Beats: A Complete Guide</h1><p>Creating professional-quality beats requires...</p>',
-        excerpt: 'Learn the essential techniques for creating professional-quality beats that stand out in today\'s competitive music industry.',
-        featured_image: '/images/blog-beat-making.jpg',
-        meta_title: 'How to Create Professional Beats: Complete Guide for Producers',
-        meta_description: 'Master the art of beat making with our comprehensive guide covering everything from basic techniques to advanced production methods.',
-        status: 'published',
-        published_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        author_id: null,
-        created_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        updated_at: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-        deleted_at: null,
-        categories: ['Music Production', 'Beat Making']
-      }
-    ];
+    // Fetch initial blog posts and categories from API
+    const baseUrl = process.env.NODE_ENV === 'production'
+      ? 'https://your-domain.com'
+      : 'http://localhost:3000';
 
-    const categories: BlogCategory[] = [
-      { id: '1', name: 'Music Production', slug: 'music-production', description: 'Tips and tutorials for music production', color: '#3B82F6' },
-      { id: '2', name: 'Beat Making', slug: 'beat-making', description: 'Beat making techniques and tutorials', color: '#10B981' },
-      { id: '3', name: 'Mixing & Mastering', slug: 'mixing-mastering', description: 'Mixing and mastering guides', color: '#F59E0B' },
-      { id: '4', name: 'Industry News', slug: 'industry-news', description: 'Latest music industry news and updates', color: '#EF4444' }
-    ];
+    // Fetch blog posts
+    const postsResponse = await fetch(`${baseUrl}/api/admin/blog?page=1&limit=50`);
+    const postsData = postsResponse.ok ? await postsResponse.json() : { posts: [] };
+
+    // Fetch categories directly from database (since API requires auth)
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    
+    const { data: categoriesData, error: categoriesError } = await supabase
+      .from('blog_categories')
+      .select('*')
+      .is('deleted_at', null)
+      .order('name');
+    
+    if (categoriesError) {
+      console.error('Error fetching categories:', categoriesError);
+    }
+    
+    const categories: BlogCategory[] = categoriesData || [];
+    console.log('Fetched categories:', categories.length);
 
     return {
       props: {
-        initialPosts,
+        initialPosts: postsData.posts || [],
         categories
       }
     };

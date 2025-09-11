@@ -25,7 +25,7 @@ A step-by-step, actionable roadmap for building, launching, and scaling the Audi
 2. **Clone and Install** (for new developers)
    ```bash
    git clone [repository-url]
-   cd AudioServiceApp
+   cd YBF Studio
    npm install
    ```
 
@@ -125,7 +125,7 @@ git push origin main
 
 ## Current Status: 40% Complete - Admin Dashboard Phase 3 Complete
 
-The AudioServiceApp is **40% complete** with core MVP functionality, critical fixes, snippet system, and admin dashboard foundation implemented. The remaining 60% consists of admin dashboard expansion and user-facing features.
+The YBF Studio is **40% complete** with core MVP functionality, critical fixes, snippet system, and admin dashboard foundation implemented. The remaining 60% consists of admin dashboard expansion and user-facing features.
 
 **✅ Completed Features:**
 - ✅ Critical fixes (cart, mobile nav, audio, beat data)
@@ -595,7 +595,7 @@ After completing each fix, run these validation tests:
          <div className="mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
            <Link href="/" className="flex items-center gap-2">
              <Music className="h-6 w-6 text-amber-500" />
-             <span className="text-card-title">AudioService</span>
+             <span className="text-card-title">YBF Studio</span>
            </Link>
            <nav className="hidden md:flex items-center gap-6">
              {navLinks.map((link) => (
@@ -697,7 +697,7 @@ After completing each fix, run these validation tests:
          <div className="mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
            <Link href="/" className="flex items-center gap-2">
              <Music className="h-6 w-6 text-amber-500" />
-             <span className="text-card-title">AudioService</span>
+             <span className="text-card-title">YBF Studio</span>
            </Link>
    
            {/* Desktop Navigation */}
@@ -1641,7 +1641,7 @@ Create a `.env.local` file in the project root with the following variables:
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=ej4Fv7VDGrwry6oXV8syLt5MFsJkHlP8KGdYaqFF2C0=
 
-# Google OAuth (ljkeoni@gmail.com account)
+# Google OAuth (jmaconny@ybfstudio.com account)
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 
@@ -1659,7 +1659,7 @@ STRIPE_SECRET_KEY=your-stripe-secret-key
 STRIPE_WEBHOOK_SECRET=whsec_bBFE2kFBKmk6GfUiPoh5m9lfrjL1fAFY
 
 # Admin Configuration
-ADMIN_EMAILS=ljkeoni@gmail.com
+ADMIN_EMAILS=jmaconny@ybfstudio.com
 
 # Production URLs (update for deployment)
 NEXTAUTH_URL=https://your-domain.com
@@ -1668,7 +1668,7 @@ NEXTAUTH_URL=https://your-domain.com
 ### **Configuration Notes**
 
 #### **NextAuth.js Setup**
-- **OAuth Account**: Using ljkeoni@gmail.com Google account
+- **OAuth Account**: Using jmaconny@ybfstudio.com Google account
 - **Client ID**: Configured for localhost:3000 development
 - **Secret**: Generate using `openssl rand -base64 32` or use a secure random string
 - **URL**: Update to production domain when deploying

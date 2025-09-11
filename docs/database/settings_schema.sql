@@ -219,10 +219,10 @@ $$ LANGUAGE plpgsql;
 
 -- Site Configuration
 INSERT INTO site_settings (setting_key, setting_value, setting_type, category, description, is_public) VALUES
-('site_name', 'AudioServiceApp', 'text', 'general', 'Website name', true),
+('site_name', 'YBF Studio', 'text', 'general', 'Website name', true),
 ('site_description', 'Professional audio services and beat marketplace', 'text', 'general', 'Website description', true),
 ('site_url', 'https://audioserviceapp.com', 'url', 'general', 'Website URL', true),
-('contact_email', 'admin@audioserviceapp.com', 'email', 'general', 'Contact email address', true),
+('contact_email', 'jmaconny@ybfstudio.com', 'email', 'general', 'Contact email address', true),
 ('contact_phone', '+1 (555) 123-4567', 'text', 'general', 'Contact phone number', false),
 ('business_address', '123 Music Street, Audio City, AC 12345', 'text', 'general', 'Business address', false),
 ('timezone', 'America/New_York', 'text', 'general', 'Default timezone', false),
@@ -233,8 +233,8 @@ INSERT INTO site_settings (setting_key, setting_value, setting_type, category, d
 
 -- Email Configuration
 ('email_provider', 'sendgrid', 'text', 'email', 'Email service provider', false),
-('email_from_name', 'AudioServiceApp', 'text', 'email', 'From name for emails', false),
-('email_from_address', 'noreply@audioserviceapp.com', 'email', 'email', 'From email address', false),
+('email_from_name', 'YBF Studio', 'text', 'email', 'From name for emails', false),
+('email_from_address', 'jmaconny@ybfstudio.com', 'email', 'email', 'From email address', false),
 ('email_smtp_host', 'smtp.sendgrid.net', 'text', 'email', 'SMTP host', false),
 ('email_smtp_port', '587', 'number', 'email', 'SMTP port', false),
 ('email_smtp_username', '', 'text', 'email', 'SMTP username', false),
@@ -258,7 +258,7 @@ INSERT INTO site_settings (setting_key, setting_value, setting_type, category, d
 ('social_linkedin', 'https://linkedin.com/company/audioserviceapp', 'url', 'social', 'LinkedIn company page', true),
 
 -- SEO Configuration
-('seo_title_template', '{page_title} | AudioServiceApp', 'text', 'seo', 'SEO title template', false),
+('seo_title_template', '{page_title} | YBF Studio', 'text', 'seo', 'SEO title template', false),
 ('seo_description_template', '{page_description} - Professional audio services', 'text', 'seo', 'SEO description template', false),
 ('seo_keywords', 'audio, music, beats, production, services', 'text', 'seo', 'Default SEO keywords', false),
 ('google_analytics_id', '', 'text', 'seo', 'Google Analytics ID', false),
@@ -285,9 +285,9 @@ ON CONFLICT (setting_key) DO NOTHING;
 
 -- Admin Users (initial admin)
 INSERT INTO admin_users (email, name, role, permissions) VALUES
-('admin@audioserviceapp.com', 'System Administrator', 'admin', '{"all": true}'),
-('editor@audioserviceapp.com', 'Content Editor', 'editor', '{"beats": true, "blog": true, "services": true, "orders": true, "analytics": true}'),
-('viewer@audioserviceapp.com', 'Viewer', 'viewer', '{"analytics": true, "orders": true}')
+('jmaconny@ybfstudio.com', 'System Administrator', 'admin', '{"all": true}'),
+('jmaconny@ybfstudio.com', 'Content Editor', 'editor', '{"beats": true, "blog": true, "services": true, "orders": true, "analytics": true}'),
+('jmaconny@ybfstudio.com', 'Viewer', 'viewer', '{"analytics": true, "orders": true}')
 ON CONFLICT (email) DO NOTHING;
 
 -- =====================================================

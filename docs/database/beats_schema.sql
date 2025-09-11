@@ -1,4 +1,4 @@
--- Beats table schema for AudioServiceApp admin dashboard
+-- Beats table schema for YBF Studio admin dashboard
 -- This schema supports the snippet + full track download system
 
 -- Enable UUID extension if not already enabled
@@ -111,7 +111,7 @@ ON CONFLICT (title, artist, deleted_at) DO NOTHING;
 -- GRANT EXECUTE ON FUNCTION get_beat_stats() TO authenticated;
 
 -- Comments for documentation
-COMMENT ON TABLE beats IS 'Stores beat information for the AudioServiceApp marketplace';
+COMMENT ON TABLE beats IS 'Stores beat information for the YBF Studio marketplace';
 COMMENT ON COLUMN beats.preview_url IS 'SoundCloud URL for 30-60 second preview snippet';
 COMMENT ON COLUMN beats.full_track_url IS 'Google Drive URL for full track download after purchase';
 COMMENT ON COLUMN beats.license_types IS 'JSON object containing pricing for different license types';

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Production Build Test for AudioServiceApp
+ * Production Build Test for YBF Studio
  * Tests the production build before deployment
  */
 
@@ -9,7 +9,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-console.log('🧪 AudioServiceApp Production Build Test\n');
+console.log('🧪 YBF Studio Production Build Test\n');
 
 // Test 1: Build Process
 console.log('🏗️  Testing build process...');

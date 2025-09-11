@@ -35,7 +35,7 @@
 
 #### **✅ Created `lib/contact-config.ts`**
 - **Contact Information**: Single source for all contact details
-  - Email: contact@audioservice.app
+  - Email: jmaconny@ybfstudio.com
   - Business Hours: Monday - Friday, 9 AM - 6 PM EST
   - Response Time: Within 24 hours
 - **Social Media**: Active/inactive status management

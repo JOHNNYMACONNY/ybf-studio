@@ -23,6 +23,7 @@ import { PremiumContainer } from '../components/ui/PremiumContainer';
 import Card from '../components/ui/Card';
 import { getHeroImage } from '../lib/hero-config';
 import { supabase } from '../lib/supabase';
+import { getFeaturedBlogPosts, BlogPostCard } from '../lib/blog';
 import { Service } from '../types/service';
 import { Beat } from '../types/beat';
 
@@ -47,36 +48,16 @@ const testimonials = [
   {
     name: 'Mike Rodriguez',
     role: 'Record Label Owner',
-    quote: 'We\'ve been working with AudioService for months now. Consistent quality and reliable delivery every time.'
-  }
-];
-
-const blogPosts = [
-  {
-    title: 'How to Choose the Right Beat for Your Song',
-    excerpt: 'Learn the key factors to consider when selecting a beat that matches your artistic vision.',
-    category: 'Production Tips',
-    readTime: '5 min read'
-  },
-  {
-    title: 'The Art of Mixing: A Beginner\'s Guide',
-    excerpt: 'Essential mixing techniques that every producer should know to create professional-sounding tracks.',
-    category: 'Tutorials',
-    readTime: '8 min read'
-  },
-  {
-    title: 'Mastering Your Music: What You Need to Know',
-    excerpt: 'Understanding the mastering process and how it can make or break your final product.',
-    category: 'Education',
-    readTime: '6 min read'
+    quote: 'We\'ve been working with YBF Studio for months now. Consistent quality and reliable delivery every time.'
   }
 ];
 
 interface HomeProps {
   beats: Beat[];
   services: Service[];
+  blogPosts: BlogPostCard[];
 }
-const Home: React.FC<HomeProps> = ({ beats, services }) => {
+const Home: React.FC<HomeProps> = ({ beats, services, blogPosts }) => {
   const heroImage = getHeroImage('home');
   const { playBeat } = useUnifiedAudio();
   const { addToCart } = useCart();
@@ -270,32 +251,46 @@ const Home: React.FC<HomeProps> = ({ beats, services }) => {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {blogPosts.map((post, index) => (
-            <div key={index} className="card-3d-spline rounded-xl p-6">
-              <div className="mb-4">
-                <span className="text-3d-spline-accent text-sm font-semibold">
-                  {post.category}
-                </span>
-                <span className="text-3d-spline-text-muted text-sm ml-2">
-                  {post.readTime}
-                </span>
-              </div>
-              <h3 className="text-xl font-bold text-3d-spline-text-primary mb-2">
-                {post.title}
-              </h3>
-              <p className="text-3d-spline-text-secondary mb-4">
-                {post.excerpt}
-              </p>
-              <Button 
-                variant="secondary"
-                className="btn-3d-spline-accent text-white font-semibold px-6 py-2 rounded-lg"
-              >
-                Read More
-              </Button>
+        {blogPosts.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {blogPosts.map((post) => (
+              <Link key={post.id} href={`/blog/${post.slug}`}>
+                <div className="card-3d-spline rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform duration-300">
+                  <div className="mb-4">
+                    <span className="text-3d-spline-accent text-sm font-semibold">
+                      {post.category}
+                    </span>
+                    <span className="text-3d-spline-text-muted text-sm ml-2">
+                      {post.readTime}
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-3d-spline-text-primary mb-2">
+                    {post.title}
+                  </h3>
+                  <p className="text-3d-spline-text-secondary mb-4">
+                    {post.excerpt}
+                  </p>
+                  <Button 
+                    variant="secondary"
+                    className="btn-3d-spline-accent text-white font-semibold px-6 py-2 rounded-lg"
+                  >
+                    Read More
+                  </Button>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-3d-spline-text-muted">
+              <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <p className="text-lg font-medium">No blog posts available</p>
+              <p className="text-sm mt-2">Check back soon for new content!</p>
             </div>
-          ))}
-        </div>
+          </div>
+        )}
         
         <div className="text-center mt-8">
           <Link href="/blog">
@@ -364,10 +359,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.error('Error fetching home page services:', servicesError);
   }
 
+  // Fetch featured blog posts
+  let blogPosts: BlogPostCard[] = [];
+  try {
+    blogPosts = await getFeaturedBlogPosts(3);
+  } catch (error) {
+    console.error('Error fetching featured blog posts:', error);
+  }
+
   return {
     props: {
       beats: beats || [],
       services: services || [],
+      blogPosts: blogPosts || [],
       use3DSplineBackground: true,
     },
   };

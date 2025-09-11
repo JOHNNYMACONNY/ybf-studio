@@ -31,7 +31,7 @@ export const FloatingPlayer: React.FC = () => {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h4 className="font-semibold text-white">Demo Track</h4>
-            <p className="text-gray-400 text-sm">AudioServiceApp</p>
+            <p className="text-gray-400 text-sm">YBF Studio</p>
           </div>
           <button 
             onClick={() => setIsPlaying(!isPlaying)}

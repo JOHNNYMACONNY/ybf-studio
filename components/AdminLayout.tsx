@@ -2,7 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { signOut } from 'next-auth/react';
 import Image from 'next/image';
-import { LayoutDashboard, Music, ShoppingCart, FileText, Settings, BarChart3, Monitor, LogOut, Users } from 'lucide-react';
+import { LayoutDashboard, Music, ShoppingCart, FileText, Settings, BarChart3, Monitor, LogOut, Users, Bot } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 
 interface AdminLayoutProps {
@@ -13,6 +13,7 @@ const navLinks = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard, implemented: true },
   { name: 'Beats', href: '/admin/beats', icon: Music, implemented: true },
   { name: 'Blog', href: '/admin/blog', icon: FileText, implemented: true },
+  { name: 'Blog Automation', href: '/admin/automate-blog', icon: Bot, implemented: true },
   { name: 'Services', href: '/admin/services', icon: Settings, implemented: true },
   { name: 'FAQ', href: '/admin/faq', icon: FileText, implemented: true },
   { name: 'Orders', href: '/admin/orders', icon: ShoppingCart, implemented: true },
@@ -52,7 +53,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <div className="flex items-center gap-2 mb-6">
           <Image
             src="/assets/logo/main-logo.png"
-            alt="AudioService Logo"
+            alt="YBF Studio Logo"
             width={96}
             height={24}
             className="h-6 w-auto"

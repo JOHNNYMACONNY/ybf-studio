@@ -57,7 +57,7 @@ This guide provides step-by-step instructions for setting up Google Calendar API
 
 2. **Create New Project**
    - Click "Select a project" → "New Project"
-   - **Project Name**: `AudioServiceApp-Consultations` (or your preferred name)
+   - **Project Name**: `YBF Studio-Consultations` (or your preferred name)
    - **Project ID**: Auto-generated (e.g., `audioserviceapp-consultations-123456`)
    - **Organization**: Select your organization (if applicable)
    - Click "Create"
@@ -93,7 +93,7 @@ This guide provides step-by-step instructions for setting up Google Calendar API
    - Click "Create"
 
 3. **App Information**
-   - **App name**: `AudioServiceApp Consultations`
+   - **App name**: `YBF Studio Consultations`
    - **User support email**: Your support email address
    - **App logo**: Upload your app logo (optional)
    - **App domain**: Your domain (e.g., `audioserviceapp.com`)
@@ -125,7 +125,7 @@ This guide provides step-by-step instructions for setting up Google Calendar API
 
 2. **Application Type Selection**
    - **Application type**: Select "Web application"
-   - **Name**: `AudioServiceApp Consultation System`
+   - **Name**: `YBF Studio Consultation System`
 
 3. **Authorized Redirect URIs**
    - **Authorized redirect URIs**: Add the following URIs:
@@ -792,7 +792,7 @@ describe('GoogleCalendarService', () => {
       const eventData = {
         projectName: 'Test Project',
         customerName: 'Test Customer',
-        customerEmail: 'test@example.com',
+        customerEmail: 'jmaconny@ybfstudio.com',
         consultationDate: new Date().toISOString(),
         duration: 15,
         description: 'Test consultation',
@@ -810,7 +810,7 @@ describe('GoogleCalendarService', () => {
       const eventData = {
         projectName: '',
         customerName: 'Test Customer',
-        customerEmail: 'test@example.com',
+        customerEmail: 'jmaconny@ybfstudio.com',
         consultationDate: new Date().toISOString(),
         duration: 15,
         description: 'Test consultation',
@@ -849,7 +849,7 @@ describe('/api/consultations/calendar/event', () => {
       body: {
         projectName: 'Test Project',
         customerName: 'Test Customer',
-        customerEmail: 'test@example.com',
+        customerEmail: 'jmaconny@ybfstudio.com',
         consultationDate: new Date().toISOString(),
         duration: 15,
         description: 'Test consultation',

@@ -60,7 +60,7 @@ STRIPE_WEBHOOK_SECRET=your-production-stripe-webhook-secret
 
 # Email
 SENDGRID_API_KEY=your-production-sendgrid-api-key
-EMAIL_FROM=noreply@your-domain.com
+EMAIL_FROM=jmaconny@ybfstudio.com
 
 # Analytics & Monitoring
 GOOGLE_ANALYTICS_ID=your-ga-id

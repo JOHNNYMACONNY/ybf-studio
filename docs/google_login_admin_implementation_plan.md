@@ -36,7 +36,7 @@ GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 
 # Admin Configuration
-ADMIN_EMAILS=your-admin-email@example.com
+ADMIN_EMAILS=jmaconny@ybfstudio.com
 
 # Other existing variables...
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
@@ -243,7 +243,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
         <div className="flex items-center gap-2 mb-6">
           <img 
             src="/assets/logo/main-logo.png" 
-            alt="AudioService Logo" 
+            alt="YBF Studio Logo" 
             className="h-6 w-auto"
           />
           <span className="font-semibold text-white">Admin Panel</span>
@@ -512,7 +512,7 @@ GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 
 # Admin Configuration
-ADMIN_EMAILS=ljkeoni@gmail.com
+ADMIN_EMAILS=jmaconny@ybfstudio.com
 
 # Add production redirect URI to Google Cloud Console:
 # https://your-domain.com/api/auth/callback/google

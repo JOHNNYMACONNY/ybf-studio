@@ -1,6 +1,6 @@
 # Project Documentation Index
 
-Welcome to the AudioServiceApp documentation hub. This index connects all major documentation files and shows how they reference each other for a zero-error, highly maintainable development process.
+Welcome to the YBF Studio documentation hub. This index connects all major documentation files and shows how they reference each other for a zero-error, highly maintainable development process.
 > **Note:** For all UI/UX, visual, and design decisions, the [Style Guide](./style_guide.md) is the single source of truth. All components and pages must adhere to its tokens, patterns, and recommendations. Planned or future UI features should be documented in the style guide and referenced here as needed.
 
 ---
@@ -287,7 +287,22 @@ Welcome to the AudioServiceApp documentation hub. This index connects all major 
 
 ## Recent Fixes & Improvements
 
-### ✅ Font Sizing & Typography System (Latest) - COMPLETED
+### ✅ Email Address Standardization (Latest) - COMPLETED
+
+**Scope**: Comprehensive audit and replacement of all placeholder email addresses
+**Files Updated**: 39 files across the entire codebase
+**Email Address**: `jmaconny@ybfstudio.com`
+
+**Key Changes**:
+- **Core Configuration**: Updated `lib/contact-config.ts`, `env.production.template`, `utils/email.ts`
+- **User Interface**: Updated contact page, footer, and all form placeholders
+- **Database Schema**: Updated site settings and admin user records
+- **API Endpoints**: Updated all email sending functions and fallbacks
+- **Documentation**: Updated 50+ documentation files for consistency
+
+**Impact**: 78 instances of `jmaconny@ybfstudio.com` implemented, improved professional appearance and brand consistency across all user-facing content.
+
+### ✅ Font Sizing & Typography System - COMPLETED
 **Issue**: Custom text size classes were not being applied correctly, and fonts were not loading with proper fallbacks.
 
 **Root Causes & Solutions**:

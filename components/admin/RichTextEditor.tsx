@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useEditor, EditorContent } from '@tiptap/react';
+import dynamic from 'next/dynamic';
+import { useEditor as useTipTapEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import Link from '@tiptap/extension-link';
-import Image from '@tiptap/extension-image';
-import { 
-  Bold, 
-  Italic, 
-  Underline, 
-  List, 
-  ListOrdered, 
-  Heading1, 
-  Heading2, 
-  Heading3, 
-  Link as LinkIcon, 
+
+// Import icons statically (they're just SVG components)
+import {
+  Bold,
+  Italic,
+  Underline,
+  List,
+  ListOrdered,
+  Heading1,
+  Heading2,
+  Heading3,
+  Link as LinkIcon,
   Image as ImageIcon,
   Quote,
   Code,
@@ -27,51 +28,98 @@ interface RichTextEditorProps {
   className?: string;
 }
 
-const RichTextEditor: React.FC<RichTextEditorProps> = ({
+// Create a client-side only editor component
+const RichTextEditorClient: React.FC<RichTextEditorProps> = ({
   content,
   onChange,
   placeholder = 'Start writing your blog post...',
   className = ''
 }) => {
+  // State for dynamic imports and editor configuration
+  const [extensions, setExtensions] = useState<any[]>([StarterKit]); // Start with basic extensions
+  const [isTipTapLoaded, setIsTipTapLoaded] = useState(false);
+  const [EditorContentComponent, setEditorContentComponent] = useState<any>(null);
+
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
   const [showImageInput, setShowImageInput] = useState(false);
   const [imageUrl, setImageUrl] = useState('');
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Link.configure({
-        openOnClick: false,
-        HTMLAttributes: {
-          class: 'text-blue-500 hover:text-blue-700 underline'
-        }
-      }),
-      Image.configure({
-        HTMLAttributes: {
-          class: 'max-w-full h-auto rounded-lg'
-        }
-      })
-    ],
-    content: content,
-    onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
-    },
+  // Always call useEditor hook with consistent configuration
+  const editor = useTipTapEditor({
+    extensions: extensions,
+    content: isTipTapLoaded ? content : '<p></p>',
+    onUpdate: isTipTapLoaded ? ({ editor }: any) => onChange(editor.getHTML()) : undefined,
     editorProps: {
       attributes: {
         class: 'prose prose-neutral max-w-none focus:outline-none min-h-[300px] p-4'
       }
-    }
+    },
+    immediatelyRender: false, // Prevent SSR hydration mismatches
+    editable: true
   });
 
   useEffect(() => {
-    if (editor && content !== editor.getHTML()) {
+    // Load additional TipTap extensions dynamically on client side
+    const loadAdditionalExtensions = async () => {
+      try {
+        // Load extension modules
+        const [reactModule, linkModule, imageModule] = await Promise.all([
+          import('@tiptap/react'),
+          import('@tiptap/extension-link'),
+          import('@tiptap/extension-image')
+        ]);
+
+        const link = linkModule.default;
+        const image = imageModule.default;
+
+        // Configure additional extensions
+        const additionalExtensions = [
+          link.configure({
+            openOnClick: false,
+            HTMLAttributes: {
+              class: 'text-blue-500 hover:text-blue-700 underline'
+            }
+          }),
+          image.configure({
+            HTMLAttributes: {
+              class: 'max-w-full h-auto rounded-lg'
+            }
+          })
+        ];
+
+        // Add additional extensions to existing basic extensions
+        setExtensions(prevExtensions => [...prevExtensions, ...additionalExtensions]);
+        setEditorContentComponent(() => reactModule.EditorContent);
+        setIsTipTapLoaded(true);
+      } catch (error) {
+        console.error('Failed to load additional TipTap extensions:', error);
+        setIsTipTapLoaded(false);
+      }
+    };
+
+    loadAdditionalExtensions();
+  }, []);
+
+  // Update editor content when it changes externally
+  useEffect(() => {
+    if (editor && isTipTapLoaded && content !== editor.getHTML()) {
       editor.commands.setContent(content);
     }
-  }, [content, editor]);
+  }, [content, editor, isTipTapLoaded]);
 
+  // Show loading state until TipTap is loaded
+  if (!isTipTapLoaded || !EditorContentComponent) {
+    return <div className="animate-pulse bg-neutral-800 rounded-lg h-[300px] flex items-center justify-center">
+      <div className="text-neutral-400">Loading editor...</div>
+    </div>;
+  }
+
+  // Show loading state until editor is initialized
   if (!editor) {
-    return <div className="animate-pulse bg-neutral-800 rounded-lg h-[300px]"></div>;
+    return <div className="animate-pulse bg-neutral-800 rounded-lg h-[300px] flex items-center justify-center">
+      <div className="text-neutral-400">Initializing editor...</div>
+    </div>;
   }
 
   const addLink = () => {
@@ -90,11 +138,11 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     }
   };
 
-  const ToolbarButton = ({ 
-    onClick, 
-    isActive = false, 
-    children, 
-    title 
+  const ToolbarButton = ({
+    onClick,
+    isActive = false,
+    children,
+    title
   }: {
     onClick: () => void;
     isActive?: boolean;
@@ -104,8 +152,8 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
     <button
       onClick={onClick}
       className={`p-2 rounded-md transition-colors ${
-        isActive 
-          ? 'bg-amber-500 text-black' 
+        isActive
+          ? 'bg-amber-500 text-black'
           : 'text-neutral-400 hover:text-neutral-100 hover:bg-neutral-700'
       }`}
       title={title}
@@ -127,7 +175,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           >
             <Bold className="h-4 w-4" />
           </ToolbarButton>
-          
+
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleItalic().run()}
             isActive={editor.isActive('italic')}
@@ -135,7 +183,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           >
             <Italic className="h-4 w-4" />
           </ToolbarButton>
-          
+
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleUnderline().run()}
             isActive={editor.isActive('underline')}
@@ -154,7 +202,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           >
             <Heading1 className="h-4 w-4" />
           </ToolbarButton>
-          
+
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
             isActive={editor.isActive('heading', { level: 2 })}
@@ -162,7 +210,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           >
             <Heading2 className="h-4 w-4" />
           </ToolbarButton>
-          
+
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
             isActive={editor.isActive('heading', { level: 3 })}
@@ -181,7 +229,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           >
             <List className="h-4 w-4" />
           </ToolbarButton>
-          
+
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             isActive={editor.isActive('orderedList')}
@@ -200,7 +248,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           >
             <Quote className="h-4 w-4" />
           </ToolbarButton>
-          
+
           <ToolbarButton
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
             isActive={editor.isActive('codeBlock')}
@@ -219,7 +267,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           >
             <LinkIcon className="h-4 w-4" />
           </ToolbarButton>
-          
+
           <ToolbarButton
             onClick={() => setShowImageInput(!showImageInput)}
             title="Add Image"
@@ -236,7 +284,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
           >
             <Undo className="h-4 w-4" />
           </ToolbarButton>
-          
+
           <ToolbarButton
             onClick={() => editor.chain().focus().redo().run()}
             title="Redo"
@@ -310,16 +358,27 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
 
       {/* Editor Content */}
       <div className="bg-neutral-900">
-        <EditorContent 
-          editor={editor} 
-          className="min-h-[300px] max-h-[600px] overflow-y-auto"
-        />
+        {EditorContentComponent && (
+          <EditorContentComponent
+            editor={editor}
+            className="min-h-[300px] max-h-[600px] overflow-y-auto"
+          />
+        )}
         {!editor.getText().trim() && (
           <div className="absolute top-0 left-0 p-4 text-neutral-500 pointer-events-none">
             {placeholder}
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+// Main component with dynamic loading
+const RichTextEditor: React.FC<RichTextEditorProps> = (props) => {
+  return (
+    <div className="relative">
+      <RichTextEditorClient {...props} />
     </div>
   );
 };

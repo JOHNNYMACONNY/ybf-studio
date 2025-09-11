@@ -46,7 +46,7 @@ const Portfolio: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Portfolio | AudioService</title>
+        <title>Portfolio | YBF Studio</title>
         <meta name="description" content="Explore our portfolio of music production work and client projects." />
       </Head>
 
@@ -129,10 +129,7 @@ const Portfolio: React.FC = () => {
               <p className="text-xl text-3d-spline-text-secondary mb-8">Let&apos;s work together to bring your vision to life.</p>
               <div className="mt-8">
                 <Link href="/contact" passHref>
-                  <Button 
-                    variant="primary" 
-                    className="btn-3d-spline text-white font-semibold px-8 py-4 rounded-lg"
-                  >
+                  <Button variant="primary" size="lg">
                     Get in Touch
                   </Button>
                 </Link>

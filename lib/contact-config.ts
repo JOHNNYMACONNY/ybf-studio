@@ -17,7 +17,7 @@ export interface SocialMedia {
 }
 
 export const CONTACT_INFO: ContactInfo = {
-  email: 'contact@audioservice.app',
+  email: 'jmaconny@ybfstudio.com',
   businessHours: 'Monday - Friday, 9 AM - 6 PM EST',
   responseTime: 'Within 24 hours'
 };

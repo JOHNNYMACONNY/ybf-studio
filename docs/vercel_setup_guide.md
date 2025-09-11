@@ -13,12 +13,12 @@ Set all of these for Production (and Preview if needed):
 - NEXT_PUBLIC_SUPABASE_ANON_KEY = <supabase anon key>
 - SUPABASE_SERVICE_ROLE_KEY = <supabase service role>
 - SENDGRID_API_KEY = <sendgrid key>
-- FROM_EMAIL = noreply@yourdomain.com
+- FROM_EMAIL = jmaconny@ybfstudio.com
 - SEND_STATUS_UPDATE_EMAIL = false (set true to enable emails)
 - STRIPE_SECRET_KEY = <stripe secret>
 - NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY = <stripe publishable>
 - STRIPE_WEBHOOK_SECRET = <stripe webhook secret>
-- ADMIN_EMAILS = admin@yourdomain.com,other@yourdomain.com
+- ADMIN_EMAILS = jmaconny@ybfstudio.com
 - (optional) NEXT_PUBLIC_GA_ID, NEXT_PUBLIC_SENTRY_DSN, ANALYZE
 
 ## 3. Domains

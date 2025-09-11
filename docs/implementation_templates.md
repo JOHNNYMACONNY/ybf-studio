@@ -7,7 +7,7 @@
 ---
 
 ## Purpose
-Ready-to-use code templates and examples for common implementation tasks in the AudioServiceApp.
+Ready-to-use code templates and examples for common implementation tasks in the YBF Studio.
 
 ---
 
@@ -103,7 +103,7 @@ const PageName: React.FC<PageNameProps> = ({ }) => {
   return (
     <>
       <Head>
-        <title>Page Title | AudioService</title>
+        <title>Page Title | YBF Studio</title>
         <meta name="description" content="Page description" />
       </Head>
       <Layout>
@@ -206,7 +206,7 @@ const Header: React.FC = () => {
       <div className="mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <Music className="h-6 w-6 text-amber-500" />
-          <span className="text-card-title">AudioService</span>
+          <span className="text-card-title">YBF Studio</span>
         </Link>
         <nav className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
@@ -269,7 +269,7 @@ const Header: React.FC = () => {
       <div className="mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <Music className="h-6 w-6 text-amber-500" />
-          <span className="text-card-title">AudioService</span>
+          <span className="text-card-title">YBF Studio</span>
         </Link>
 
         {/* Desktop Navigation */}
@@ -482,4 +482,4 @@ pages/
 
 ---
 
-**Note:** All templates follow the established patterns in the AudioServiceApp. Always refer to the [Style Guide](./style_guide.md) for consistent styling and the [Best Practices](./best_practices.md) for coding standards. 
+**Note:** All templates follow the established patterns in the YBF Studio. Always refer to the [Style Guide](./style_guide.md) for consistent styling and the [Best Practices](./best_practices.md) for coding standards. 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * AudioServiceApp Production Setup Script
+ * YBF Studio Production Setup Script
  * Automates the production environment configuration
  */
 
@@ -16,7 +16,7 @@ const rl = readline.createInterface({
 
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
-console.log('🚀 AudioServiceApp Production Setup\n');
+console.log('🚀 YBF Studio Production Setup\n');
 console.log('This script will help you configure your production environment.\n');
 
 async function setupProduction() {
@@ -60,8 +60,8 @@ async function setupProduction() {
 
     console.log('\n📧 Email Configuration:');
     config.BREVO_API_KEY = await question('Brevo API Key: ');
-    config.FROM_EMAIL = await question('From Email (noreply@yourdomain.com): ');
-    config.ADMIN_NOTIFICATIONS_EMAIL = await question('Admin Notifications Email: ');
+    config.FROM_EMAIL = await question('From Email (jmaconny@ybfstudio.com): ');
+    config.ADMIN_NOTIFICATIONS_EMAIL = await question('Admin Notifications Email (jmaconny@ybfstudio.com): ');
 
     console.log('\n☁️  Cloudflare R2 Configuration (Optional):');
     const useR2 = await question('Configure Cloudflare R2? (y/N): ');

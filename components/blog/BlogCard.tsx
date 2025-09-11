@@ -16,7 +16,12 @@ interface BlogCardProps {
 
 const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
   return (
-    <Card className="p-0 overflow-hidden group">
+    <div 
+      className="card-3d-spline rounded-xl p-0 overflow-hidden group hover:border-emerald-500/35 transition-all duration-300"
+      style={{
+        background: 'linear-gradient(135deg, rgba(38, 38, 38, 0.4) 0%, rgba(16, 185, 129, 0.05) 50%, rgba(38, 38, 38, 0.3) 100%)'
+      }}
+    >
       <Link href={`/blog/${post.slug}`}>
         <Image
           src={post.imageUrl}
@@ -26,15 +31,15 @@ const BlogCard: React.FC<BlogCardProps> = ({ post }) => {
           className="w-full h-48 object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="p-6">
-          <p className="text-sm font-medium text-amber">{post.category}</p>
-          <h3 className="mt-2 font-semibold text-card-title">{post.title}</h3>
-          <p className="mt-2 text-sm text-neutral-400">{post.excerpt}</p>
-          <div className="mt-4 flex items-center gap-2 text-sm font-medium text-amber">
-            Read More <ArrowRight className="h-4 w-4" />
+          <p className="text-sm font-medium text-emerald-400">{post.category}</p>
+          <h3 className="mt-2 font-semibold text-white group-hover:text-emerald-300 transition-colors duration-300">{post.title}</h3>
+          <p className="mt-2 text-sm text-neutral-300">{post.excerpt}</p>
+          <div className="mt-4 flex items-center gap-2 text-sm font-medium text-emerald-400 group-hover:text-emerald-300 transition-colors duration-300">
+            Read More <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform duration-300" />
           </div>
         </div>
       </Link>
-    </Card>
+    </div>
   );
 };
 

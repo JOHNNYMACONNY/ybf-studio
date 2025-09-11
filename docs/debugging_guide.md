@@ -7,7 +7,7 @@
 ---
 
 ## Purpose
-Comprehensive guide for debugging common issues and resolving errors in the AudioServiceApp development process.
+Comprehensive guide for debugging common issues and resolving errors in the YBF Studio development process.
 
 ---
 

@@ -1,5 +1,5 @@
 // utils/security-compliance.ts
-// Security compliance utility functions for AudioServiceApp
+// Security compliance utility functions for YBF Studio
 // Future: Expand to check for all OWASP Top 10 vulnerabilities, GDPR, etc.
 
 export interface ComplianceCheckResult {

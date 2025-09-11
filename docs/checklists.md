@@ -143,7 +143,7 @@ All actionable checklists for development, QA, launch, and post-launch.
          <div className="mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
            <Link href="/" className="flex items-center gap-2">
              <Music className="h-6 w-6 text-amber-500" />
-             <span className="text-card-title">AudioService</span>
+             <span className="text-card-title">YBF Studio</span>
            </Link>
    
            {/* Desktop Navigation */}
@@ -811,7 +811,7 @@ const Header: React.FC = () => {
       <div className="mx-auto max-w-7xl flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
           <Music className="h-6 w-6 text-amber-500" />
-          <span className="text-card-title">AudioService</span>
+          <span className="text-card-title">YBF Studio</span>
         </Link>
         
         {/* Desktop Navigation */}

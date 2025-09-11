@@ -22,7 +22,7 @@ const Header: React.FC = () => {
         <Link href="/" className="flex items-center gap-2">
           <img 
             src="/assets/logo/main-logo.png" 
-            alt="AudioService Logo" 
+            alt="YBF Studio Logo" 
             className="h-12 w-auto sm:h-14"
           />
           <img
@@ -38,7 +38,7 @@ const Header: React.FC = () => {
             <Link
               key={link.name}
               href={link.href}
-              className="text-sm font-medium text-neutral-400 hover:text-neutral-100 transition-colors"
+              className="text-sm font-medium text-3d-spline-text-secondary hover:text-3d-spline-text-primary transition-colors duration-300"
             >
               {link.name}
             </Link>
@@ -48,12 +48,12 @@ const Header: React.FC = () => {
         <div className="flex items-center gap-4">
           <button
             onClick={toggleCart}
-            className="relative rounded-full p-2 hover:bg-neutral-800 transition-colors focus-visible:ring focus-visible:ring-neutral-400 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            className="relative rounded-full p-2 hover:bg-3d-spline-accent/20 transition-colors duration-300 focus-visible:ring focus-visible:ring-3d-spline-accent/50 min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label={`Shopping cart with ${cartCount} items`}
           >
-            <ShoppingCart className="h-5 w-5 text-neutral-400" />
+            <ShoppingCart className="h-5 w-5 text-3d-spline-text-secondary hover:text-3d-spline-accent transition-colors duration-300" />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-xs font-bold text-white">
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-3d-spline-accent text-xs font-bold text-white shadow-lg">
                 {cartCount}
               </span>
             )}

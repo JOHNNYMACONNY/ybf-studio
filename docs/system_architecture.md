@@ -1,8 +1,8 @@
-# AudioService Snippet System - System Architecture
+# YBF Studio Snippet System - System Architecture
 
 ## 🏗️ **Overview**
 
-The AudioService Snippet System is a modern, scalable web application built with Next.js, TypeScript, and React. It provides a professional beat selling platform with industry-standard preview functionality, secure payment processing, and automated email delivery.
+The YBF Studio Snippet System is a modern, scalable web application built with Next.js, TypeScript, and React. It provides a professional beat selling platform with industry-standard preview functionality, secure payment processing, and automated email delivery.
 
 ## 🎯 **System Goals**
 
@@ -72,7 +72,7 @@ The AudioService Snippet System is a modern, scalable web application built with
 ## 📁 **File Structure**
 
 ```
-AudioServiceApp/
+YBF Studio/
 ├── pages/                          # Next.js pages and API routes
 │   ├── beats.tsx                   # Main beats store page
 │   ├── qa.tsx                      # QA dashboard

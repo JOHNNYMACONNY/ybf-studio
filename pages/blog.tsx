@@ -11,34 +11,48 @@ import Button from '../components/ui/Button';
 import AnimatedSection from '../components/ui/AnimatedSection';
 import { getHeroImage } from '../lib/hero-config';
 
-// Placeholder Data
-const allPosts = [
-  { title: '5 Common Mistakes to Avoid When Mixing Vocals', excerpt: 'Learn how to get clean, professional-sounding vocals by avoiding these simple but critical errors.', slug: 'mixing-vocals-mistakes', imageUrl: '/images/blog1.jpg', category: 'Mixing Tips' },
-  { title: 'How to Choose the Right Beat for Your Song', excerpt: 'Your beat selection can make or break a track. Here’s our guide to finding the perfect instrumental.', slug: 'choosing-the-right-beat', imageUrl: '/images/blog2.jpg', category: 'Beat Making' },
-  { title: 'The Ultimate Guide to Compression in Music Production', excerpt: 'Understand the ins and outs of compression and how to use it to add punch and clarity to your tracks.', slug: 'guide-to-compression', imageUrl: '/images/blog3.jpg', category: 'Mixing Tips' },
-  { title: 'Music Licensing Explained: What Artists Need to Know', excerpt: 'Navigating the world of music licensing can be confusing. We break down the essentials for you.', slug: 'music-licensing-explained', imageUrl: '/images/blog4.jpg', category: 'Music Business' },
-  { title: 'Creating a Hit: The Art of Song Arrangement', excerpt: 'Learn how to structure your song to keep listeners engaged from the first beat to the final fade-out.', slug: 'song-arrangement', imageUrl: '/images/blog5.jpg', category: 'Beat Making' },
-  { title: 'Marketing Your Music on a Budget', excerpt: 'You don\'t need a massive budget to get your music heard. Here are some effective strategies for indie artists.', slug: 'music-marketing-budget', imageUrl: '/images/blog6.jpg', category: 'Music Business' },
-];
+interface BlogPost {
+  id: string;
+  title: string;
+  excerpt: string;
+  slug: string;
+  featured_image: string;
+  published_at: string;
+  categories: string[];
+}
 
-const categories = ['All', 'Mixing Tips', 'Beat Making', 'Music Business'];
+interface BlogPageProps {
+  posts: BlogPost[];
+  categories: string[];
+}
 
-const Blog: React.FC = () => {
+// Categories will be fetched from the database in getServerSideProps
+
+const Blog: React.FC<BlogPageProps> = ({ posts }) => {
   const [categoryFilter, setCategoryFilter] = useState('All');
 
   const filteredPosts = useMemo(() => {
+    // Transform database posts to match BlogCard interface
+    const transformedPosts = posts.map(post => ({
+      title: post.title,
+      excerpt: post.excerpt,
+      slug: post.slug,
+      imageUrl: (post.featured_image && String(post.featured_image).trim()) ? post.featured_image : '/assets/blog-beat-selection.jpg',
+      category: (post.categories && post.categories[0]) || 'General'
+    }));
+
     if (categoryFilter === 'All') {
-      return allPosts;
+      return transformedPosts;
     }
-    return allPosts.filter(post => post.category === categoryFilter);
-  }, [categoryFilter]);
+    return transformedPosts.filter(post => post.category === categoryFilter);
+  }, [categoryFilter, posts]);
 
   const heroImage = getHeroImage('blog');
 
   return (
     <>
       <Head>
-        <title>Blog | AudioService</title>
+        <title>Blog | YBF Studio</title>
         <meta name="description" content="Tips, tutorials, and insights to help you on your music journey." />
       </Head>
 
@@ -71,19 +85,99 @@ const Blog: React.FC = () => {
         {/* Blog Posts Section */}
         <div className="card-3d-spline rounded-2xl p-8 mb-12">
           <AnimatedSection animation="fadeIn" delay={100}>
-            <div className="mb-12 flex justify-center">
-              <div className="w-full max-w-xs">
-                <Select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-                  {categories.map(c => <option key={c} value={c}>Filter by Category: {c}</option>)}
-                </Select>
+            <div className="mb-12 flex flex-col items-center gap-6">
+              {/* 3D Spline Filter Container */}
+              <div className="w-full max-w-md">
+                <div className="card-3d-spline rounded-2xl p-6" style={{
+                  background: 'linear-gradient(135deg, rgba(38, 38, 38, 0.4) 0%, rgba(16, 185, 129, 0.05) 50%, rgba(38, 38, 38, 0.3) 100%)'
+                }}>
+                  <div className="space-y-4">
+                    {/* Filter Label */}
+                    <div className="text-center">
+                      <h3 className="text-lg font-semibold text-3d-spline-text-primary mb-1">
+                        Filter by Category
+                      </h3>
+                      <p className="text-sm text-3d-spline-text-muted">
+                        {filteredPosts.length} post{filteredPosts.length !== 1 ? 's' : ''} found
+                      </p>
+                    </div>
+                    
+                    {/* 3D Spline Select */}
+                    <div className="relative">
+                      <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        className="w-full appearance-none rounded-xl bg-black/40 border border-emerald-500/30 px-4 py-3 pr-10 text-white focus:outline-none focus:ring-2 focus:ring-emerald-400/50 focus:border-emerald-400/60 transition-all duration-300 backdrop-blur-sm hover:border-emerald-400/40"
+                        style={{
+                          background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(16, 185, 129, 0.05) 100%)',
+                          boxShadow: '0 4px 15px rgba(16, 185, 129, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+                        }}
+                      >
+                        {categories.map(c => (
+                          <option key={c} value={c} className="bg-neutral-800 text-white">
+                            {c}
+                          </option>
+                        ))}
+                      </select>
+                      
+                      {/* Custom Chevron Icon */}
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg 
+                          className="w-5 h-5 text-emerald-400 transition-transform duration-200" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </div>
+                    </div>
+                    
+                    {/* Clear Filter Button */}
+                    {categoryFilter !== 'All' && (
+                      <div className="text-center">
+                        <button
+                          onClick={() => setCategoryFilter('All')}
+                          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 hover:border-emerald-400/50 rounded-lg transition-all duration-300 backdrop-blur-sm"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                          Clear Filter
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {filteredPosts.map((post) => (
-                <BlogCard key={post.title} post={post} />
-              ))}
-            </div>
+            {filteredPosts.length > 0 ? (
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                {filteredPosts.map((post) => (
+                  <BlogCard key={post.title} post={post} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <div className="text-6xl mb-4">🔍</div>
+                <h3 className="text-xl font-semibold text-white mb-2">No posts found</h3>
+                <p className="text-neutral-400 mb-4">
+                  {categoryFilter !== 'All' 
+                    ? `No posts found in the "${categoryFilter}" category.` 
+                    : 'No blog posts available at the moment.'
+                  }
+                </p>
+                {categoryFilter !== 'All' && (
+                  <button
+                    onClick={() => setCategoryFilter('All')}
+                    className="text-emerald-400 hover:text-emerald-300 underline transition-colors duration-200"
+                  >
+                    View all posts
+                  </button>
+                )}
+              </div>
+            )}
           </AnimatedSection>
         </div>
 
@@ -119,11 +213,46 @@ const Blog: React.FC = () => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  return {
-    props: {
-      use3DSplineBackground: true,
-    },
-  };
+  try {
+    const baseUrl = process.env.NODE_ENV === 'production'
+      ? 'https://your-domain.com'
+      : 'http://localhost:3000';
+
+    // Fetch posts
+    const response = await fetch(`${baseUrl}/api/admin/blog?status=published&page=1&limit=50`);
+    const data = response.ok ? await response.json() : { posts: [] };
+
+    // Fetch categories from database
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    const { data: categoriesData, error: categoriesError } = await supabase
+      .from('blog_categories')
+      .select('name')
+      .is('deleted_at', null)
+      .order('name');
+
+    const categories = ['All', ...(categoriesData?.map(cat => cat.name) || [])];
+
+    return {
+      props: {
+        posts: data.posts || [],
+        categories,
+        use3DSplineBackground: true
+      }
+    };
+  } catch (e) {
+    console.error('Error fetching blog data:', e);
+    return {
+      props: {
+        posts: [],
+        categories: ['All'],
+        use3DSplineBackground: true
+      }
+    };
+  }
 };
 
 export default Blog;

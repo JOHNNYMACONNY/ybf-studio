@@ -1,8 +1,8 @@
-# AudioService Component & Navigation Testing Plan
+# YBF Studio Component & Navigation Testing Plan
 
 ## 🎯 **Overview**
 
-This comprehensive testing plan ensures all components, buttons, and navigation elements function correctly across the AudioService application. The plan is organized by priority and covers both functional and user experience testing.
+This comprehensive testing plan ensures all components, buttons, and navigation elements function correctly across the YBF Studio application. The plan is organized by priority and covers both functional and user experience testing.
 
 ## 📋 **Testing Phases**
 

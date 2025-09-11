@@ -24,7 +24,7 @@ const Contact: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Contact | AudioService</title>
+        <title>Contact | YBF Studio</title>
         <meta name="description" content="Get in touch with us for custom projects, questions, or collaborations." />
       </Head>
 
@@ -70,9 +70,9 @@ const Contact: React.FC = () => {
                 <div>
                   <h3 className="font-semibold text-3d-spline-text-primary text-xl mb-4">Direct Contact</h3>
                   <div className="space-y-3">
-                    <Link href="mailto:contact@audioservice.app" className="flex items-center gap-3 text-3d-spline-text-secondary hover:text-3d-spline-accent transition-colors">
+                    <Link href="mailto:jmaconny@ybfstudio.com" className="flex items-center gap-3 text-3d-spline-text-secondary hover:text-3d-spline-accent transition-colors">
                       <Mail className="h-5 w-5 text-3d-spline-text-muted" />
-                      <span>contact@audioservice.app</span>
+                      <span>jmaconny@ybfstudio.com</span>
                     </Link>
                   </div>
                 </div>

@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 
 /**
- * AudioServiceApp Production Deployment Checklist
+ * YBF Studio Production Deployment Checklist
  * Run this script to verify all deployment prerequisites are met
  */
 
 const fs = require('fs');
 const path = require('path');
 
-console.log('🚀 AudioServiceApp Production Deployment Checklist\n');
+console.log('🚀 YBF Studio Production Deployment Checklist\n');
 
 // Check 1: Build Configuration
 console.log('📦 Checking build configuration...');

@@ -1,4 +1,4 @@
-# 🛠️ AudioServiceApp Developer Guide
+# 🛠️ YBF Studio Developer Guide
 
 ## 📋 **Table of Contents**
 
@@ -21,7 +21,7 @@
 
 ## 🎯 **Project Overview**
 
-AudioServiceApp is a comprehensive audio production platform built with Next.js, featuring professional audio services, beat store, and content management capabilities.
+YBF Studio is a comprehensive audio production platform built with Next.js, featuring professional audio services, beat store, and content management capabilities.
 
 ### **Key Features**
 - **Professional Audio Services**: Beat production, vocal recording, mixing & mastering
@@ -117,7 +117,7 @@ Navigate to `http://localhost:3000`
 ## 📁 **Project Structure**
 
 ```
-AudioServiceApp/
+YBF Studio/
 ├── components/           # React components
 │   ├── ui/              # Reusable UI components
 │   ├── admin/           # Admin-specific components

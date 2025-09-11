@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the enhanced glassmorphic hero background system implemented for the AudioService website, optimized for Tailwind CSS v4 best practices.
+This document describes the enhanced glassmorphic hero background system implemented for the YBF Studio website, optimized for Tailwind CSS v4 best practices.
 
 ## ✅ Tailwind v4 Compliance Features
 

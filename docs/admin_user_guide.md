@@ -1,5 +1,5 @@
 # Admin Dashboard User Guide
-## AudioServiceApp Administration System
+## YBF Studio Administration System
 
 **Version**: 1.0  
 **Last Updated**: December 2024  
@@ -630,7 +630,7 @@ The main dashboard provides an overview of your audio service business:
 ## 📞 **CONTACT & SUPPORT**
 
 ### **Technical Support**
-- **Email**: admin@audioserviceapp.com
+- **Email**: jmaconny@ybfstudio.com
 - **Documentation**: This user guide
 - **Testing**: Use testing dashboard for diagnostics
 - **Logs**: Check system logs for error details
@@ -643,6 +643,6 @@ The main dashboard provides an overview of your audio service business:
 
 ---
 
-**🎉 Congratulations! You're now ready to manage your AudioServiceApp admin dashboard effectively.**
+**🎉 Congratulations! You're now ready to manage your YBF Studio admin dashboard effectively.**
 
 This guide covers all aspects of the admin system. For additional support or questions, please refer to the troubleshooting section or contact the system administrator. 

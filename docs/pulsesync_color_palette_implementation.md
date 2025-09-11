@@ -2,7 +2,7 @@
 
 ## 🎨 **Overview**
 
-The AudioServiceApp has been updated to use a new PulseSync-inspired color palette, replacing the previous blue-based professional color system with a modern healthcare-inspired design that features emerald green, amber accents, orange energy colors, and sophisticated neutral tones.
+The YBF Studio has been updated to use a new PulseSync-inspired color palette, replacing the previous blue-based professional color system with a modern healthcare-inspired design that features emerald green, amber accents, orange energy colors, and sophisticated neutral tones.
 
 ## 🚀 **Key Changes Made**
 

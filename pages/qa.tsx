@@ -116,8 +116,8 @@ const QADashboard: React.FC = () => {
   return (
     <div>
       <Head>
-        <title>Quality Assurance Dashboard | AudioService</title>
-        <meta name="description" content="Comprehensive testing and quality assurance dashboard for the AudioService snippet system." />
+        <title>Quality Assurance Dashboard | YBF Studio</title>
+        <meta name="description" content="Comprehensive testing and quality assurance dashboard for the YBF Studio snippet system." />
       </Head>
       <Section>
         <div className="text-center mb-12">

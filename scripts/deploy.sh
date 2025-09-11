@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Production Deployment Script for AudioService
+# Production Deployment Script for YBF Studio
 # This script automates the deployment process with proper checks
 
 set -e  # Exit on any error
 
-echo "🚀 Starting Production Deployment for AudioService..."
+echo "🚀 Starting Production Deployment for YBF Studio..."
 
 # Colors for output
 RED='\033[0;31m'

@@ -1,8 +1,8 @@
-# AudioService Snippet System - Maintenance Guide
+# YBF Studio Snippet System - Maintenance Guide
 
 ## 🔧 **Overview**
 
-This maintenance guide provides comprehensive procedures for maintaining the AudioService snippet system in production, including monitoring, backups, updates, and troubleshooting.
+This maintenance guide provides comprehensive procedures for maintaining the YBF Studio snippet system in production, including monitoring, backups, updates, and troubleshooting.
 
 ## 📊 **Daily Monitoring Tasks**
 
@@ -184,7 +184,7 @@ curl -w "@curl-format.txt" -o /dev/null -s https://yourdomain.com/api/beats
 # Test email API
 curl -X POST https://yourdomain.com/api/send-email \
   -H "Content-Type: application/json" \
-  -d '{"type":"test","customerEmail":"test@example.com"}'
+  -d '{"type":"test","customerEmail":"jmaconny@ybfstudio.com"}'
 
 # Check SendGrid API key
 # Verify API key is valid and has proper permissions
@@ -206,7 +206,7 @@ curl -X POST https://yourdomain.com/api/send-email \
 # Test purchase API
 curl -X POST https://yourdomain.com/api/purchase \
   -H "Content-Type: application/json" \
-  -d '{"beatId":"1","licenseType":"mp3","customerEmail":"test@example.com","customerName":"Test User"}'
+  -d '{"beatId":"1","licenseType":"mp3","customerEmail":"jmaconny@ybfstudio.com","customerName":"Test User"}'
 
 # Check Stripe API keys
 # Verify keys are correct and have proper permissions

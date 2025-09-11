@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react';
 // Provide a stable auth context for pages/components that call useSession
 jest.mock('next-auth/react', () => ({
   __esModule: true,
-  useSession: () => ({ data: { user: { email: 'admin@example.com', isAdmin: true } }, status: 'authenticated' }),
+  useSession: () => ({ data: { user: { email: 'jmaconny@ybfstudio.com', isAdmin: true } }, status: 'authenticated' }),
   SessionProvider: ({ children }: any) => <>{children}</>,
 }));
 

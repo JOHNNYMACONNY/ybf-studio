@@ -51,7 +51,7 @@ NEXTAUTH_URL=your_nextauth_url
 
 # Application Settings
 NODE_ENV=development_or_production
-NEXT_PUBLIC_APP_NAME=AudioServiceApp
+NEXT_PUBLIC_APP_NAME=YBF Studio
 NEXT_PUBLIC_APP_VERSION=1.0.0
 ```
 
@@ -112,7 +112,7 @@ NEXT_PUBLIC_CORS_ORIGIN=your_cors_origin
 
 1. **Navigate to Project Root**
    ```bash
-   cd /path/to/your/AudioServiceApp
+   cd /path/to/your/YBF Studio
    ```
 
 2. **Create .env.local File**
@@ -140,7 +140,7 @@ NEXT_PUBLIC_CORS_ORIGIN=your_cors_origin
    NODE_ENV=development
 
    # Application Settings
-   NEXT_PUBLIC_APP_NAME=AudioServiceApp
+   NEXT_PUBLIC_APP_NAME=YBF Studio
    NEXT_PUBLIC_APP_VERSION=1.0.0
 
    # Database Configuration (Supabase)
@@ -151,7 +151,7 @@ NEXT_PUBLIC_CORS_ORIGIN=your_cors_origin
    # Email Configuration (SendGrid)
    SENDGRID_API_KEY=your_development_sendgrid_api_key
    SENDGRID_FROM_EMAIL=your_development_from_email
-   SENDGRID_FROM_NAME=AudioServiceApp Development
+   SENDGRID_FROM_NAME=YBF Studio Development
 
    # Email Templates (Development)
    SENDGRID_CONSULTATION_CONFIRMATION_TEMPLATE=your_dev_template_id
@@ -304,7 +304,7 @@ validateEnv();
    NODE_ENV=production
 
    # Application Settings
-   NEXT_PUBLIC_APP_NAME=AudioServiceApp
+   NEXT_PUBLIC_APP_NAME=YBF Studio
    NEXT_PUBLIC_APP_VERSION=1.0.0
 
    # Database Configuration (Supabase)
@@ -315,7 +315,7 @@ validateEnv();
    # Email Configuration (SendGrid)
    SENDGRID_API_KEY=your_production_sendgrid_api_key
    SENDGRID_FROM_EMAIL=your_production_from_email
-   SENDGRID_FROM_NAME=AudioServiceApp
+   SENDGRID_FROM_NAME=YBF Studio
 
    # Email Templates (Production)
    SENDGRID_CONSULTATION_CONFIRMATION_TEMPLATE=your_prod_template_id

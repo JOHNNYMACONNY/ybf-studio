@@ -3,7 +3,7 @@
 ## 🚀 **Phase 7: Production Deployment**
 
 ### **Overview**
-This guide covers the complete production deployment process for the AudioService snippet system, including environment configuration, deployment pipeline setup, and monitoring configuration.
+This guide covers the complete production deployment process for the YBF Studio snippet system, including environment configuration, deployment pipeline setup, and monitoring configuration.
 
 ### **📋 Pre-Deployment Checklist**
 
@@ -41,7 +41,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
 
 # Email (SendGrid)
 SENDGRID_API_KEY=your-sendgrid-api-key
-FROM_EMAIL=noreply@yourdomain.com
+FROM_EMAIL=jmaconny@ybfstudio.com
 
 # Payment Processing (Stripe)
 STRIPE_SECRET_KEY=your-stripe-secret-key

@@ -331,7 +331,7 @@ export default function ProfessionalColorsDemo() {
         <div className="text-center">
           <p className="text-neutral-400 text-lg">
             This PulseSync-inspired color palette provides modern healthcare aesthetics, 
-            excellent accessibility, and professional digital experience for the AudioServiceApp.
+            excellent accessibility, and professional digital experience for YBF Studio.
           </p>
         </div>
       </div>

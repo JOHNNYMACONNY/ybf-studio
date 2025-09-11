@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * AudioServiceApp Automated Production Deployment
+ * YBF Studio Automated Production Deployment
  * Handles the complete deployment process
  */
 
@@ -9,7 +9,7 @@ const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-console.log('🚀 AudioServiceApp Production Deployment\n');
+console.log('🚀 YBF Studio Production Deployment\n');
 
 // Configuration
 const CONFIG = {
@@ -250,7 +250,7 @@ function generateDeploymentReport() {
 
 async function main() {
   try {
-    console.log('🎯 Starting AudioServiceApp production deployment...\n');
+    console.log('🎯 Starting YBF Studio production deployment...\n');
 
     // Pre-deployment
     validateEnvironment();

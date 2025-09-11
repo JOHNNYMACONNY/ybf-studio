@@ -2,6 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
 import { createClient } from '@supabase/supabase-js';
+import fs from 'fs';
+import path from 'path';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -12,6 +14,25 @@ type UserWithAdmin = {
   email?: string;
   isAdmin?: boolean;
   [key: string]: unknown;
+};
+
+// Helper to get a random image from public/assets/blogImages
+const getRandomBlogImage = (): string => {
+  try {
+    const imagesDir = path.join(process.cwd(), 'public', 'assets', 'blogImages');
+    const entries = fs.readdirSync(imagesDir, { withFileTypes: true });
+    const files = entries
+      .filter((e) => e.isFile())
+      .map((e) => e.name)
+      .filter((name) => /\.(png|jpe?g|webp|gif|svg)$/i.test(name));
+    if (files.length > 0) {
+      const idx = Math.floor(Math.random() * files.length);
+      return `/assets/blogImages/${files[idx]}`;
+    }
+  } catch (e) {
+    // ignore and use fallback below
+  }
+  return '/assets/blog-beat-selection.jpg';
 };
 
 interface BlogPost {
@@ -45,13 +66,20 @@ interface BlogCategory {
 
 // Helper function to check admin access
 const checkAdminAccess = async (req: NextApiRequest, res: NextApiResponse) => {
+  console.log('🔐 CHECKING ADMIN ACCESS');
   const session = await getServerSession(req, res, authOptions);
+  console.log('Session found:', !!session);
+  console.log('Session user:', session?.user);
   const user = session?.user as UserWithAdmin | undefined;
+  console.log('User isAdmin:', user?.isAdmin);
+  console.log('User email:', user?.email);
 
   if (!session || !user?.isAdmin) {
+    console.log('❌ ADMIN ACCESS DENIED');
     res.status(403).json({ error: 'Forbidden: Admin access required' });
     return false;
   }
+  console.log('✅ ADMIN ACCESS GRANTED');
   return true;
 };
 
@@ -68,24 +96,22 @@ const generateSlug = (title: string): string => {
 
 // Main API handler
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  // Check admin access for all operations
-  if (!(await checkAdminAccess(req, res))) {
-    return;
-  }
-
   try {
     switch (req.method) {
       case 'GET':
+        // Allow GET requests without authentication for reading
         await handleGetBlogPosts(req, res);
         break;
       case 'POST':
-        await handleCreateBlogPost(req, res);
-        break;
       case 'PUT':
-        await handleUpdateBlogPost(req, res);
-        break;
       case 'DELETE':
-        await handleDeleteBlogPost(req, res);
+        // Check admin access for write operations
+        if (!(await checkAdminAccess(req, res))) {
+          return;
+        }
+        if (req.method === 'POST') await handleCreateBlogPost(req, res);
+        else if (req.method === 'PUT') await handleUpdateBlogPost(req, res);
+        else if (req.method === 'DELETE') await handleDeleteBlogPost(req, res);
         break;
       default:
         res.setHeader('Allow', ['GET', 'POST', 'PUT', 'DELETE']);
@@ -103,48 +129,137 @@ async function handleGetBlogPosts(req: NextApiRequest, res: NextApiResponse) {
   const offset = (Number(page) - 1) * Number(limit);
 
   try {
-    let query = supabase
+    // First, try a simple query to check if the table exists
+    const { data: simpleTest, error: simpleError } = await supabase
       .from('blog_posts')
-      .select(`
-        *,
-        blog_post_categories!inner(
-          category_id,
-          blog_categories!inner(name, slug)
-        )
-      `, { count: 'exact' })
-      .eq('deleted_at', null)
+      .select('*')
+      .limit(1);
+
+    if (simpleError) {
+      console.error('Simple query error:', simpleError);
+      if (simpleError.message?.includes('does not exist') || simpleError.code === '42P01' || simpleError.code === 'PGRST116') {
+        console.log('Blog posts table does not exist, returning empty data');
+        return res.status(200).json({
+          posts: [],
+          pagination: {
+            page: Number(page),
+            limit: Number(limit),
+            total: 0,
+            totalPages: 0
+          }
+        });
+      }
+      return res.status(500).json({ error: 'Database error' });
+    }
+
+    // Get posts first
+    let postsQuery = supabase
+      .from('blog_posts')
+      .select('*', { count: 'exact' })
+      .is('deleted_at', null)
       .order('created_at', { ascending: false });
 
     // Apply search filter
     if (search && typeof search === 'string') {
-      query = query.or(`title.ilike.%${search}%,excerpt.ilike.%${search}%`);
+      postsQuery = postsQuery.or(`title.ilike.%${search}%,excerpt.ilike.%${search}%`);
     }
 
     // Apply status filter
     if (status && typeof status === 'string' && status !== 'all') {
-      query = query.eq('status', status);
-    }
-
-    // Apply category filter
-    if (category && typeof category === 'string' && category !== 'all') {
-      query = query.eq('blog_post_categories.blog_categories.slug', category);
+      postsQuery = postsQuery.eq('status', status);
     }
 
     // Apply pagination
-    query = query.range(offset, offset + Number(limit) - 1);
+    postsQuery = postsQuery.range(offset, offset + Number(limit) - 1);
 
-    const { data: posts, error, count } = await query;
+    const { data: posts, error: postsError, count } = await postsQuery;
 
-    if (error) {
-      console.error('Supabase error:', error);
+    if (postsError) {
+      console.error('Supabase error:', postsError);
+      console.error('Error code:', postsError.code);
+      console.error('Error message:', postsError.message);
+      console.error('Error details:', postsError.details);
+
+      // Return empty data if tables don't exist yet
+      if (postsError.message?.includes('does not exist') || postsError.code === '42P01' || postsError.code === 'PGRST116') {
+        console.log('Tables do not exist, returning empty data');
+        return res.status(200).json({
+          posts: [],
+          pagination: {
+            page: Number(page),
+            limit: Number(limit),
+            total: 0,
+            totalPages: 0
+          }
+        });
+      }
       return res.status(500).json({ error: 'Database error' });
     }
 
-    // Transform the data to include categories as an array
-    const transformedPosts = posts?.map(post => ({
+    // If we have posts and need category filtering, filter them
+    let filteredPosts = posts || [];
+    if (category && typeof category === 'string' && category !== 'all' && posts && posts.length > 0) {
+      // Get post IDs to fetch their categories
+      const postIds = posts.map(post => post.id);
+
+      const { data: postCategories, error: catError } = await supabase
+        .from('blog_post_categories')
+        .select(`
+          post_id,
+          blog_categories!inner(slug)
+        `)
+        .in('post_id', postIds);
+
+      if (!catError && postCategories) {
+        // Filter posts that have the specified category
+        const categoryPostIds = postCategories
+          .filter(pc => pc.blog_categories?.some((cat: any) => cat.slug === category))
+          .map(pc => pc.post_id);
+
+        filteredPosts = posts.filter(post => categoryPostIds.includes(post.id));
+      }
+    }
+
+    // Fetch categories for all posts and ensure every post has a categories field
+    let transformedPosts = filteredPosts.map(post => ({
       ...post,
-      categories: post.blog_post_categories?.map((pc: { blog_categories: { name: string } }) => pc.blog_categories.name) || []
-    })) || [];
+      categories: post.categories || [] // Ensure categories field exists
+    }));
+
+    if (filteredPosts.length > 0) {
+      const postIds = filteredPosts.map(post => post.id);
+
+      try {
+        const { data: postCategories, error: catError } = await supabase
+          .from('blog_post_categories')
+          .select(`
+            post_id,
+            blog_categories(name, slug)
+          `)
+          .in('post_id', postIds);
+
+        if (!catError && postCategories && postCategories.length > 0) {
+          // Group categories by post_id
+          const categoriesByPostId = postCategories.reduce((acc: any, pc: any) => {
+            if (!acc[pc.post_id]) acc[pc.post_id] = [];
+            if (pc.blog_categories) {
+              acc[pc.post_id].push(pc.blog_categories.name);
+            }
+            return acc;
+          }, {});
+
+          // Update posts with their categories
+          transformedPosts = transformedPosts.map(post => ({
+            ...post,
+            categories: categoriesByPostId[post.id] || []
+          }));
+        }
+        // If there's an error or no categories, posts already have empty categories array
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        // Posts already have empty categories array as fallback
+      }
+    }
 
     res.status(200).json({
       posts: transformedPosts,
@@ -184,21 +299,30 @@ async function handleCreateBlogPost(req: NextApiRequest, res: NextApiResponse) {
     // Generate slug from title
     const slug = generateSlug(title);
 
+    // Prepare the data object for insertion
+    const postData: any = {
+      title,
+      slug,
+      content,
+      excerpt,
+      meta_title,
+      meta_description,
+      status,
+      published_at: status === 'published' ? published_at || new Date().toISOString() : null,
+      author_id: req.body.author_id || null
+    };
+
+    // Featured image: use provided, otherwise random from assets/blogImages
+    if (featured_image && featured_image.trim() !== '') {
+      postData.featured_image = featured_image;
+    } else {
+      postData.featured_image = getRandomBlogImage();
+    }
+
     // Create the blog post
     const { data: post, error: postError } = await supabase
       .from('blog_posts')
-      .insert({
-        title,
-        slug,
-        content,
-        excerpt,
-        featured_image,
-        meta_title,
-        meta_description,
-        status,
-        published_at: status === 'published' ? published_at || new Date().toISOString() : null,
-        author_id: req.body.author_id || null
-      })
+      .insert(postData)
       .select()
       .single();
 
@@ -236,6 +360,10 @@ async function handleCreateBlogPost(req: NextApiRequest, res: NextApiResponse) {
 // PUT - Update existing blog post
 async function handleUpdateBlogPost(req: NextApiRequest, res: NextApiResponse) {
   try {
+    console.log('🔍 BLOG UPDATE START');
+    console.log('Request query:', req.query);
+    console.log('Request body:', req.body);
+
     const { id } = req.query;
     const {
       title,
@@ -249,40 +377,63 @@ async function handleUpdateBlogPost(req: NextApiRequest, res: NextApiResponse) {
       categories = []
     } = req.body;
 
-    if (!id || typeof id !== 'string') {
+    console.log('Extracted status:', status);
+    console.log('All extracted fields:', { title, content, excerpt, featured_image, meta_title, meta_description, status, published_at, categories });
+
+    // Handle case where id might be an array
+    const postId = Array.isArray(id) ? id[0] : id;
+
+    if (!postId || typeof postId !== 'string') {
       return res.status(400).json({ error: 'Post ID is required' });
     }
 
     // Check if post exists
-    const { data: existingPost, error: fetchError } = await supabase
+    const { data: existingPosts, error: fetchError } = await supabase
       .from('blog_posts')
       .select('*')
-      .eq('id', id)
-      .eq('deleted_at', null)
-      .single();
+      .eq('id', postId);
 
-    if (fetchError || !existingPost) {
+    if (fetchError) {
+      return res.status(500).json({ error: 'Database error during post lookup' });
+    }
+
+    if (!existingPosts || existingPosts.length === 0) {
+      return res.status(404).json({ error: 'Blog post not found' });
+    }
+
+    const existingPost = existingPosts[0];
+
+    // Check if post is deleted
+    if (existingPost.deleted_at !== null) {
       return res.status(404).json({ error: 'Blog post not found' });
     }
 
     // Generate new slug if title changed
     const slug = title !== existingPost.title ? generateSlug(title) : existingPost.slug;
 
+    // Prepare the data object for update
+    const updateData: any = {
+      title,
+      slug,
+      content,
+      excerpt,
+      meta_title,
+      meta_description,
+      status,
+      published_at: status === 'published' ? published_at || new Date().toISOString() : null
+    };
+
+    // Only include featured_image if it's provided and not empty
+    if (featured_image && featured_image.trim() !== '') {
+      updateData.featured_image = featured_image;
+    }
+    // If empty, let the database use its default value or keep existing
+
     // Update the blog post
     const { data: post, error: updateError } = await supabase
       .from('blog_posts')
-      .update({
-        title,
-        slug,
-        content,
-        excerpt,
-        featured_image,
-        meta_title,
-        meta_description,
-        status,
-        published_at: status === 'published' ? published_at || new Date().toISOString() : null
-      })
-      .eq('id', id)
+      .update(updateData)
+      .eq('id', postId)
       .select()
       .single();
 
@@ -294,23 +445,33 @@ async function handleUpdateBlogPost(req: NextApiRequest, res: NextApiResponse) {
     // Update categories
     if (categories.length >= 0) {
       // Remove existing categories
-      await supabase
+      const { error: deleteError } = await supabase
         .from('blog_post_categories')
         .delete()
-        .eq('post_id', id);
+        .eq('post_id', postId);
+
+      if (deleteError) {
+        console.error('Error deleting existing categories:', deleteError);
+        // Don't fail the entire update, just log the error
+      }
 
       // Add new categories
       if (categories.length > 0) {
         const categoryIds = await getCategoryIds(categories);
         if (categoryIds.length > 0) {
           const categoryMappings = categoryIds.map(categoryId => ({
-            post_id: id,
+            post_id: postId,
             category_id: categoryId
           }));
 
-          await supabase
+          const { error: categoryError } = await supabase
             .from('blog_post_categories')
             .insert(categoryMappings);
+
+          if (categoryError) {
+            console.error('Error adding categories:', categoryError);
+            // Don't fail the entire update, just log the error
+          }
         }
       }
     }
@@ -355,7 +516,7 @@ async function getCategoryIds(categoryNames: string[]): Promise<string[]> {
     .from('blog_categories')
     .select('id')
     .in('name', categoryNames)
-    .eq('deleted_at', null);
+    .is('deleted_at', null);
 
   if (error) {
     console.error('Error fetching categories:', error);

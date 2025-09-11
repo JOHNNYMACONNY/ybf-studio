@@ -10,8 +10,8 @@ const sendBrevoEmail = async (
   text: string
 ): Promise<{ messageId: string }> => {
   const apiKey = process.env.BREVO_API_KEY;
-  const fromEmail = process.env.FROM_EMAIL || 'noreply@audioservice.com';
-  const fromName = process.env.BREVO_FROM_NAME || 'AudioService';
+  const fromEmail = process.env.FROM_EMAIL || 'jmaconny@ybfstudio.com';
+  const fromName = process.env.BREVO_FROM_NAME || 'YBF Studio';
 
   if (!apiKey) throw new Error('Brevo API key not configured (BREVO_API_KEY)');
 
@@ -302,7 +302,7 @@ const generateDownloadEmailHTML = (data: Omit<DownloadEmailData, 'customerEmail'
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">🎵 AudioService</div>
+          <div class="logo">🎵 YBF Studio</div>
           <h1 class="title">Your Beat Download</h1>
         </div>
         
@@ -340,7 +340,7 @@ const generateDownloadEmailHTML = (data: Omit<DownloadEmailData, 'customerEmail'
         <p>If you have any questions or need support, please don't hesitate to contact us.</p>
         
         <div class="footer">
-          <p>© 2025 AudioService. All rights reserved.</p>
+          <p>© 2025 YBF Studio. All rights reserved.</p>
           <p>This email was sent to ${customerEmail}</p>
         </div>
       </div>
@@ -373,7 +373,7 @@ const generateDownloadEmailText = (data: Omit<DownloadEmailData, 'customerEmail'
   });
 
   return `
-Your Beat Download - AudioService
+Your Beat Download - YBF Studio
 
 Hi ${customerName},
 
@@ -395,7 +395,7 @@ IMPORTANT: This download link expires on ${formattedExpiry}. Please download you
 
 If you have any questions or need support, please don't hesitate to contact us.
 
-© 2025 AudioService. All rights reserved.
+© 2025 YBF Studio. All rights reserved.
   `.trim();
 };
 
@@ -445,7 +445,7 @@ export const sendTestEmail = async (toEmail: string): Promise<EmailResponse> => 
   try {
     const resp = await sendBrevoEmail(
       toEmail,
-      'AudioService - Email System Test',
+      'YBF Studio - Email System Test',
       '<h1>Email System Test</h1><p>This is a test email to verify the email system is working correctly.</p>',
       'This is a test email to verify the email system is working correctly.'
     );

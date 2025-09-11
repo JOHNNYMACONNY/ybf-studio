@@ -165,7 +165,7 @@ const ConsultationBookingForm: React.FC<Props> = ({ isOpen, onClose, onSuccess, 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Input label="First Name" value={firstName} onChange={(e) => setFirstName(e.currentTarget.value)} placeholder="Jane" required />
             <Input label="Last Name" value={lastName} onChange={(e) => setLastName(e.currentTarget.value)} placeholder="Doe" required />
-            <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.currentTarget.value)} placeholder="jane@example.com" required />
+            <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.currentTarget.value)} placeholder="jmaconny@ybfstudio.com" required />
             <Input label="Phone (optional)" value={phone} onChange={(e) => setPhone(e.currentTarget.value)} placeholder="(555) 123-4567" />
             <Input label="Company (optional)" value={company} onChange={(e) => setCompany(e.currentTarget.value)} placeholder="Your Studio, LLC" className="md:col-span-2" />
           </div>

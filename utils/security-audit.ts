@@ -1,5 +1,5 @@
 // utils/security-audit.ts
-// Security audit utility functions for AudioServiceApp
+// Security audit utility functions for YBF Studio
 // Future: Expand to cover OWASP Top 10, HTTP headers, dependency checks, etc.
 
 export interface SecurityAuditResult {

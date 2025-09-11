@@ -1,4 +1,4 @@
-# 🚀 AudioServiceApp Production Deployment Guide
+# 🚀 YBF Studio Production Deployment Guide
 
 ## 📊 **DEPLOYMENT STATUS: READY FOR LAUNCH**
 
@@ -69,9 +69,9 @@ NEXT_PUBLIC_SITE_URL=https://yourdomain.com
 #### **📧 Email Service (Brevo/SendGrid)**
 ```bash
 BREVO_API_KEY=your-brevo-api-key
-BREVO_FROM_NAME=AudioService
-FROM_EMAIL=noreply@yourdomain.com
-ADMIN_NOTIFICATIONS_EMAIL=admin@yourdomain.com
+BREVO_FROM_NAME=YBF Studio
+FROM_EMAIL=jmaconny@ybfstudio.com
+ADMIN_NOTIFICATIONS_EMAIL=jmaconny@ybfstudio.com
 ```
 
 #### **☁️ File Storage (Cloudflare R2)**
@@ -100,7 +100,7 @@ ALTER TABLE blog_posts ENABLE ROW LEVEL SECURITY;
 
 -- Create admin user (replace with your email)
 INSERT INTO admin_users (email, role, permissions)
-VALUES ('admin@yourdomain.com', 'super_admin', '{"all": true}');
+VALUES ('jmaconny@ybfstudio.com', 'super_admin', '{"all": true}');
 
 -- Test database connection
 SELECT * FROM beats LIMIT 1;
@@ -389,4 +389,4 @@ vercel --prod --force
 
 **🚀 READY FOR DEPLOYMENT!**
 
-Your AudioServiceApp is production-ready. Follow this guide step-by-step for a successful launch.
+Your YBF Studio is production-ready. Follow this guide step-by-step for a successful launch.

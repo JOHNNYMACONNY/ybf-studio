@@ -282,6 +282,6 @@
 
 ### **Design Philosophy**
 This PulseSync-inspired color palette provides modern healthcare aesthetics, 
-excellent accessibility, and professional digital experience for the AudioServiceApp. 
+excellent accessibility, and professional digital experience for the YBF Studio. 
 The combination of emerald green, amber accents, orange energy, and sophisticated neutral tones 
 creates a trustworthy, modern, and energetically harmonious design system.

@@ -106,7 +106,7 @@ class ConsistencyMonitor {
         severity: 'medium',
         message: `Invalid email format: ${CONTACT_INFO.email}`,
         location: 'lib/contact-config.ts',
-        suggestion: 'Use a valid email format (e.g., contact@example.com)'
+        suggestion: 'Use a valid email format (e.g., jmaconny@ybfstudio.com)'
       });
     }
     

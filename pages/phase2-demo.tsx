@@ -272,7 +272,7 @@ export default function Phase2Demo() {
             </h2>
             <p className="text-xl text-gray-300 max-w-3xl mx-auto">
               All main pages have been successfully enhanced with mathematical color harmony and Phase 1 components. 
-              The design system is now consistently applied across the entire AudioServiceApp.
+              The design system is now consistently applied across the entire YBF Studio.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button variant="gradient" size="xl" glow>

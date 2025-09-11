@@ -1,6 +1,6 @@
-# 🎵 AudioServiceApp User Guide
+# 🎵 YBF Studio User Guide
 
-## 📖 **Welcome to AudioServiceApp**
+## 📖 **Welcome to YBF Studio**
 
 Welcome to your premier destination for professional audio services! This guide will help you navigate our platform and make the most of our comprehensive audio production services.
 
@@ -107,7 +107,7 @@ Explore our extensive library of professional beats across multiple genres.
 We're here to help with any questions or custom requests.
 
 #### **Contact Methods:**
-- **Email**: info@audioserviceapp.com
+- **Email**: jmaconny@ybfstudio.com
 - **Phone**: (555) 123-4567
 - **Contact Form**: Available on our website
 - **Live Chat**: Available during business hours
@@ -261,7 +261,7 @@ A: We offer a 30-day satisfaction guarantee with full refunds available.
 If you need assistance with anything not covered in this guide:
 
 ### **Contact Support**
-- **Email**: support@audioserviceapp.com
+- **Email**: jmaconny@ybfstudio.com
 - **Phone**: (555) 123-4567
 - **Live Chat**: Available on our website
 - **Help Center**: Comprehensive FAQ and tutorials
@@ -276,7 +276,7 @@ For urgent project issues:
 
 ## 🎉 **Thank You!**
 
-Thank you for choosing AudioServiceApp for your audio production needs. We're committed to delivering the highest quality audio services and ensuring your complete satisfaction.
+Thank you for choosing YBF Studio for your audio production needs. We're committed to delivering the highest quality audio services and ensuring your complete satisfaction.
 
 **Happy creating!** 🎵✨
 

@@ -9,13 +9,13 @@ import CartDrawer from '../components/ui/CartDrawer';
 import ToastProvider from '../components/ui/ToastContext';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  const { session, use3DSplineBackground = false, ...restPageProps } = pageProps;
+  const { session, use3DSplineBackground = false, skipDefaultHead = false, ...restPageProps } = pageProps;
   return (
     <SessionProvider session={session}>
       <CartProvider>
         <UnifiedAudioProvider>
           <ToastProvider>
-            <Layout use3DSplineBackground={use3DSplineBackground}>
+            <Layout use3DSplineBackground={use3DSplineBackground} skipDefaultHead={skipDefaultHead}>
               <Component {...restPageProps} />
               <GlobalAudioPlayer />
               <CartDrawer />

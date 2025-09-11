@@ -255,7 +255,7 @@ export default function Phase5Demo() {
             <Icon as={PartyPopper} className="h-6 w-6" /> Ready for Production Launch!
           </GradientText>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            AudioServiceApp is now production-ready with comprehensive testing, optimization, documentation, and monitoring.
+            YBF Studio is now production-ready with comprehensive testing, optimization, documentation, and monitoring.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <AdvancedButton variant="primary" size="lg" glow>

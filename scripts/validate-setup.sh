@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# AudioServiceApp Environment Validation Script
+# YBF Studio Environment Validation Script
 # This script validates that all required components are properly configured
 
-echo "🔍 AudioServiceApp Environment Validation"
+echo "🔍 YBF Studio Environment Validation"
 echo "=========================================="
 
 # Colors for output

@@ -163,11 +163,11 @@ export class CalendarService {
     const event = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//AudioServiceApp//Consultation//EN',
+      'PRODID:-//YBF Studio//Consultation//EN',
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH',
       'BEGIN:VEVENT',
-      `UID:${consultation.id}@audioserviceapp.com`,
+      `UID:${consultation.id}@ybfstudio.com`,
       `DTSTAMP:${this.formatICalDate(now)}`,
       `DTSTART:${this.formatICalDate(startTime)}`,
       `DTEND:${this.formatICalDate(endTime)}`,

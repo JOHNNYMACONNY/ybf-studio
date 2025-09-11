@@ -140,7 +140,7 @@ async function handlePut(req: NextApiRequest, res: NextApiResponse<ApiResponse>)
       );
       const mail: MailDataRequired = {
         to: String(data.customer_email),
-        from: (process.env.FROM_EMAIL || 'noreply@audioservice.com') as string,
+        from: (process.env.FROM_EMAIL || 'jmaconny@ybfstudio.com') as string,
         subject: `Your service request status: ${String(data.status).replace('_',' ')}`,
         html,
       };

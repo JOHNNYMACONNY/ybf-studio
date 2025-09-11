@@ -8,14 +8,16 @@ interface LayoutProps {
   children: React.ReactNode;
   use3DSplineBackground?: boolean;
   className?: string;
+  skipDefaultHead?: boolean;
 }
 
 const Layout: React.FC<LayoutProps> = ({ 
   children, 
   use3DSplineBackground = false,
-  className = ""
+  className = "",
+  skipDefaultHead = false
 }) => {
-  const [is3DBackground, setIs3DBackground] = useState(false);
+  const [is3DBackground, setIs3DBackground] = useState(use3DSplineBackground);
 
   useEffect(() => {
     // Check if we're on a page with 3D background
@@ -41,19 +43,22 @@ const Layout: React.FC<LayoutProps> = ({
     };
   }, [use3DSplineBackground]);
 
+
   return (
     <>
-      <Head>
-        <title>Audio Service App</title>
-        <meta name="description" content="Music production, beats, and services" />
-      </Head>
+      {!skipDefaultHead && (
+        <Head>
+          <title>Audio Service App</title>
+          <meta name="description" content="Music production, beats, and services" />
+        </Head>
+      )}
       
       {is3DBackground ? (
         // 3D Spline Background Layout
         <Spline3DBackground>
           <div className="bg-3d-spline-container">
             <Header />
-            <main className={`bg-3d-spline-content mx-auto max-w-7xl px-4 py-10 lg:py-16 flex-1 ${className}`}>
+            <main className={`bg-3d-spline-content mx-auto max-w-7xl px-4 py-10 lg:py-16 ${className}`}>
               {children}
             </main>
             <Footer />

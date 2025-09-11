@@ -1,4 +1,4 @@
--- Blog posts table schema for AudioServiceApp admin dashboard
+-- Blog posts table schema for YBF Studio admin dashboard
 -- This schema supports blog management with rich text content
 
 -- Enable UUID extension if not already enabled
@@ -181,7 +181,7 @@ ON CONFLICT (slug) DO NOTHING;
 -- GRANT EXECUTE ON FUNCTION get_blog_stats() TO authenticated;
 
 -- Comments for documentation
-COMMENT ON TABLE blog_posts IS 'Stores blog post information for the AudioServiceApp content management system';
+COMMENT ON TABLE blog_posts IS 'Stores blog post information for the YBF Studio content management system';
 COMMENT ON TABLE blog_categories IS 'Stores blog categories for organizing content';
 COMMENT ON TABLE blog_post_categories IS 'Junction table linking blog posts to categories';
 COMMENT ON COLUMN blog_posts.slug IS 'URL-friendly version of the title for routing';

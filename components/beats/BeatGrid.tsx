@@ -9,7 +9,7 @@ const mockBeats = [
   {
     id: '1',
     title: 'Midnight Dreams',
-    artist: 'AudioServiceApp',
+    artist: 'YBF Studio',
     genre: 'hip-hop',
     price: 29,
     cover: '/assets/beat_cover_1.png',
@@ -21,7 +21,7 @@ const mockBeats = [
   {
     id: '2',
     title: 'Urban Flow',
-    artist: 'AudioServiceApp',
+    artist: 'YBF Studio',
     genre: 'trap',
     price: 35,
     cover: '/assets/beat_cover_2.png',
@@ -33,7 +33,7 @@ const mockBeats = [
   {
     id: '3',
     title: 'Electric Nights',
-    artist: 'AudioServiceApp',
+    artist: 'YBF Studio',
     genre: 'electronic',
     price: 42,
     cover: '/assets/beat_cover_3.png',

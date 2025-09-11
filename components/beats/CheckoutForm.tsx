@@ -169,7 +169,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({
                 type="email"
                 value={formData.customerEmail}
                 onChange={(e) => handleInputChange('customerEmail', e.target.value)}
-                placeholder="john@example.com"
+                placeholder="jmaconny@ybfstudio.com"
                 required
                 className="w-full"
               />

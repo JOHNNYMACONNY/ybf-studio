@@ -28,7 +28,7 @@ export const ServiceStatusUpdateEmail: React.FC<ServiceStatusUpdateEmailProps> =
       <body style={styles.main as React.CSSProperties}>
         <div style={styles.container as React.CSSProperties}>
           <div style={{ textAlign: 'center', marginBottom: 16 }}>
-            <div style={styles.logo as React.CSSProperties}>AudioService</div>
+            <div style={styles.logo as React.CSSProperties}>YBF Studio</div>
           </div>
           <h1 style={{ margin: '0 0 8px 0' }}>Update on your service request</h1>
           <p style={styles.paragraph as React.CSSProperties}>Hi {customerName},</p>
@@ -50,7 +50,7 @@ export const ServiceStatusUpdateEmail: React.FC<ServiceStatusUpdateEmailProps> =
           </div>
           <hr style={styles.hr as React.CSSProperties} />
           <p style={styles.footer as React.CSSProperties}>
-            © {new Date().getFullYear()} AudioService. All rights reserved.
+            © {new Date().getFullYear()} YBF Studio. All rights reserved.
           </p>
         </div>
       </body>

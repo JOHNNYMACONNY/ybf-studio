@@ -96,7 +96,7 @@ const Beats: React.FC<BeatsPageProps> = ({ allBeats }) => {
   return (
     <>
       <Head>
-        <title>Beat Store | AudioService</title>
+        <title>Beat Store | YBF Studio</title>
         <meta name="description" content="Browse our collection of professional beats across multiple genres." />
       </Head>
 

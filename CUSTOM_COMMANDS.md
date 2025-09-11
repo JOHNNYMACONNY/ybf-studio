@@ -1,6 +1,6 @@
 # Custom Project Commands
 
-This document lists all custom scripts and commands available in the AudioServiceApp project, including their purpose and usage instructions.
+This document lists all custom scripts and commands available in the YBF Studio project, including their purpose and usage instructions.
 
 ---
 

@@ -7,7 +7,7 @@
 ---
 
 ## Purpose
-Complete guide for setting up environment variables and configuring all external services for the AudioServiceApp.
+Complete guide for setting up environment variables and configuring all external services for the YBF Studio.
 
 ---
 
@@ -22,14 +22,14 @@ Create a `.env.local` file in the project root with the following variables:
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=ej4Fv7VDGrwry6oXV8syLt5MFsJkHlP8KGdYaqFF2C0=
 
-# Google OAuth (ljkeoni@gmail.com account)
+# Google OAuth (jmaconny@ybfstudio.com account)
 GOOGLE_CLIENT_ID=your-google-client-id
 GOOGLE_CLIENT_SECRET=your-google-client-secret
 
 # SendGrid Email Service
 SENDGRID_API_KEY=your_sendgrid_api_key
-FROM_EMAIL=noreply@your-domain.com
-ADMIN_NOTIFICATIONS_EMAIL=admin@your-domain.com
+FROM_EMAIL=jmaconny@ybfstudio.com
+ADMIN_NOTIFICATIONS_EMAIL=jmaconny@ybfstudio.com
 
 # Supabase Database
 NEXT_PUBLIC_SUPABASE_URL=https://tfcmvmnkncgyjfpykdia.supabase.co
@@ -55,7 +55,7 @@ NEXTAUTH_URL=https://your-domain.com
 ### **1. NextAuth.js Setup**
 
 #### **Current Status**: ✅ **CONFIGURED**
-- **OAuth Account**: ljkeoni@gmail.com Google account
+- **OAuth Account**: jmaconny@ybfstudio.com Google account
 - **Client ID**: `your-google-client-id`
 - **Client Secret**: `your-google-client-secret`
 
@@ -111,7 +111,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
 1. **Verify Sender Email**:
    - Go to [SendGrid Settings](https://app.sendgrid.com/settings/sender_auth)
    - Verify your sender email address
-   - Recommended: Use ljkeoni@gmail.com as verified sender
+   - Recommended: Use jmaconny@ybfstudio.com as verified sender
 
 2. **Create Email Templates**:
    - Order confirmation template
@@ -125,8 +125,8 @@ node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
    sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
    
    const msg = {
-     to: 'test@example.com',
-     from: 'ljkeoni@gmail.com',
+     to: 'jmaconny@ybfstudio.com',
+     from: 'jmaconny@ybfstudio.com',
      subject: 'Test Email',
      text: 'This is a test email',
      html: '<p>This is a test email</p>',

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * AudioServiceApp Monitoring & Analytics Setup
+ * YBF Studio Monitoring & Analytics Setup
  * Configures post-launch monitoring and analytics
  */
 
@@ -16,7 +16,7 @@ const rl = readline.createInterface({
 
 const question = (query) => new Promise((resolve) => rl.question(query, resolve));
 
-console.log('📊 AudioServiceApp Monitoring & Analytics Setup\n');
+console.log('📊 YBF Studio Monitoring & Analytics Setup\n');
 
 async function setupMonitoring() {
   try {

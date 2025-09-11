@@ -65,8 +65,8 @@ describe('API /api/admin/service-requests', () => {
 
 	beforeEach(() => {
 		jest.clearAllMocks();
-		process.env.ADMIN_EMAILS = 'admin@example.com';
-		(getServerSession as jest.Mock).mockResolvedValue({ user: { email: 'admin@example.com' } });
+		process.env.ADMIN_EMAILS = 'jmaconny@ybfstudio.com';
+		(getServerSession as jest.Mock).mockResolvedValue({ user: { email: 'jmaconny@ybfstudio.com' } });
 	});
 
 	test('GET returns request when authorized', async () => {

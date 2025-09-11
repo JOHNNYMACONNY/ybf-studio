@@ -34,7 +34,7 @@ const Select: React.FC<SelectProps> = ({
         <select
           id={selectId}
           className={`
-            input-base appearance-none rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-neutral-900
+            input-base appearance-none rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-neutral-900
             min-h-[44px] px-4 py-3 text-base pr-10
             ${error ? 'border-red-500 focus:ring-red-400' : ''}
             ${className}

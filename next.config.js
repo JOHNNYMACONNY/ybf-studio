@@ -19,13 +19,20 @@ const nextConfig = {
   
   // Image optimization
   images: {
-    domains: ['localhost', 'yourdomain.com', 'lh3.googleusercontent.com', 'www.ybfstudio.com', 'ybfstudio.com', 'yourcdn'],
+    // Remove deprecated domains configuration
     remotePatterns: [
       { protocol: 'https', hostname: 'yourcdn', pathname: '/**' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'www.ybfstudio.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'ybfstudio.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'i1.sndcdn.com', pathname: '/**' },
+      { protocol: 'https', hostname: 'drive.google.com', pathname: '/**' },
     ],
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Allow unoptimized for local development
+    unoptimized: process.env.NODE_ENV === 'development',
   },
   
   // Security headers
@@ -78,7 +85,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://my.spline.design https://*.spline.design https://w.soundcloud.com https://soundcloud.com; script-src 'self' 'unsafe-eval' https://js.stripe.com https://w.soundcloud.com; connect-src 'self' https://api.stripe.com https://js.stripe.com https://m.stripe.com https://api.soundcloud.com https://soundcloud.com https://api-widget.soundcloud.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://lh3.googleusercontent.com https://www.ybfstudio.com https://ybfstudio.com https://yourcdn https://i1.sndcdn.com; child-src https://js.stripe.com; form-action 'self' https://checkout.stripe.com;"
+            value: "default-src 'self'; frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com https://my.spline.design https://*.spline.design https://w.soundcloud.com https://soundcloud.com; script-src 'self' 'unsafe-eval' https://js.stripe.com https://w.soundcloud.com; connect-src 'self' https://api.stripe.com https://js.stripe.com https://m.stripe.com https://api.soundcloud.com https://soundcloud.com https://api-widget.soundcloud.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-attr 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://lh3.googleusercontent.com https://www.ybfstudio.com https://ybfstudio.com https://yourcdn https://i1.sndcdn.com https://drive.google.com; child-src https://js.stripe.com; form-action 'self' https://checkout.stripe.com;"
           }
         ],
       },

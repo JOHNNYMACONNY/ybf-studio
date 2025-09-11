@@ -119,7 +119,7 @@ const AdminSettingsPage: React.FC = () => {
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [emailTest, setEmailTest] = useState({
     to_email: '',
-    subject: 'Test Email from AudioServiceApp',
+    subject: 'Test Email from YBF Studio',
     message: 'This is a test email to verify email configuration.'
   });
 
@@ -854,7 +854,7 @@ const AdminSettingsPage: React.FC = () => {
                   value={emailTest.to_email}
                   onChange={(e) => setEmailTest({ ...emailTest, to_email: e.target.value })}
                   className="input-base w-full"
-                  placeholder="test@example.com"
+                  placeholder="jmaconny@ybfstudio.com"
                 />
               </div>
               <div>

@@ -7,7 +7,7 @@ const TestMobileNav: React.FC = () => {
   return (
     <>
       <Head>
-        <title>Test Mobile Navigation | AudioService</title>
+        <title>Test Mobile Navigation | YBF Studio</title>
         <meta name="description" content="Test page for mobile navigation styling" />
       </Head>
 

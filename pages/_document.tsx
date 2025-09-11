@@ -4,7 +4,7 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <meta name="description" content="AudioServiceApp - Beats, Mixing & Mastering Services" />
+        <meta name="description" content="YBF Studio - Beats, Mixing & Mastering Services" />
         <link rel="icon" href="/assets/logo/main-logo.png" />
         
         {/* Font Preconnect for Performance */}

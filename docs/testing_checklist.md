@@ -1,4 +1,4 @@
-# AudioService Testing Checklist - Quick Reference
+# YBF Studio Testing Checklist - Quick Reference
 
 ## 🎯 **Quick Testing Checklist**
 
@@ -279,7 +279,7 @@ curl http://localhost:3000/api/test
 # Test email API
 curl -X POST http://localhost:3000/api/send-email \
   -H "Content-Type: application/json" \
-  -d '{"type":"test","customerEmail":"test@example.com"}'
+  -d '{"type":"test","customerEmail":"jmaconny@ybfstudio.com"}'
 ```
 
 ### **Test Pages**
@@ -337,7 +337,7 @@ curl -X PUT http://localhost:3000/api/service-requests/123 \
 # Test contact form (if implemented)
 curl -X POST http://localhost:3000/api/contact \
   -H "Content-Type: application/json" \
-  -d '{"name":"Test","email":"test@example.com","message":"Test message"}'
+  -d '{"name":"Test","email":"jmaconny@ybfstudio.com","message":"Test message"}'
 
 # Test checkout sessions
 curl -X POST http://localhost:3000/api/checkout_sessions \

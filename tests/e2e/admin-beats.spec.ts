@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || 'admin@example.com';
+const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL || 'jmaconny@ybfstudio.com';
 
 test.describe('Admin Beats CRUD', () => {
   test.beforeEach(async ({ page, baseURL, request }) => {

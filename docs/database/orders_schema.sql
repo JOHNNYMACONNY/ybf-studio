@@ -1,4 +1,4 @@
--- Orders table schema for AudioServiceApp admin dashboard
+-- Orders table schema for YBF Studio admin dashboard
 -- This schema supports both beat purchases and service orders
 
 -- Enable UUID extension if not already enabled
@@ -288,7 +288,7 @@ $$ LANGUAGE plpgsql;
 INSERT INTO orders (customer_name, customer_email, order_type, status, payment_status, subtotal, total_amount, items) VALUES
 (
     'John Doe',
-    'john@example.com',
+    'jmaconny@ybfstudio.com',
     'beat',
     'completed',
     'paid',
@@ -298,7 +298,7 @@ INSERT INTO orders (customer_name, customer_email, order_type, status, payment_s
 ),
 (
     'Jane Smith',
-    'jane@example.com',
+    'jmaconny@ybfstudio.com',
     'service',
     'processing',
     'paid',
@@ -308,7 +308,7 @@ INSERT INTO orders (customer_name, customer_email, order_type, status, payment_s
 ),
 (
     'Bob Wilson',
-    'bob@example.com',
+    'jmaconny@ybfstudio.com',
     'beat',
     'pending',
     'pending',
@@ -330,7 +330,7 @@ ON CONFLICT (order_number) DO NOTHING;
 -- GRANT EXECUTE ON FUNCTION get_orders_by_date_range(DATE, DATE) TO authenticated;
 
 -- Comments for documentation
-COMMENT ON TABLE orders IS 'Stores all orders (beats and services) for the AudioServiceApp';
+COMMENT ON TABLE orders IS 'Stores all orders (beats and services) for YBF Studio';
 COMMENT ON TABLE order_items IS 'Stores individual items within each order';
 COMMENT ON TABLE order_history IS 'Tracks all changes to orders for audit purposes';
 COMMENT ON COLUMN orders.order_number IS 'Human-readable order number (e.g., ORD-2024-001)';

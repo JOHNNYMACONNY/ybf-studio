@@ -594,7 +594,7 @@ export const FloatingPlayer: React.FC = () => {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h4 className="font-semibold text-white">Demo Track</h4>
-            <p className="text-gray-400 text-sm">AudioServiceApp</p>
+            <p className="text-gray-400 text-sm">YBF Studio</p>
           </div>
           <button 
             onClick={() => setIsPlaying(!isPlaying)}
@@ -1445,7 +1445,7 @@ export const MobileNavigation: React.FC = () => {
 - [ ] Create incident response procedures (`docs/incident-response.md`)
 - [ ] Final security validation and certification
 
-This roadmap provides a comprehensive path to transform AudioServiceApp into a modern, premium audio service platform! 🎵✨
+This roadmap provides a comprehensive path to transform YBF Studio into a modern, premium audio service platform! 🎵✨
 
 ---
 
@@ -1655,7 +1655,7 @@ export type AnimationType = 'fadeUp' | 'fadeDown' | 'fadeLeft' | 'fadeRight' | '
 
 **Result**: Perfect cohesion with existing codebase while maintaining all brand elements and performance optimizations.
 
-The result is a cohesive, mathematically harmonious design system that elevates AudioServiceApp's visual appeal while maintaining its professional audio service identity! 🎵✨ 
+The result is a cohesive, mathematically harmonious design system that elevates YBF Studio's visual appeal while maintaining its professional audio service identity! 🎵✨ 
 
 ---
 
@@ -2203,7 +2203,7 @@ export const PremiumContainer: React.FC<PremiumContainerProps> = ({
 - **Consistent spacing**: Improves content scanning
 - **Professional aesthetics**: Builds trust and credibility
 
-These aesthetic enhancements will transform AudioServiceApp's visual appeal while maintaining our existing functionality and brand identity! 🎨✨ 
+These aesthetic enhancements will transform YBF Studio's visual appeal while maintaining our existing functionality and brand identity! 🎨✨ 
 
 ---
 
