@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import AdminLayout from '../../components/AdminLayout';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
 import Toast from '../../components/ui/Toast';
-import { Plus, Edit, Trash2, Eye, Search, Filter, MoreHorizontal } from 'lucide-react';
+import { Plus, Edit, Trash2, Search } from 'lucide-react';
 
 interface Service {
   id: string;
@@ -79,9 +79,9 @@ const ServicesAdmin: React.FC = () => {
 
   useEffect(() => {
     fetchServices();
-  }, [currentPage, searchTerm, statusFilter, categoryFilter]);
+  }, [fetchServices]);
 
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
     try {
       const params = new URLSearchParams({
         page: currentPage.toString(),
@@ -107,7 +107,7 @@ const ServicesAdmin: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, statusFilter, categoryFilter]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -5,10 +5,8 @@ import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import { Mail, Twitter, Youtube, Instagram } from 'lucide-react';
 
-import Section from '../components/shared/Section';
 import ContactForm from '../components/contact/ContactForm';
 import FaqAccordion from '../components/shared/FaqAccordion';
-import Card from '../components/ui/Card';
 import AnimatedSection from '../components/ui/AnimatedSection';
 import { getHeroImage } from '../lib/hero-config';
 

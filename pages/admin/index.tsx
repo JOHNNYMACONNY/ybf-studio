@@ -29,7 +29,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ stats: initialStats, sa
   const user = session?.user as UserWithAdmin | undefined;
   const [stats, setStats] = React.useState(initialStats);
   const [salesData, setSalesData] = React.useState(initialSalesData);
-  const [loading, setLoading] = React.useState(false);
+  const [, setLoading] = React.useState(false);
 
   // Fetch data client-side when admin is authenticated
   React.useEffect(() => {

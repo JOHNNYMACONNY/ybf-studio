@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import AdminLayout from '../../components/AdminLayout';
 import { 
   Settings, 
@@ -7,19 +7,10 @@ import {
   Activity, 
   Save, 
   RefreshCw, 
-  Trash2, 
   Plus,
   Mail,
-  Shield,
-  Globe,
-  CreditCard,
-  Share2,
-  Search,
-  Eye,
-  EyeOff,
   CheckCircle,
-  AlertCircle,
-  Info
+  AlertCircle
 } from 'lucide-react';
 
 interface Setting {
@@ -84,8 +75,8 @@ interface SystemInfo {
 
 const AdminSettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('site');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [, setLoading] = useState(true);
+  const [, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   // Settings state
@@ -112,8 +103,8 @@ const AdminSettingsPage: React.FC = () => {
   });
 
   // System info state
-  const [systemInfo, setSystemInfo] = useState<SystemInfo | null>(null);
-  const [logs, setLogs] = useState<SystemLog[]>([]);
+  const [, setSystemInfo] = useState<SystemInfo | null>(null);
+  const [, setLogs] = useState<SystemLog[]>([]);
 
   // Email test state
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -125,9 +116,9 @@ const AdminSettingsPage: React.FC = () => {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setLoading(true);
     try {
       await Promise.all([
@@ -137,12 +128,12 @@ const AdminSettingsPage: React.FC = () => {
         loadSystemInfo(),
         loadLogs()
       ]);
-    } catch (error) {
+    } catch {
       setError('Failed to load data');
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const loadSettings = async () => {
     try {
@@ -238,7 +229,7 @@ const AdminSettingsPage: React.FC = () => {
       } else {
         setError('Failed to save settings');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to save settings');
     }
   };
@@ -260,7 +251,7 @@ const AdminSettingsPage: React.FC = () => {
       } else {
         setError('Failed to create user');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create user');
     }
   };
@@ -283,7 +274,7 @@ const AdminSettingsPage: React.FC = () => {
       } else {
         setError('Failed to update user');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to update user');
     }
   };
@@ -303,7 +294,7 @@ const AdminSettingsPage: React.FC = () => {
       } else {
         setError('Failed to delete user');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to delete user');
     }
   };
@@ -325,7 +316,7 @@ const AdminSettingsPage: React.FC = () => {
       } else {
         setError('Failed to create backup');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to create backup');
     }
   };
@@ -345,7 +336,7 @@ const AdminSettingsPage: React.FC = () => {
       } else {
         setError('Failed to delete backup');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to delete backup');
     }
   };
@@ -365,7 +356,7 @@ const AdminSettingsPage: React.FC = () => {
       } else {
         setError('Failed to send test email');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to send test email');
     }
   };
@@ -382,15 +373,6 @@ const AdminSettingsPage: React.FC = () => {
     return new Date(dateString).toLocaleString();
   };
 
-  const getLevelColor = (level: string) => {
-    switch (level) {
-      case 'error': return 'text-red-500';
-      case 'warning': return 'text-yellow-500';
-      case 'info': return 'text-blue-500';
-      case 'debug': return 'text-gray-500';
-      default: return 'text-green-500';
-    }
-  };
 
   const tabs = [
     { id: 'site', name: 'Site Settings', icon: Settings },

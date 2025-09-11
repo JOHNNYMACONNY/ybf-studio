@@ -38,7 +38,7 @@ const RichTextEditorClient: React.FC<RichTextEditorProps> = ({
   // State for dynamic imports and editor configuration
   const [extensions, setExtensions] = useState<any[]>([StarterKit]); // Start with basic extensions
   const [isTipTapLoaded, setIsTipTapLoaded] = useState(false);
-  const [EditorContentComponent, setEditorContentComponent] = useState<any>(null);
+  const [EditorContentComponent, setEditorContentComponent] = useState<React.ComponentType<{ editor: unknown }> | null>(null);
 
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
@@ -49,7 +49,7 @@ const RichTextEditorClient: React.FC<RichTextEditorProps> = ({
   const editor = useTipTapEditor({
     extensions: extensions,
     content: isTipTapLoaded ? content : '<p></p>',
-    onUpdate: isTipTapLoaded ? ({ editor }: any) => onChange(editor.getHTML()) : undefined,
+    onUpdate: isTipTapLoaded ? ({ editor }: { editor: { getHTML: () => string } }) => onChange(editor.getHTML()) : undefined,
     editorProps: {
       attributes: {
         class: 'prose prose-neutral max-w-none focus:outline-none min-h-[300px] p-4'

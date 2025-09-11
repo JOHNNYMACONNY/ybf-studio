@@ -159,7 +159,7 @@ export class ConsultationService {
     referral_source?: string;
   }): Promise<Client> {
     // Try to get existing client
-    const { data: existingClient, error: fetchError } = await supabaseAdmin
+    const { data: existingClient } = await supabaseAdmin
       .from('clients')
       .select('*')
       .eq('email', clientData.email)

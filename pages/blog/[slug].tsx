@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Head from 'next/head';
 
-import Section from '../../components/shared/Section';
 import BlogCard from '../../components/blog/BlogCard';
 import Button from '../../components/ui/Button';
 import AnimatedSection from '../../components/ui/AnimatedSection';
@@ -39,13 +38,13 @@ const PostPage: React.FC<PostPageProps> = ({ post, relatedPosts }) => {
 
   useEffect(() => {
     if (post?.content) {
-      // Generate table of contents
-      const toc = generateTableOfContents(post.content);
-      setTocItems(toc);
-      
-      // Add IDs to headings for anchor linking
+      // Add IDs to headings for anchor linking first
       const processed = addHeadingIds(post.content);
       setProcessedContent(processed);
+      
+      // Generate table of contents from processed content with IDs
+      const toc = generateTableOfContents(processed);
+      setTocItems(toc);
       
       // Calculate reading time
       const time = estimateReadingTime(post.content);
@@ -251,7 +250,17 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     return { notFound: true };
   }
 
-  const postRow: any = posts[0];
+  const postRow = posts[0] as {
+    title: string;
+    excerpt: string | null;
+    slug: string;
+    featured_image: string | null;
+    published_at: string | null;
+    created_at: string;
+    author_id: string | null;
+    content: string | null;
+    categories?: string[];
+  };
 
   // Get author information if available
   let author = 'YBF Studio';
@@ -292,7 +301,13 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     .order('created_at', { ascending: false })
     .limit(4);
 
-  const relatedPosts = (relatedPostsData || []).map((relatedPost: any) => ({
+  const relatedPosts = (relatedPostsData || []).map((relatedPost: {
+    title: string;
+    excerpt: string | null;
+    slug: string;
+    featured_image: string | null;
+    category?: string;
+  }) => ({
     title: relatedPost.title,
     excerpt: relatedPost.excerpt || '',
     slug: relatedPost.slug,

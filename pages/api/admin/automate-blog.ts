@@ -135,7 +135,7 @@ async function collectNews(source: string) {
           const data = await response.json();
           
           if (data.data?.children) {
-            const posts = data.data.children.map((post: any) => ({
+            const posts = data.data.children.map((post: { data: { title: string; selftext: string; permalink: string; score: number; created_utc: number } }) => ({
               title: post.data.title,
               content: post.data.selftext,
               url: `https://reddit.com${post.data.permalink}`,
@@ -160,7 +160,17 @@ async function collectNews(source: string) {
 }
 
 // Filter content for relevance
-async function filterRelevantContent(newsItems: any[]) {
+interface NewsItem {
+  title: string;
+  content: string;
+  url: string;
+  source: string;
+  subreddit?: string;
+  score: number;
+  created: Date;
+}
+
+async function filterRelevantContent(newsItems: NewsItem[]) {
   const allKeywords = NEWS_SOURCES.reddit.keywords;
 
   return newsItems.filter(item => {
@@ -170,7 +180,7 @@ async function filterRelevantContent(newsItems: any[]) {
 }
 
 // Generate blog post drafts using AI
-async function generateBlogDrafts(newsItems: any[]) {
+async function generateBlogDrafts(newsItems: NewsItem[]) {
   const drafts = [];
 
   for (const item of newsItems) {
@@ -191,6 +201,9 @@ async function generateBlogDrafts(newsItems: any[]) {
       const generatedContent = await generateContentWithAI(template.replace('{title}', item.title).replace('{summary}', item.content?.substring(0, 300) || '').replace('{topic}', topic));
 
       if (generatedContent) {
+        // Clean up title for meta_title (remove em-dashes and en-dashes)
+        const cleanTitle = generatedContent.title.replace(/[—–]/g, '-');
+        
         drafts.push({
           title: generatedContent.title,
           content: generatedContent.content,
@@ -200,7 +213,7 @@ async function generateBlogDrafts(newsItems: any[]) {
           source: item.source,
           status: 'draft',
           categories: ['Industry News'], // Default category
-          meta_title: generatedContent.title,
+          meta_title: cleanTitle,
           meta_description: generatedContent.excerpt
         });
       }
@@ -252,7 +265,17 @@ function convertMarkdownToHtml(markdown: string): string {
   return html;
 }
 
-// Generate content using OpenRouter API
+// Model configuration with fallbacks
+const MODEL_CONFIG = {
+  primary: 'deepseek/deepseek-chat-v3.1:free',
+  fallbacks: [
+    'openai/gpt-4o-mini',
+    'anthropic/claude-3-haiku',
+    'meta-llama/llama-3.1-sonar'
+  ]
+};
+
+// Generate content using OpenRouter API with fallback support
 async function generateContentWithAI(prompt: string) {
   try {
     // Check if OpenRouter API key is available
@@ -261,20 +284,27 @@ async function generateContentWithAI(prompt: string) {
       return generateFallbackContent(prompt);
     }
 
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
-        'X-Title': 'YBF Studio Blog Automation'
-      },
-      body: JSON.stringify({
-        model: 'openai/gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: `You are Johnny Maconny, writing for YBF Studio's music production blog. ${VOICE_CONFIG.personality}. Tone: ${VOICE_CONFIG.tone}. Style: ${VOICE_CONFIG.style}. Use these words naturally: ${VOICE_CONFIG.vocabulary.join(', ')}. Avoid: ${VOICE_CONFIG.avoid.join(', ')}.
+    // Try primary model first, then fallbacks
+    const models = [MODEL_CONFIG.primary, ...MODEL_CONFIG.fallbacks];
+    
+    for (const model of models) {
+      try {
+        console.log(`Attempting to generate content with model: ${model}`);
+        
+        const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
+            'X-Title': 'YBF Studio Blog Automation'
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: [
+              {
+                role: 'system',
+                content: `You are Johnny Maconny, writing for YBF Studio's music production blog. ${VOICE_CONFIG.personality}. Tone: ${VOICE_CONFIG.tone}. Style: ${VOICE_CONFIG.style}. Use these words naturally: ${VOICE_CONFIG.vocabulary.join(', ')}. Avoid: ${VOICE_CONFIG.avoid.join(', ')}.
 
 WRITING RULES:
 - NO exclamation marks (!) - use periods instead
@@ -284,45 +314,63 @@ WRITING RULES:
 - Use periods, commas, and question marks only
 
 IMPORTANT: Always format your response as HTML, not markdown. Use proper HTML tags like <h2>, <h3>, <p>, <ul>, <li>, <strong>, <em>. Do not use markdown syntax like #, *, -, etc.`
-          },
-          {
-            role: 'user',
-            content: prompt
-          }
-        ],
-        max_tokens: 2000,
-        temperature: 0.7
-      })
-    });
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
+            max_tokens: 2000,
+            temperature: 0.7
+          })
+        });
 
-    const data = await response.json();
-    
-    if (data.choices?.[0]?.message?.content) {
-      const content = data.choices[0].message.content;
-      
-      // Extract title and content
-      const titleMatch = content.match(/<h1[^>]*>(.*?)<\/h1>/i) || content.match(/<h2[^>]*>(.*?)<\/h2>/i);
-      const title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '') : 'Music Production Update';
-      
-      // Content is already HTML, just clean it up
-      const htmlContent = content.trim();
-      
-      // Generate excerpt (first 150 characters, strip HTML tags)
-      const plainText = htmlContent.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').trim();
-      const excerpt = plainText.substring(0, 150) + '...';
-      
-      return {
-        title,
-        content: htmlContent,
-        excerpt
-      };
+        const data = await response.json();
+        
+        if (data.choices?.[0]?.message?.content) {
+          const content = data.choices[0].message.content;
+          
+          // Extract title and content
+          const titleMatch = content.match(/<h1[^>]*>(.*?)<\/h1>/i) || content.match(/<h2[^>]*>(.*?)<\/h2>/i);
+          let title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '') : 'Music Production Update';
+          
+          // Capitalize title properly (Title Case)
+          title = title.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+          
+          // Content is already HTML, just clean it up
+          let htmlContent = content.trim();
+          
+          // Clean up empty paragraphs and extra whitespace
+          htmlContent = htmlContent.replace(/<p>\s*<\/p>/g, '');
+          htmlContent = htmlContent.replace(/<p><\/p>/g, '');
+          htmlContent = htmlContent.replace(/\n\s*\n/g, '\n');
+          
+          // Generate excerpt (first 150 characters, strip HTML tags)
+          const plainText = htmlContent.replace(/<[^>]*>/g, '').replace(/\n/g, ' ').trim();
+          const excerpt = plainText.substring(0, 150) + '...';
+          
+          console.log(`✅ Successfully generated content with model: ${model}`);
+          
+          return {
+            title,
+            content: htmlContent,
+            excerpt
+          };
+        }
+      } catch (error) {
+        console.error(`❌ Error with model ${model}:`, error);
+        // Continue to next model
+        continue;
+      }
     }
-  } catch (error) {
-    console.error('Error generating content with AI:', error);
-  }
 
-  // Fallback to basic content generation
-  return generateFallbackContent(prompt);
+    // If all models failed, use fallback content
+    console.log('❌ All AI models failed, using fallback content generation');
+    return generateFallbackContent(prompt);
+  } catch (error) {
+    console.error('Error in generateContentWithAI:', error);
+    return generateFallbackContent(prompt);
+  }
 }
 
 // Fallback content generation when AI is not available
@@ -357,7 +405,20 @@ function generateFallbackContent(prompt: string) {
 }
 
 // Save drafts to database
-async function saveDrafts(drafts: any[]) {
+interface BlogDraft {
+  title: string;
+  content: string;
+  excerpt: string;
+  source_url: string;
+  source_title: string;
+  source: string;
+  status: string;
+  categories: string[];
+  meta_title: string;
+  meta_description: string;
+}
+
+async function saveDrafts(drafts: BlogDraft[]) {
   const savedDrafts = [];
 
   for (const draft of drafts) {

@@ -1,14 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../components/AdminLayout';
-import { createClient } from '@supabase/supabase-js';
-
-// Initialize Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface Order {
   id: string;
@@ -103,9 +96,9 @@ const AdminOrdersPage: React.FC = () => {
     }
 
     fetchOrders();
-  }, [session, status, router, pagination.page, search, statusFilter, paymentStatusFilter, orderTypeFilter, startDate, endDate]);
+  }, [session, status, router, fetchOrders]);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -135,7 +128,7 @@ const AdminOrdersPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [pagination.page, pagination.limit, search, statusFilter, paymentStatusFilter, orderTypeFilter, startDate, endDate]);
 
   const fetchOrderDetails = async (orderId: string) => {
     try {

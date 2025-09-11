@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import AdminLayout from '../../components/AdminLayout';
@@ -47,7 +47,7 @@ export default function AdminConsultations() {
 
   useEffect(() => {
     filterConsultations();
-  }, [consultations, searchTerm, statusFilter]);
+  }, [filterConsultations]);
 
   const fetchConsultations = async () => {
     try {
@@ -66,7 +66,7 @@ export default function AdminConsultations() {
     }
   };
 
-  const filterConsultations = () => {
+  const filterConsultations = useCallback(() => {
     let filtered = consultations;
 
     // Apply search filter
@@ -85,7 +85,7 @@ export default function AdminConsultations() {
     }
 
     setFilteredConsultations(filtered);
-  };
+  }, [consultations, searchTerm, statusFilter]);
 
   const openModal = (consultation: AdminConsultationOverview, type: 'reschedule' | 'cancel' | 'notes') => {
     setSelectedConsultation(consultation);

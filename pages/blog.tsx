@@ -4,9 +4,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 
-import Section from '../components/shared/Section';
 import BlogCard from '../components/blog/BlogCard';
-import Select from '../components/ui/Select';
 import Button from '../components/ui/Button';
 import AnimatedSection from '../components/ui/AnimatedSection';
 import { getHeroImage } from '../lib/hero-config';
@@ -38,7 +36,7 @@ const Blog: React.FC<BlogPageProps> = ({ posts, categories = [] }) => {
       excerpt: post.excerpt,
       slug: post.slug,
       imageUrl: (post.featured_image && String(post.featured_image).trim()) ? post.featured_image : '/assets/blog-beat-selection.jpg',
-      category: (post.categories && post.categories[0]) || 'General'
+      category: (post.categories && post.categories.length > 0 && post.categories[0]) || 'General'
     }));
 
     if (categoryFilter === 'All') {
@@ -228,7 +226,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { data: categoriesData, error: categoriesError } = await supabase
+    const { data: categoriesData } = await supabase
       .from('blog_categories')
       .select('name')
       .is('deleted_at', null)

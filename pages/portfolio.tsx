@@ -5,9 +5,7 @@ import Link from 'next/link';
 import { Star } from 'lucide-react';
 import { GetServerSideProps } from 'next';
 
-import Section from '../components/shared/Section';
 import PortfolioCard from '../components/PortfolioCard';
-import Card from '../components/ui/Card';
 import Button from '../components/ui/Button';
 import Select from '../components/ui/Select';
 import AnimatedSection from '../components/ui/AnimatedSection';

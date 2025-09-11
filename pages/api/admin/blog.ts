@@ -213,7 +213,7 @@ async function handleGetBlogPosts(req: NextApiRequest, res: NextApiResponse) {
       if (!catError && postCategories) {
         // Filter posts that have the specified category
         const categoryPostIds = postCategories
-          .filter(pc => pc.blog_categories?.some((cat: any) => cat.slug === category))
+          .filter(pc => pc.blog_categories?.some((cat: { slug: string }) => cat.slug === category))
           .map(pc => pc.post_id);
 
         filteredPosts = posts.filter(post => categoryPostIds.includes(post.id));
@@ -240,7 +240,7 @@ async function handleGetBlogPosts(req: NextApiRequest, res: NextApiResponse) {
 
         if (!catError && postCategories && postCategories.length > 0) {
           // Group categories by post_id
-          const categoriesByPostId = postCategories.reduce((acc: any, pc: any) => {
+          const categoriesByPostId = postCategories.reduce((acc: Record<string, string[]>, pc: { post_id: string; blog_categories: { name: string } }) => {
             if (!acc[pc.post_id]) acc[pc.post_id] = [];
             if (pc.blog_categories) {
               acc[pc.post_id].push(pc.blog_categories.name);
@@ -300,7 +300,18 @@ async function handleCreateBlogPost(req: NextApiRequest, res: NextApiResponse) {
     const slug = generateSlug(title);
 
     // Prepare the data object for insertion
-    const postData: any = {
+    const postData: {
+      title: string;
+      slug: string;
+      content: string;
+      excerpt?: string;
+      meta_title?: string;
+      meta_description?: string;
+      status: string;
+      published_at: string | null;
+      author_id: string | null;
+      featured_image?: string;
+    } = {
       title,
       slug,
       content,
@@ -412,7 +423,17 @@ async function handleUpdateBlogPost(req: NextApiRequest, res: NextApiResponse) {
     const slug = title !== existingPost.title ? generateSlug(title) : existingPost.slug;
 
     // Prepare the data object for update
-    const updateData: any = {
+    const updateData: {
+      title: string;
+      slug: string;
+      content: string;
+      excerpt?: string;
+      meta_title?: string;
+      meta_description?: string;
+      status: string;
+      published_at: string | null;
+      featured_image?: string;
+    } = {
       title,
       slug,
       content,

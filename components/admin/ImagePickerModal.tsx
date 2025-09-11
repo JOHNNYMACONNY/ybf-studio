@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Modal from '../ui/Modal';
 
 interface ImageItem { 
@@ -47,9 +48,11 @@ const ImagePickerModal: React.FC<Props> = ({ isOpen, onClose, onSelect }) => {
                 className="group rounded-lg overflow-hidden border border-neutral-700 hover:border-amber-500 transition-colors"
                 title={img.name}
               >
-                <img 
+                <Image 
                   src={img.url} 
                   alt={img.name} 
+                  width={200}
+                  height={112}
                   className="w-full h-28 object-cover group-hover:opacity-90" 
                 />
                 <div className="text-xs text-neutral-300 truncate p-2 bg-neutral-800">

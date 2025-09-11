@@ -10,33 +10,27 @@ interface TocItem {
 export function generateTableOfContents(htmlContent: string): TocItem[] {
   if (!htmlContent) return [];
 
-  // Create a temporary DOM element to parse the HTML
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlContent, 'text/html');
-  
-  // Find all headings (h1, h2, h3, h4, h5, h6)
-  const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  
+  // Use regex to find headings since DOMParser doesn't work in SSR
+  const headingRegex = /<h([1-6])[^>]*>(.*?)<\/h[1-6]>/gi;
   const tocItems: TocItem[] = [];
-  
-  headings.forEach((heading, index) => {
-    const level = parseInt(heading.tagName.charAt(1));
-    const text = heading.textContent?.trim() || '';
+  let match;
+  let index = 0;
+
+  while ((match = headingRegex.exec(htmlContent)) !== null) {
+    const level = parseInt(match[1]);
+    const text = match[2].replace(/<[^>]*>/g, '').trim(); // Remove any HTML tags from the text
     
     if (text) {
-      // Generate a unique ID for the heading
       const id = `heading-${index}-${text.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-      
-      // Set the ID on the heading element for anchor links
-      heading.id = id;
       
       tocItems.push({
         id,
         text,
         level
       });
+      index++;
     }
-  });
+  }
   
   return tocItems;
 }
@@ -71,20 +65,19 @@ export function renderTableOfContents(tocItems: TocItem[]): string {
 export function addHeadingIds(htmlContent: string): string {
   if (!htmlContent) return '';
 
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(htmlContent, 'text/html');
+  // Use regex to add IDs to headings
+  const headingRegex = /<h([1-6])([^>]*)>(.*?)<\/h[1-6]>/gi;
+  let index = 0;
   
-  const headings = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
-  
-  headings.forEach((heading, index) => {
-    const text = heading.textContent?.trim() || '';
-    if (text && !heading.id) {
+  return htmlContent.replace(headingRegex, (match, level, attributes, content) => {
+    const text = content.replace(/<[^>]*>/g, '').trim();
+    if (text) {
       const id = `heading-${index}-${text.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
-      heading.id = id;
+      index++;
+      return `<h${level}${attributes} id="${id}">${content}</h${level}>`;
     }
+    return match;
   });
-  
-  return doc.body.innerHTML;
 }
 
 /**

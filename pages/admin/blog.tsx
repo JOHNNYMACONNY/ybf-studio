@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth/next';
@@ -522,7 +523,7 @@ const BlogPostModal: React.FC<BlogPostModalProps> = ({ post, categories, onSave,
 
             {formData.featured_image ? (
               <div className="mt-3 rounded border border-neutral-700 overflow-hidden">
-                <img src={formData.featured_image} alt="Featured preview" className="w-full max-h-56 object-cover" />
+                <Image src={formData.featured_image} alt="Featured preview" width={400} height={224} className="w-full max-h-56 object-cover" />
               </div>
             ) : null}
           </div>

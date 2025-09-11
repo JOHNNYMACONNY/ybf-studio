@@ -4,7 +4,6 @@ import { GetServerSideProps } from 'next';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../api/auth/[...nextauth]';
 import AdminLayout from '../../components/AdminLayout';
-import BeatCard from '../../components/BeatCard';
 import BeatAdminCard from '../../components/admin/BeatAdminCard';
 import Button from '../../components/ui/Button';
 import Modal from '../../components/ui/Modal';
@@ -55,7 +54,7 @@ const AdminBeatsPage: React.FC<AdminBeatsPageProps> = ({ initialBeats }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [genreFilter, setGenreFilter] = useState('All');
   const [loading, setLoading] = useState(false);
-  const { playBeat } = useUnifiedAudio();
+  const { } = useUnifiedAudio();
   const { addToast } = useToast();
 
   // Filter beats based on search and genre
@@ -307,8 +306,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, loading }) => {
-  const [audioFile, setAudioFile] = useState<File | null>(null);
-  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [, setAudioFile] = useState<File | null>(null);
+  const [, setCoverFile] = useState<File | null>(null);
 
   const defaultValues: FormValues = {
     title: beat?.title || '',
@@ -326,7 +325,7 @@ const BeatFormModal: React.FC<BeatFormModalProps> = ({ beat, onSave, onClose, lo
     exclusivePrice: beat?.licenseTypes?.exclusive ?? 199,
   };
 
-  const { register, handleSubmit, formState: { errors }, watch } = useForm<FormValues>({
+  const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues,
     mode: 'onBlur',

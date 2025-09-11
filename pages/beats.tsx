@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import Section from '../components/shared/Section';
 import BeatCard from '../components/BeatCard';
 import Input from '../components/Input';
 import Select from '../components/ui/Select';
@@ -10,52 +9,17 @@ import { Search } from 'lucide-react';
 import type { Beat } from '../types/beat';
 import { useUnifiedAudio } from '../components/audio/UnifiedAudioContext';
 import { useCart } from '../components/ui/CartContext';
-import Card from '../components/ui/Card';
 import AnimatedSection from '../components/ui/AnimatedSection';
 import Button from '../components/ui/Button';
 import LicenseComparison from '../components/beats/LicenseComparison';
 import { getHeroImage } from '../lib/hero-config';
 import { supabase } from '../lib/supabase';
 
-// Available beat cover art images
-const BEAT_COVER_IMAGES = [
-  '/assets/beatCovers/beat_cover_1.png',
-  '/assets/beatCovers/beat_cover_2.png',
-  '/assets/beatCovers/beat_cover_3.png',
-  '/assets/beatCovers/beat_cover_4.png'
-];
 
-// Get random cover art image
-const getRandomCoverArt = () => {
-  const randomIndex = Math.floor(Math.random() * BEAT_COVER_IMAGES.length);
-  return BEAT_COVER_IMAGES[randomIndex];
-};
 
 interface BeatsPageProps {
   allBeats: Beat[];
 }
-
-type BeatRow = {
-  id: string;
-  title: string;
-  artist: string;
-  genre: string;
-  bpm: number;
-  price: number;
-  cover_art: string;
-  audio_url?: string | null;
-  preview_url?: string | null;
-  full_track_url?: string | null;
-  duration?: string | null;
-  preview_duration?: string | null;
-  description?: string | null;
-  license_types?: {
-    mp3: number;
-    wav: number;
-    premium: number;
-    exclusive: number;
-  } | null;
-};
 
 const Beats: React.FC<BeatsPageProps> = ({ allBeats }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -272,9 +236,9 @@ const Beats: React.FC<BeatsPageProps> = ({ allBeats }) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
   // Fetch all published beats from the 'beats' table
-  const { data: rows, error } = await supabase
+  const { error } = await supabase
     .from('beats')
     .select('*')
     .eq('status', 'published')
@@ -284,7 +248,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.error('Error fetching beats:', error);
   }
 
-  // Normalize DB rows (snake_case) to Beat interface (camelCase)
+  // Normalize DB data (snake_case) to Beat interface (camelCase)
   // Prefer normalized beats via internal API to unify fallbacks and shapes
   const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
   let allBeats: Beat[] = [];

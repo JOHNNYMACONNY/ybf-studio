@@ -146,7 +146,7 @@ export const getBlogPostBySlug = async (slug: string): Promise<BlogPost | null> 
 
     return {
       ...data,
-      categories: data.blog_post_categories?.map((pc: any) => pc.blog_categories?.name).filter(Boolean) || []
+      categories: data.blog_post_categories?.map((pc: { blog_categories: { name: string } | null }) => pc.blog_categories?.name).filter(Boolean) || []
     };
   } catch (error) {
     console.error('Error fetching blog post by slug:', error);
