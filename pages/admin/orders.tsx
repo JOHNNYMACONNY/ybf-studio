@@ -94,9 +94,7 @@ const AdminOrdersPage: React.FC = () => {
       router.push('/api/auth/signin');
       return;
     }
-
-    fetchOrders();
-  }, [session, status, router, fetchOrders]);
+  }, [session, status, router]);
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -129,6 +127,13 @@ const AdminOrdersPage: React.FC = () => {
       setLoading(false);
     }
   }, [pagination.page, pagination.limit, search, statusFilter, paymentStatusFilter, orderTypeFilter, startDate, endDate]);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (session) {
+      fetchOrders();
+    }
+  }, [session, status, fetchOrders]);
 
   const fetchOrderDetails = async (orderId: string) => {
     try {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic';
-import { useEditor as useTipTapEditor } from '@tiptap/react';
+import { useEditor as useTipTapEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import type { Extension, Mark, Node } from '@tiptap/core';
 
 // Import icons statically (they're just SVG components)
 import {
@@ -36,9 +36,8 @@ const RichTextEditorClient: React.FC<RichTextEditorProps> = ({
   className = ''
 }) => {
   // State for dynamic imports and editor configuration
-  const [extensions, setExtensions] = useState<any[]>([StarterKit]); // Start with basic extensions
+  const [extensions, setExtensions] = useState<(Extension | Mark | Node)[]>([StarterKit]); // Start with basic extensions
   const [isTipTapLoaded, setIsTipTapLoaded] = useState(false);
-  const [EditorContentComponent, setEditorContentComponent] = useState<React.ComponentType<{ editor: unknown }> | null>(null);
 
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkUrl, setLinkUrl] = useState('');
@@ -64,8 +63,7 @@ const RichTextEditorClient: React.FC<RichTextEditorProps> = ({
     const loadAdditionalExtensions = async () => {
       try {
         // Load extension modules
-        const [reactModule, linkModule, imageModule] = await Promise.all([
-          import('@tiptap/react'),
+        const [linkModule, imageModule] = await Promise.all([
           import('@tiptap/extension-link'),
           import('@tiptap/extension-image')
         ]);
@@ -90,7 +88,6 @@ const RichTextEditorClient: React.FC<RichTextEditorProps> = ({
 
         // Add additional extensions to existing basic extensions
         setExtensions(prevExtensions => [...prevExtensions, ...additionalExtensions]);
-        setEditorContentComponent(() => reactModule.EditorContent);
         setIsTipTapLoaded(true);
       } catch (error) {
         console.error('Failed to load additional TipTap extensions:', error);
@@ -109,7 +106,7 @@ const RichTextEditorClient: React.FC<RichTextEditorProps> = ({
   }, [content, editor, isTipTapLoaded]);
 
   // Show loading state until TipTap is loaded
-  if (!isTipTapLoaded || !EditorContentComponent) {
+  if (!isTipTapLoaded) {
     return <div className="animate-pulse bg-neutral-800 rounded-lg h-[300px] flex items-center justify-center">
       <div className="text-neutral-400">Loading editor...</div>
     </div>;
@@ -358,12 +355,10 @@ const RichTextEditorClient: React.FC<RichTextEditorProps> = ({
 
       {/* Editor Content */}
       <div className="bg-neutral-900">
-        {EditorContentComponent && (
-          <EditorContentComponent
-            editor={editor}
-            className="min-h-[300px] max-h-[600px] overflow-y-auto"
-          />
-        )}
+        <EditorContent
+          editor={editor}
+          className="min-h-[300px] max-h-[600px] overflow-y-auto"
+        />
         {!editor.getText().trim() && (
           <div className="absolute top-0 left-0 p-4 text-neutral-500 pointer-events-none">
             {placeholder}

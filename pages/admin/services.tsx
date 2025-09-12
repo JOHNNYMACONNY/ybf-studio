@@ -77,10 +77,6 @@ const ServicesAdmin: React.FC = () => {
 
   const [newFeature, setNewFeature] = useState('');
 
-  useEffect(() => {
-    fetchServices();
-  }, [fetchServices]);
-
   const fetchServices = useCallback(async () => {
     try {
       const params = new URLSearchParams({
@@ -108,6 +104,10 @@ const ServicesAdmin: React.FC = () => {
       setLoading(false);
     }
   }, [currentPage, searchTerm, statusFilter, categoryFilter]);
+
+  useEffect(() => {
+    fetchServices();
+  }, [fetchServices]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

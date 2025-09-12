@@ -245,11 +245,11 @@ function convertMarkdownToHtml(markdown: string): string {
   // Convert unordered lists
   html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
   html = html.replace(/^- (.*$)/gim, '<li>$1</li>');
-  html = html.replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+  html = html.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
   
   // Convert ordered lists
   html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
-  html = html.replace(/(<li>.*<\/li>)/gs, '<ol>$1</ol>');
+  html = html.replace(/(<li>[\s\S]*?<\/li>)/g, '<ol>$1</ol>');
   
   // Convert line breaks to paragraphs
   html = html.replace(/\n\n/g, '</p><p>');
@@ -335,7 +335,7 @@ IMPORTANT: Always format your response as HTML, not markdown. Use proper HTML ta
           let title = titleMatch ? titleMatch[1].replace(/<[^>]*>/g, '') : 'Music Production Update';
           
           // Capitalize title properly (Title Case)
-          title = title.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+          title = title.toLowerCase().replace(/\b\w/g, (l: string) => l.toUpperCase());
           
           // Content is already HTML, just clean it up
           let htmlContent = content.trim();

@@ -48,10 +48,6 @@ const FAQAdmin: React.FC = () => {
     status: 'active'
   });
 
-  useEffect(() => {
-    fetchFAQs();
-  }, [fetchFAQs]);
-
   const fetchFAQs = useCallback(async () => {
     try {
       const params = new URLSearchParams({
@@ -79,6 +75,10 @@ const FAQAdmin: React.FC = () => {
       setLoading(false);
     }
   }, [currentPage, searchTerm, categoryFilter, statusFilter]);
+
+  useEffect(() => {
+    fetchFAQs();
+  }, [fetchFAQs]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

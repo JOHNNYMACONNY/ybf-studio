@@ -76,7 +76,7 @@ interface SystemInfo {
 const AdminSettingsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('site');
   const [, setLoading] = useState(true);
-  const [, setError] = useState('');
+  const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
   // Settings state
@@ -114,10 +114,6 @@ const AdminSettingsPage: React.FC = () => {
     message: 'This is a test email to verify email configuration.'
   });
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
-
   const loadData = useCallback(async () => {
     setLoading(true);
     try {
@@ -134,6 +130,10 @@ const AdminSettingsPage: React.FC = () => {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const loadSettings = async () => {
     try {

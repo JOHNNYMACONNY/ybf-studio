@@ -240,10 +240,12 @@ async function handleGetBlogPosts(req: NextApiRequest, res: NextApiResponse) {
 
         if (!catError && postCategories && postCategories.length > 0) {
           // Group categories by post_id
-          const categoriesByPostId = postCategories.reduce((acc: Record<string, string[]>, pc: { post_id: string; blog_categories: { name: string } }) => {
+          const categoriesByPostId = postCategories.reduce((acc: Record<string, string[]>, pc: { post_id: string; blog_categories: { name: string; slug: string }[] }) => {
             if (!acc[pc.post_id]) acc[pc.post_id] = [];
-            if (pc.blog_categories) {
-              acc[pc.post_id].push(pc.blog_categories.name);
+            if (pc.blog_categories && pc.blog_categories.length > 0) {
+              pc.blog_categories.forEach(category => {
+                acc[pc.post_id].push(category.name);
+              });
             }
             return acc;
           }, {});

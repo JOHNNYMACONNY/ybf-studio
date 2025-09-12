@@ -45,10 +45,6 @@ export default function AdminConsultations() {
     fetchConsultations();
   }, [session, status, router]);
 
-  useEffect(() => {
-    filterConsultations();
-  }, [filterConsultations]);
-
   const fetchConsultations = async () => {
     try {
       setIsLoading(true);
@@ -86,6 +82,10 @@ export default function AdminConsultations() {
 
     setFilteredConsultations(filtered);
   }, [consultations, searchTerm, statusFilter]);
+
+  useEffect(() => {
+    filterConsultations();
+  }, [filterConsultations]);
 
   const openModal = (consultation: AdminConsultationOverview, type: 'reschedule' | 'cancel' | 'notes') => {
     setSelectedConsultation(consultation);
