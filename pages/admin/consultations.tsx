@@ -14,6 +14,7 @@ export default function AdminConsultations() {
   const [consultations, setConsultations] = useState<AdminConsultationOverview[]>([]);
   const [filteredConsultations, setFilteredConsultations] = useState<AdminConsultationOverview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedConsultation, setSelectedConsultation] = useState<AdminConsultationOverview | null>(null);
@@ -48,15 +49,19 @@ export default function AdminConsultations() {
   const fetchConsultations = async () => {
     try {
       setIsLoading(true);
+      setError(null);
       const response = await fetch('/api/consultations');
       if (response.ok) {
         const data = await response.json();
         setConsultations(data);
       } else {
-        console.error('Failed to fetch consultations');
+        const errorData = await response.json().catch(() => ({}));
+        console.error('Failed to fetch consultations:', errorData);
+        setError('Failed to load consultations. Please try again.');
       }
     } catch (error) {
       console.error('Error fetching consultations:', error);
+      setError('Failed to load consultations. Please check your connection and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -226,6 +231,18 @@ export default function AdminConsultations() {
           <h1 className="text-3xl font-bold text-gray-900">Consultation Management</h1>
           <p className="text-gray-600 mt-2">Manage all consultation bookings and appointments</p>
         </div>
+
+        {error && (
+          <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+            {error}
+            <button 
+              onClick={() => setError(null)}
+              className="ml-2 text-red-500 hover:text-red-700"
+            >
+              ×
+            </button>
+          </div>
+        )}
 
         {/* Filters and Search */}
         <div className="bg-white rounded-lg shadow p-6 mb-6">

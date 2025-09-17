@@ -86,18 +86,26 @@ const AnalyticsDashboard: React.FC<AnalyticsProps> = ({ initialData }) => {
   // Fetch analytics data
   useEffect(() => {
     if (session && user?.isAdmin) {
-      setLoading(true);
-      fetch(`/api/admin/analytics?range=${dateRange}`)
-        .then(res => res.ok ? res.json() : initialData)
-        .then(newData => {
-          setData(newData);
-        })
-        .catch(error => {
+      const fetchAnalytics = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch(`/api/admin/analytics?range=${dateRange}`);
+          if (response.ok) {
+            const newData = await response.json();
+            setData(newData);
+          } else {
+            console.error('Failed to fetch analytics data');
+            setData(initialData); // Fallback to initial data
+          }
+        } catch (error) {
           console.error('Error fetching analytics data:', error);
-        })
-        .finally(() => {
+          setData(initialData); // Fallback to initial data
+        } finally {
           setLoading(false);
-        });
+        }
+      };
+      
+      fetchAnalytics();
     }
   }, [session, user?.isAdmin, dateRange, initialData]);
 

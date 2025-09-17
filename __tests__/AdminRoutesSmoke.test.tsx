@@ -74,6 +74,21 @@ describe('Admin UI routes smoke tests', () => {
     expect(screen.getByRole('heading', { name: /Service Request/i })).toBeInTheDocument();
     expect(screen.getByText(/ID: req-123/i)).toBeInTheDocument();
   });
+
+  test('handles error states gracefully', () => {
+    // Test that components render without crashing even with empty data
+    render(
+      <ServiceRequestsPage
+        initialData={[]}
+        page={1}
+        totalPages={1}
+        q=""
+        status=""
+        payment=""
+      />
+    );
+    expect(screen.getByRole('heading', { name: /Service Requests/i })).toBeInTheDocument();
+  });
 });
 
 

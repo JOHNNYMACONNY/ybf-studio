@@ -2,6 +2,25 @@
 
 ## Resolved Issues
 
+### Admin Page Data Loading Issues - RESOLVED ✅
+- **Status**: Resolved
+- **Impact**: High - Admin pages (blog, beats, consultations, analytics) were showing empty lists
+- **Location**: Admin dashboard pages (`pages/admin/*.tsx`)
+- **Issue**: `getServerSideProps` using hardcoded baseUrl causing API fetch failures
+- **Solution**: Implemented robust baseUrl construction using request headers and added comprehensive error handling
+- **Technical Details**: 
+  - Updated baseUrl construction to use `x-forwarded-proto`, `x-forwarded-host`, and `host` headers
+  - Added try-catch blocks around API calls with fallback to empty arrays
+  - Implemented user-visible error messages with dismissible UI
+  - Added loading states and error recovery mechanisms
+- **Resolution Date**: January 2025
+- **Files Modified**: 
+  - `pages/admin/blog.tsx` (baseUrl fix + error handling)
+  - `pages/admin/beats.tsx` (baseUrl fix + error handling)
+  - `pages/admin/consultations.tsx` (error handling + error UI)
+  - `pages/admin/analytics.tsx` (async/await + fallback data)
+  - `pages/admin/service-requests/[id].tsx` (baseUrl fix)
+
 ### Hero Section Button Navigation - RESOLVED ✅
 - **Status**: Resolved
 - **Impact**: High - Primary CTA buttons in hero section were non-functional

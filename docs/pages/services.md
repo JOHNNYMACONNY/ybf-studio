@@ -43,8 +43,29 @@ Enhancements (2025-08-31):
 - Avoid adding components under the root `services/` folder; canonical components live in `components/services/`.
 - Use dynamic imports for heavy sections to optimize performance.
 - If adding new comparison features, update `ServiceComparison.tsx` helpers:
-  - `featureIncludes(pkg, [...])`
-  - `getStemsSupported(pkg)`
-  And extend `SERVICE_PACKAGES` in `lib/pricing-config.ts` accordingly.
+  - `featureIncludes(service, [...])`
+  - `getStemsSupported(service)`
+- The ServiceComparison component now uses database-driven data via the `services` prop.
+- Error handling is implemented in `getStaticProps` with fallback data to prevent build failures.
+
+### Error Handling
+- Database connection errors are caught and handled gracefully
+- Fallback FAQ data is provided if `active_faqs` view is unavailable
+- Empty services array is handled if `active_services` view fails
+- Build process continues even if database views are missing
+
+### UI Components & User Experience
+- **ErrorBoundary**: All major sections wrapped with error boundaries for graceful error handling
+- **Loading States**: SkeletonCard for services grid, LoadingSpinner for comparison and FAQ sections
+- **Mobile Optimization**: Responsive design with `sm:` breakpoints, mobile-friendly typography and spacing
+- **Accessibility**: ARIA labels, keyboard navigation, skip links, and semantic table structure
+- **Error Fallbacks**: User-friendly error messages with retry functionality
+
+### Recent Enhancements (2025-01-31)
+- Added comprehensive error handling with ErrorBoundary components
+- Implemented loading states with SkeletonCard and LoadingSpinner
+- Enhanced mobile responsiveness with responsive Tailwind classes
+- Improved accessibility with ARIA labels and keyboard navigation
+- Added skip-to-main-content link for screen reader users
 
 

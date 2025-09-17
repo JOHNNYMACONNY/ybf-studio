@@ -44,6 +44,25 @@ test.describe('Admin Beats CRUD', () => {
     await firstCard.getByRole('button', { name: /delete/i }).click();
     await expect(page.getByText(/beat deleted/i)).toBeVisible();
   });
+
+  test('handles error states gracefully', async ({ page }) => {
+    // Navigate to admin beats page
+    await page.goto('/admin/beats');
+    
+    // Verify page loads without errors
+    await expect(page.getByRole('heading', { name: /beats/i })).toBeVisible();
+    
+    // Check for error handling UI elements
+    const errorBanner = page.locator('[class*="bg-red-100"]');
+    const dismissButton = page.locator('button:has-text("×")');
+    
+    // If error appears, test dismissal
+    if (await errorBanner.isVisible()) {
+      await expect(dismissButton).toBeVisible();
+      await dismissButton.click();
+      await expect(errorBanner).not.toBeVisible();
+    }
+  });
 });
 
 

@@ -190,6 +190,12 @@ The main dashboard provides an overview of your audio service business:
 - Navigate to: **Admin Panel → Services**
 - URL: `/admin/services`
 
+### **Error Handling & Recovery**
+- **Error Messages**: Red error banners appear if data fails to load
+- **Dismissible Errors**: Click × button to dismiss error messages
+- **Fallback Data**: System shows initial data if API fails
+- **Auto-Recovery**: Errors clear automatically on successful operations
+
 ### **Managing Audio Services**
 
 #### **Service Categories**
@@ -331,6 +337,12 @@ The main dashboard provides an overview of your audio service business:
 ### **Accessing Analytics**
 - Navigate to: **Admin Panel → Analytics**
 - URL: `/admin/analytics`
+
+### **Error Handling & Recovery**
+- **Error Messages**: Red error banners appear if data fails to load
+- **Dismissible Errors**: Click × button to dismiss error messages
+- **Fallback Data**: System shows initial data if API fails
+- **Auto-Recovery**: Errors clear automatically on successful operations
 
 ### **Analytics Dashboard**
 
@@ -610,6 +622,21 @@ The main dashboard provides an overview of your audio service business:
 - **Solution**: Check system resources
 - **Monitor**: Analytics dashboard for performance
 - **Optimize**: Reduce file sizes and optimize images
+
+#### **Data Loading Issues**
+- **Issue**: Admin pages show empty lists or "No data available"
+- **Solution**: Check network connection and API status
+- **Check**: Browser console for error messages
+- **Recovery**: Refresh page or try again in a few moments
+- **Fallback**: System displays fallback data when possible
+
+#### **Error Message Handling**
+- **Issue**: Red error banners appear on admin pages
+- **Solution**: Click the × button to dismiss error messages
+- **Common Errors**: 
+  - "Failed to load data. Please try again." - API connection issue
+  - "Failed to load data. Please check your connection and try again." - Network issue
+- **Recovery**: Error messages auto-dismiss on successful operations
 
 ### **Getting Help**
 

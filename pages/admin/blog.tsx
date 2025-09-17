@@ -645,14 +645,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    // Fetch initial blog posts and categories from API
-    const baseUrl = process.env.NODE_ENV === 'production'
-      ? 'https://your-domain.com'
-      : 'http://localhost:3000';
+    // Build a robust base URL from the incoming request headers
+    const forwardedProto = (context.req.headers['x-forwarded-proto'] as string) || undefined;
+    const forwardedHost = (context.req.headers['x-forwarded-host'] as string) || undefined;
+    const host = (forwardedHost || context.req.headers.host)!;
+    const protocol = forwardedProto || (host?.includes('localhost') ? 'http' : 'https');
+    const baseUrl = `${protocol}://${host}`;
 
     // Fetch blog posts
-    const postsResponse = await fetch(`${baseUrl}/api/admin/blog?page=1&limit=50`);
-    const postsData = postsResponse.ok ? await postsResponse.json() : { posts: [] };
+    let postsData: { posts: AdminBlogPageProps['initialPosts'] } = { posts: [] };
+    try {
+      const postsResponse = await fetch(`${baseUrl}/api/admin/blog?page=1&limit=50`);
+      postsData = postsResponse.ok ? await postsResponse.json() : { posts: [] };
+    } catch (err) {
+      console.error('Error fetching posts from API:', err);
+      postsData = { posts: [] };
+    }
 
     // Fetch categories directly from database (since API requires auth)
     const { createClient } = await import('@supabase/supabase-js');

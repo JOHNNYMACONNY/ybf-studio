@@ -601,10 +601,23 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/beats`);
-    const initialBeats = res.ok ? await res.json() : [];
-    
+    // Build base URL from incoming headers for robustness across envs
+    const forwardedProto = (context.req.headers['x-forwarded-proto'] as string) || undefined;
+    const forwardedHost = (context.req.headers['x-forwarded-host'] as string) || undefined;
+    const host = (forwardedHost || context.req.headers.host)!;
+    const protocol = forwardedProto || (host?.includes('localhost') ? 'http' : 'https');
+    const baseUrl = `${protocol}://${host}`;
+
+    // Primary: fetch via API
+    let initialBeats: Beat[] = [] as unknown as Beat[];
+    try {
+      const res = await fetch(`${baseUrl}/api/beats`);
+      initialBeats = res.ok ? await res.json() : [];
+    } catch (err) {
+      console.error('Error fetching beats from API:', err);
+      initialBeats = [];
+    }
+
     return {
       props: {
         initialBeats,

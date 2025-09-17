@@ -12,6 +12,10 @@ import { getHeroImage } from '../lib/hero-config';
 import { getActiveServices, getActiveFaqs } from '../lib/services';
 import { Service } from '../types/service';
 import ServiceComparison from '../components/services/ServiceComparison';
+import ErrorBoundary from '../components/ui/ErrorBoundary';
+import ErrorFallback from '../components/ui/ErrorFallback';
+import { SkeletonCard } from '../components/ui/SkeletonCard';
+import { LoadingSpinner } from '../components/ui/LoadingSpinner';
 
 const processSteps = [
   { title: '1. Place Your Order', description: 'Choose your service and upload your files through our secure portal.' },
@@ -35,14 +39,20 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
   const heroImage = getHeroImage('services');
 
   const handleBookClick = (service: Service) => {
-    console.log('handleBookClick called with service:', service);
     setSelectedService(service);
     setIsModalOpen(true);
-    console.log('Modal state set to open, selectedService:', service, 'isModalOpen:', true);
   };
 
   return (
     <>
+      {/* Skip to main content link for accessibility */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-3d-spline-primary text-white px-4 py-2 rounded-lg z-50"
+      >
+        Skip to main content
+      </a>
+      
       {/* Hero Section */}
       <div className="card-3d-spline rounded-2xl p-8 mb-12 hero-background-enhanced hero-card-enhanced">
         {/* Background Image with configurable opacity */}
@@ -70,57 +80,89 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
       </div>
 
       {/* Services Section */}
-      <div className="panel-3d-surface rounded-2xl p-6 md:p-8 mb-12">
-        <AnimatedSection animation="fadeIn" delay={100}>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
-            {services.length > 0 ? (
-              services.map((service, index) => (
-                <AnimatedSection key={service.id} animation="slideUp" delay={200 + index * 150}>
-                  <div className="card-3d-spline rounded-xl p-6 h-full flex flex-col">
-                    {/* Icon */}
-                    <div className="w-16 h-16 bg-gradient-to-br from-3d-spline-primary to-3d-spline-accent rounded-full flex items-center justify-center mx-auto">
-                      <Icon as={SlidersHorizontal} className="h-6 w-6 text-white" />
-                    </div>
-
-                    {/* Content */}
-                    <div className="mt-4 text-center space-y-3 flex-1 flex flex-col items-center">
-                      <h3 className="text-xl font-semibold text-3d-spline-text-primary">{service.name}</h3>
-                      <p className="text-3d-spline-text-muted text-sm">{service.short_description}</p>
-                      <div className="text-2xl font-bold text-3d-spline-primary">${service.price}</div>
-                      <div className="text-sm text-3d-spline-text-muted min-h-[24px]">
-                        {service.original_price && (
-                          <>
-                            <span className="line-through">${service.original_price}</span>
-                            <span className="ml-2 text-3d-spline-accent">
-                              Save {getDiscountPercentage(service.original_price, service.price)}%
-                            </span>
-                          </>
-                        )}
+      <div id="main-content" className="panel-3d-surface rounded-2xl p-6 md:p-8 mb-12">
+        <ErrorBoundary
+          fallback={
+            <ErrorFallback
+              variant="card"
+              message="Unable to load services. Please try refreshing the page."
+              onRetry={() => window.location.reload()}
+            />
+          }
+        >
+          <AnimatedSection animation="fadeIn" delay={100}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-fr">
+              {services.length > 0 ? (
+                services.map((service, index) => (
+                  <AnimatedSection key={service.id} animation="slideUp" delay={200 + index * 150}>
+                    <div className="card-3d-spline rounded-xl p-6 h-full flex flex-col">
+                      {/* Icon */}
+                      <div className="w-16 h-16 bg-gradient-to-br from-3d-spline-primary to-3d-spline-accent rounded-full flex items-center justify-center mx-auto">
+                        <Icon as={SlidersHorizontal} className="h-6 w-6 text-white" />
                       </div>
-                      <p className="text-xs text-3d-spline-text-muted">Turnaround: {service.turnaround_time}</p>
-                    </div>
 
-                    {/* CTA */}
-                    <div className="pt-4">
+                      {/* Content */}
+                      <div className="mt-4 text-center space-y-3 flex-1 flex flex-col items-center">
+                        <h3 className="text-xl font-semibold text-3d-spline-text-primary">{service.name}</h3>
+                        <p className="text-3d-spline-text-muted text-sm">{service.short_description}</p>
+                        <div className="text-2xl font-bold text-3d-spline-primary">${service.price}</div>
+                        <div className="text-sm text-3d-spline-text-muted min-h-[24px]">
+                          {service.original_price && (
+                            <>
+                              <span className="line-through">${service.original_price}</span>
+                              <span className="ml-2 text-3d-spline-accent">
+                                Save {getDiscountPercentage(service.original_price, service.price)}%
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <p className="text-xs text-3d-spline-text-muted">Turnaround: {service.turnaround_time}</p>
+                      </div>
+
+                      {/* CTA */}
+                      <div className="pt-4">
                       <Button 
                         variant="primary" 
                         size="sm" 
                         onClick={() => handleBookClick(service)}
                         className="w-full"
+                        aria-label={`Book ${service.name} service for $${service.price}`}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            handleBookClick(service);
+                          }
+                        }}
                       >
                         Book Now
                       </Button>
+                      </div>
                     </div>
+                  </AnimatedSection>
+                ))
+              ) : (
+                <div className="col-span-full">
+                  {/* Loading skeleton for services */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {Array.from({ length: 4 }).map((_, index) => (
+                      <SkeletonCard 
+                        key={index} 
+                        variant="service" 
+                        className="h-full"
+                      />
+                    ))}
                   </div>
-                </AnimatedSection>
-              ))
-            ) : (
-              <div className="col-span-full text-center text-3d-spline-text-muted py-12">
-                <p>No services are available at this time. Please check back later.</p>
-              </div>
-            )}
-          </div>
-        </AnimatedSection>
+                  <div className="text-center mt-8">
+                    <LoadingSpinner size="lg" variant="pulse" color="teal" />
+                    <p className="text-3d-spline-text-muted mt-4">
+                      Loading services...
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </AnimatedSection>
+        </ErrorBoundary>
       </div>
 
       {/* Process Section */}
@@ -165,29 +207,65 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
             </p>
           </div>
           
-          <ServiceComparison />
+          <ErrorBoundary
+            fallback={
+              <ErrorFallback
+                variant="card"
+                message="Unable to load service comparison. Please try refreshing the page."
+                onRetry={() => window.location.reload()}
+              />
+            }
+          >
+            {services.length > 0 ? (
+              <ServiceComparison services={services} />
+            ) : (
+              <div className="text-center py-12">
+                <LoadingSpinner size="lg" variant="pulse" color="teal" />
+                <p className="text-3d-spline-text-muted mt-4">
+                  Loading service comparison...
+                </p>
+              </div>
+            )}
+          </ErrorBoundary>
         </AnimatedSection>
       </div>
 
       {/* FAQ Section */}
-      {faqs.length > 0 && (
-        <div className="card-3d-spline rounded-2xl p-8 mb-12">
-          <AnimatedSection animation="fadeIn" delay={400}>
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold text-3d-spline-text-primary mb-4">
-                Frequently Asked <span className="text-3d-spline-accent">Questions</span>
-              </h2>
-              <p className="text-3d-spline-text-secondary text-lg">
-                Everything you need to know about our services
-              </p>
-            </div>
-            
-            <div className="max-w-3xl mx-auto">
-              <FaqAccordion items={faqs} />
-            </div>
-          </AnimatedSection>
-        </div>
-      )}
+      <div className="card-3d-spline rounded-2xl p-8 mb-12">
+        <AnimatedSection animation="fadeIn" delay={400}>
+          <div className="text-center mb-8">
+            <h2 className="text-4xl font-bold text-3d-spline-text-primary mb-4">
+              Frequently Asked <span className="text-3d-spline-accent">Questions</span>
+            </h2>
+            <p className="text-3d-spline-text-secondary text-lg">
+              Everything you need to know about our services
+            </p>
+          </div>
+          
+          <div className="max-w-3xl mx-auto">
+            <ErrorBoundary
+              fallback={
+                <ErrorFallback
+                  variant="inline"
+                  message="Unable to load FAQ section. Please try refreshing the page."
+                  onRetry={() => window.location.reload()}
+                />
+              }
+            >
+              {faqs.length > 0 ? (
+                <FaqAccordion items={faqs} />
+              ) : (
+                <div className="text-center py-8">
+                  <LoadingSpinner size="md" variant="pulse" color="teal" />
+                  <p className="text-3d-spline-text-muted mt-4">
+                    Loading FAQ section...
+                  </p>
+                </div>
+              )}
+            </ErrorBoundary>
+          </div>
+        </AnimatedSection>
+      </div>
 
       {/* CTA Section */}
       <div className="card-3d-spline rounded-2xl p-8 mb-12">
@@ -204,6 +282,7 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
                 <Button 
                   variant="primary"
                   size="lg"
+                  aria-label="Get started with our audio services"
                 >
                   Get Started
                 </Button>
@@ -212,6 +291,7 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
                 <Button 
                   variant="primary"
                   size="lg"
+                  aria-label="Book a consultation to discuss your project"
                 >
                   Book Consultation
                 </Button>
@@ -220,6 +300,7 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
                 <Button 
                   variant="secondary"
                   size="lg"
+                  aria-label="View our portfolio of completed projects"
                 >
                   View Portfolio
                 </Button>
@@ -230,29 +311,66 @@ const Services: React.FC<{ services: Service[]; faqs: FaqItem[] }> = ({ services
       </div>
 
       {/* Service Booking Modal */}
-      <ServiceBookingModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        service={selectedService}
-      />
+      <ErrorBoundary
+        fallback={
+          <ErrorFallback
+            variant="inline"
+            message="Unable to load booking modal. Please try again."
+            onRetry={() => setIsModalOpen(false)}
+          />
+        }
+      >
+        <ServiceBookingModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          service={selectedService}
+        />
+      </ErrorBoundary>
     </>
   );
 };
 
 export async function getStaticProps() {
-  const [services, faqs] = await Promise.all([
-    getActiveServices(),
-    getActiveFaqs(),
-  ]);
+  try {
+    const [services, faqs] = await Promise.all([
+      getActiveServices(),
+      getActiveFaqs(),
+    ]);
 
-  return {
-    props: {
-      services,
-      faqs,
-      use3DSplineBackground: true,
-    },
-    revalidate: 300,
-  };
+    return {
+      props: {
+        services: services || [],
+        faqs: faqs || [],
+        use3DSplineBackground: true,
+      },
+      revalidate: 300,
+    };
+  } catch (error) {
+    console.error('Error in getStaticProps:', error);
+    
+    // Return fallback data to prevent build failure
+    return {
+      props: {
+        services: [],
+        faqs: [
+          {
+            question: 'What file formats should I send?',
+            answer: 'For mixing: Send individual stems as WAV files (24-bit, 44.1kHz or higher). For mastering: Send your final mix as a WAV file (24-bit, 44.1kHz or higher). Avoid MP3 files for the best quality.'
+          },
+          {
+            question: 'What is the turnaround time?',
+            answer: 'Standard turnaround is 3-5 business days for mixing and 1-2 business days for mastering. Rush delivery options are available for an additional fee.'
+          },
+          {
+            question: 'How many revisions are included?',
+            answer: 'Our mixing packages include 2 free revisions, and mastering includes 1 free revision. Additional revisions can be purchased if needed.'
+          }
+        ],
+        use3DSplineBackground: true,
+      },
+      revalidate: 300,
+    };
+  }
 }
 
 export default Services;

@@ -148,7 +148,13 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const id = ctx.params?.id as string;
   try {
-    const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    // Build robust base URL from request headers
+    const forwardedProto = (ctx.req.headers['x-forwarded-proto'] as string) || undefined;
+    const forwardedHost = (ctx.req.headers['x-forwarded-host'] as string) || undefined;
+    const host = (forwardedHost || ctx.req.headers.host)!;
+    const protocol = forwardedProto || (host?.includes('localhost') ? 'http' : 'https');
+    const baseUrl = `${protocol}://${host}`;
+
     const resp = await fetch(`${baseUrl}/api/admin/service-requests?id=${id}`, { headers: { cookie: ctx.req.headers.cookie || '' } });
     if (!resp.ok) {
       return { props: { request: null } };

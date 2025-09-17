@@ -26,10 +26,7 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'warning' | 'info' } | null>(null);
 
-  // Debug logging
-  useEffect(() => {
-    console.log('ServiceBookingModal - isOpen:', isOpen, 'service:', service);
-  }, [isOpen, service]);
+  // Debug logging removed for production
 
   useEffect(() => {
     // Reset form when modal is closed or service changes
@@ -71,13 +68,11 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
         return;
       }
 
-      // Debug: Log what we're sending
       const requestData = {
         ...formData,
         service_id: service.id,
         price_paid: service.price,
       };
-      console.log('Sending service request data:', requestData);
       
       // First create the service request
       const response = await fetch('/api/service-requests', {
@@ -95,12 +90,9 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
       // If service request created successfully, redirect to Stripe checkout
       const createdRequestId = (result && (result.id || result.request?.id)) as string | undefined;
       if (createdRequestId) {
-        console.log('Service request created with id:', createdRequestId);
         const stripe = await getStripe();
-        console.log('Stripe loaded?', Boolean(stripe));
         if (stripe) {
           // Create Stripe checkout session
-          console.log('Creating checkout session...');
           const checkoutResponse = await fetch('/api/service-checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -113,8 +105,6 @@ const ServiceBookingModal: React.FC<ServiceBookingModalProps> = ({ isOpen, onClo
           });
 
           const checkoutResult = await checkoutResponse.json();
-
-          console.log('Checkout session response status:', checkoutResponse.status, 'body:', checkoutResult);
 
           if (checkoutResponse.ok && checkoutResult.sessionId) {
             // Redirect to Stripe checkout
