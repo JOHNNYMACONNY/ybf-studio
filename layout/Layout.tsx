@@ -48,7 +48,7 @@ const Layout: React.FC<LayoutProps> = ({
     <>
       {!skipDefaultHead && (
         <Head>
-          <title>Audio Service App</title>
+          <title>YBF Studio | Professional Audio Services</title>
           <meta name="description" content="Music production, beats, and services" />
         </Head>
       )}
