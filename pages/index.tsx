@@ -52,11 +52,11 @@ const Home: React.FC<HomeProps> = ({ /* beats, */ services }) => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/beats">
+              {/* <Link href="/beats">
                 <GlowBorderButton>
                   Browse Beats
                 </GlowBorderButton>
-              </Link>
+              </Link> */}
               <Link href="/services">
                 <Button
                   variant="spline-secondary"
