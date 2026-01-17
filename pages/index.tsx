@@ -4,9 +4,9 @@ import { Icon } from '../components/ui/Icon';
 import Link from 'next/link';
 import Image from 'next/image';
 import { GetServerSideProps } from 'next';
-import BeatCard from '../components/BeatCard';
-import { useUnifiedAudio } from '../components/audio/UnifiedAudioContext';
-import { useCart } from '../components/ui/CartContext';
+// import BeatCard from '../components/BeatCard';
+// import { useUnifiedAudio } from '../components/audio/UnifiedAudioContext';
+// import { useCart } from '../components/ui/CartContext';
 import Button from '../components/ui/Button';
 import GlowBorderButton from '../components/ui/GlowBorderButton';
 import AnimatedSection from '../components/ui/AnimatedSection';
@@ -19,10 +19,10 @@ interface HomeProps {
   beats: Beat[];
   services: Service[];
 }
-const Home: React.FC<HomeProps> = ({ beats, services }) => {
+const Home: React.FC<HomeProps> = ({ /* beats, */ services }) => {
   const heroImage = getHeroImage('home');
-  const { playBeat } = useUnifiedAudio();
-  const { addToCart } = useCart();
+  // const { playBeat } = useUnifiedAudio();
+  // const { addToCart } = useCart();
 
   return (
     <>

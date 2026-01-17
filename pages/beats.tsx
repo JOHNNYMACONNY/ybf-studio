@@ -2,16 +2,16 @@ import React, { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
-import BeatCard from '../components/BeatCard';
-import StickySearchBar from '../components/beats/StickySearchBar';
-import { Music2, Filter } from 'lucide-react';
+// import BeatCard from '../components/BeatCard';
+// import StickySearchBar from '../components/beats/StickySearchBar';
+// import { Music2, Filter } from 'lucide-react';
 import type { Beat } from '../types/beat';
-import { useUnifiedAudio } from '../components/audio/UnifiedAudioContext';
-import { useCart } from '../components/ui/CartContext';
+// import { useUnifiedAudio } from '../components/audio/UnifiedAudioContext';
+// import { useCart } from '../components/ui/CartContext';
 import AnimatedSection from '../components/ui/AnimatedSection';
 import Button from '../components/ui/Button';
 import LicenseComparison from '../components/beats/LicenseComparison';
-import { Icon } from '../components/ui/Icon';
+// import { Icon } from '../components/ui/Icon';
 import { getHeroImage } from '../lib/hero-config';
 import { supabase } from '../lib/supabase';
 
@@ -21,11 +21,11 @@ interface BeatsPageProps {
   allBeats: Beat[];
 }
 
-const Beats: React.FC<BeatsPageProps> = ({ allBeats }) => {
+const Beats: React.FC<BeatsPageProps> = ({ /* allBeats */ }) => {
+  /* TEMPORARILY COMMENTED OUT UNTIL BEATS ARE UPLOADED
   const [searchQuery, setSearchQuery] = useState('');
   const [genre, setGenre] = useState('All');
   const [bpmRange, setBpmRange] = useState<string>('All');
-  const [isLicenseComparisonOpen, setIsLicenseComparisonOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [beatsPerPage] = useState(20);
 
@@ -117,6 +117,8 @@ const Beats: React.FC<BeatsPageProps> = ({ allBeats }) => {
       license: 'mp3' // Default to mp3 license, can be enhanced with license selection
     });
   };
+  */
+  const [isLicenseComparisonOpen, setIsLicenseComparisonOpen] = useState(false);
 
   const heroImage = getHeroImage('beats');
 
