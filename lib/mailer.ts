@@ -27,7 +27,7 @@ export async function sendMail(options: {
   fromName?: string;
 }) {
   const fromEmail = options.fromEmail || process.env.FROM_EMAIL || 'no-reply@localhost.test';
-  const fromName = options.fromName || process.env.FROM_NAME || process.env.SENDGRID_FROM_NAME || 'Audio Service App';
+  const fromName = options.fromName || process.env.FROM_NAME || process.env.SENDGRID_FROM_NAME || 'YBF Studio';
 
   const info = await transporter.sendMail({
     from: { address: fromEmail, name: fromName },

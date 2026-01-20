@@ -909,7 +909,7 @@ If you have any questions, please reply to this email or contact our support tea
 
             <p>Please review and take any necessary action.</p>
             
-            <p>Best regards,<br>Audio Service App</p>
+            <p>Best regards,<br>YBF Studio</p>
           </div>
           
           <div class="footer">
@@ -939,7 +939,7 @@ ${consultation.notes ? `- Client Notes: ${consultation.notes}` : ''}
 Please review and take any necessary action.
 
 Best regards,
-Audio Service App
+YBF Studio
 
 This is an automated admin notification
     `;

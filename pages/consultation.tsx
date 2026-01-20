@@ -60,7 +60,7 @@ const ConsultationPage: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Professional Consultation Services | Audio Service App</title>
+        <title>Professional Consultation Services | YBF Studio</title>
         <meta name="description" content="Book professional audio engineering and music production consultations. Get expert advice, project planning, and technical guidance tailored to your needs." />
         <meta name="keywords" content="audio consultation, music production consultation, audio engineering, professional advice, project planning" />
       </Head>
